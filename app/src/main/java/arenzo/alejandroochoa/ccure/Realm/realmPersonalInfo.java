@@ -11,6 +11,7 @@ public class realmPersonalInfo extends RealmObject {
 
     @PrimaryKey
     private String NoEmpleado;
+
     private String Nombre;
     private String Foto;
     private String Puesto;

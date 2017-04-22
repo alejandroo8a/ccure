@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Ccure</string>
+    <string name="entrar">Entrar</string>
+    <string name="escribe_tu_numero_de_empleado">Escribe tu numero de empleado</string>
 </resources>

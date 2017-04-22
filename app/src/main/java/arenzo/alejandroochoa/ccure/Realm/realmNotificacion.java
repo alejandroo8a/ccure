@@ -10,18 +10,18 @@ import io.realm.annotations.PrimaryKey;
 public class realmNotificacion extends RealmObject {
 
     @PrimaryKey
-    private Integer NOTId;
+    private int NOTId;
 
     private String Mensaje;
     private String Fase;
     private String Tipo;
     private String Valor;
 
-    public Integer getNOTId() {
+    public int getNOTId() {
         return NOTId;
     }
 
-    public void setNOTId(Integer NOTId) {
+    public void setNOTId(int NOTId) {
         this.NOTId = NOTId;
     }
 

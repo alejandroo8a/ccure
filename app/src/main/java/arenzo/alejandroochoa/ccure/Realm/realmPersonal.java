@@ -11,8 +11,8 @@ public class realmPersonal extends RealmObject {
 
     @PrimaryKey
     private String NoEmpleado;
-    @PrimaryKey
     private String NoTarjeta;
+
     private String Fase;
     private String MFechaHora;
     private String MUsuarioId;

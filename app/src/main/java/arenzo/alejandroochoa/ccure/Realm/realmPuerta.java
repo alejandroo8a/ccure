@@ -10,7 +10,8 @@ import io.realm.annotations.PrimaryKey;
 public class realmPuerta extends RealmObject{
 
     @PrimaryKey
-    private Integer PUEId;
+    private int PUEId;
+
     private String PUEClave;
     private String Descripcion;
     private String Fase;
@@ -18,11 +19,11 @@ public class realmPuerta extends RealmObject{
     private String MFechaHora;
     private String MUsuarioId;
 
-    public Integer getPUEId() {
+    public int getPUEId() {
         return PUEId;
     }
 
-    public void setPUEId(Integer PUEId) {
+    public void setPUEId(int PUEId) {
         this.PUEId = PUEId;
     }
 

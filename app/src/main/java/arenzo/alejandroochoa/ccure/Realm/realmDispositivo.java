@@ -10,21 +10,21 @@ import io.realm.annotations.PrimaryKey;
 public class realmDispositivo extends RealmObject {
 
     @PrimaryKey
-    private Integer DISId;
+    private int DISId;
 
     private String Descripcion;
     private String Fase;
-    private Integer AGRId;
+    private int AGRId;
     private String URLWebService;
     private String URLExportacion;
     private String MFechaHora;
     private String MUsuarioId;
 
-    public Integer getDISId() {
+    public int getDISId() {
         return DISId;
     }
 
-    public void setDISId(Integer DISId) {
+    public void setDISId(int DISId) {
         this.DISId = DISId;
     }
 
@@ -44,11 +44,11 @@ public class realmDispositivo extends RealmObject {
         Fase = fase;
     }
 
-    public Integer getAGRId() {
+    public int getAGRId() {
         return AGRId;
     }
 
-    public void setAGRId(Integer AGRId) {
+    public void setAGRId(int AGRId) {
         this.AGRId = AGRId;
     }
 

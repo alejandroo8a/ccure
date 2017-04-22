@@ -11,11 +11,8 @@ public class realmESPersonal extends RealmObject {
 
     @PrimaryKey
     private String NoEmpleado;
-    @PrimaryKey
     private String NoTarjeta;
-    @PrimaryKey
-    private Integer PUEId;
-    @PrimaryKey
+    private int PUEId;
     private String FechaHoraEntrada;
 
     private String FaseIngreso;
@@ -40,11 +37,11 @@ public class realmESPersonal extends RealmObject {
         NoTarjeta = noTarjeta;
     }
 
-    public Integer getPUEId() {
+    public int getPUEId() {
         return PUEId;
     }
 
-    public void setPUEId(Integer PUEId) {
+    public void setPUEId(int PUEId) {
         this.PUEId = PUEId;
     }
 

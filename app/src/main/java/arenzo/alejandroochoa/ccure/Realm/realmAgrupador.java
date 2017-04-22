@@ -10,18 +10,18 @@ import io.realm.annotations.PrimaryKey;
 public class realmAgrupador extends RealmObject {
 
     @PrimaryKey
-    private Integer AGRId;
+    private int AGRId;
 
     private String Descripcion;
     private String Fase;
     private String MFechaHora;
     private String MUsuarioId;
 
-    public Integer getAGRId() {
+    public int getAGRId() {
         return AGRId;
     }
 
-    public void setAGRId(Integer AGRId) {
+    public void setAGRId(int AGRId) {
         this.AGRId = AGRId;
     }
 

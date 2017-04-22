@@ -49,7 +49,6 @@ public class RealmController {
     }
 
     public Realm getRealm() {
-
         return realm;
     }
 

@@ -10,26 +10,28 @@ import io.realm.annotations.PrimaryKey;
 public class realmAgrupadorPuerta extends RealmObject {
 
     @PrimaryKey
-    private Integer AGRId;
-    @PrimaryKey
-    private Integer PUEId;
+    private int AGRId;
+
+    private int PUEId;
 
     private String Fase;
-    private Integer Tipo;
+    private int Tipo;
+    private String FechaHora;
+    private String MUsuarioId;
 
-    public Integer getAGRId() {
+    public int getAGRId() {
         return AGRId;
     }
 
-    public void setAGRId(Integer AGRId) {
+    public void setAGRId(int AGRId) {
         this.AGRId = AGRId;
     }
 
-    public Integer getPUEId() {
+    public int getPUEId() {
         return PUEId;
     }
 
-    public void setPUEId(Integer PUEId) {
+    public void setPUEId(int PUEId) {
         this.PUEId = PUEId;
     }
 
@@ -41,11 +43,11 @@ public class realmAgrupadorPuerta extends RealmObject {
         Fase = fase;
     }
 
-    public Integer getTipo() {
+    public int getTipo() {
         return Tipo;
     }
 
-    public void setTipo(Integer tipo) {
+    public void setTipo(int tipo) {
         Tipo = tipo;
     }
 
@@ -65,6 +67,5 @@ public class realmAgrupadorPuerta extends RealmObject {
         this.MUsuarioId = MUsuarioId;
     }
 
-    private String FechaHora;
-    private String MUsuarioId;
+
 }
