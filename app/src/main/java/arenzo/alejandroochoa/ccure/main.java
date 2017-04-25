@@ -1,21 +1,47 @@
 package arenzo.alejandroochoa.ccure;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class main extends AppCompatActivity {
-    //TODO CENTRAR EL TEXTO DEL NAVIGATION BAR, AGREGAR NUEVA FUENTE
+
+    private final static String TAG = "main";
+
+    private Button btnOlvideTarjetaLogin;
+    private TextView txtFechaLogin;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         centrarTituloActionBar();
+        cargarElementos();
+        btnOlvideTarjetaLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cargarLoginManual();
+            }
+        });
+    }
+
+    private void cargarElementos(){
+        txtFechaLogin = (TextView)findViewById(R.id.txtFechaLogin);
+        btnOlvideTarjetaLogin = (Button)findViewById(R.id.btnOlvideTarjetaLogin);
+    }
+
+    private void cargarLoginManual(){
+        Intent intent = new Intent(this, loginManual.class);
+        startActivity(intent);
     }
 
     private void centrarTituloActionBar() {
@@ -44,4 +70,5 @@ public class main extends AppCompatActivity {
             }
         }
     }
+
 }

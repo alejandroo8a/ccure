@@ -1,4 +1,4 @@
-package arenzo.alejandroochoa.ccure.Realm;
+package arenzo.alejandroochoa.ccure;
 
 import android.content.Context;
 import android.graphics.Typeface;
