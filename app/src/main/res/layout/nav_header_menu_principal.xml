@@ -20,7 +20,7 @@
         android:id="@+id/perfil"
         app:civ_shadow="true"
         app:civ_shadow_radius="10"
-        app:civ_shadow_color="@color/primary_dark"/>
+        app:civ_shadow_color="@color/primary"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,11 +30,17 @@
             android:layout_height="wrap_content"
             android:paddingTop="16dp"
             android:text="Alejandro Ochoa"
-            android:id="@+id/txtNombreUsuario"
+            android:id="@+id/txtNombreNavigation"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <TextView
-            android:id="@+id/txtCorreo"
+            android:id="@+id/txtNumeroEmpleadoNavigation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="aochoa0@ucol.mx"
+            android:layout_weight="10.34" />
+        <TextView
+            android:id="@+id/txtPuertaNavigation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="aochoa0@ucol.mx"

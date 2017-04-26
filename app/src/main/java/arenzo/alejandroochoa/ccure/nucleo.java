@@ -24,6 +24,8 @@ import java.util.ArrayList;
 public class nucleo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
 
+    TextView txtNombreNavigation, txtNumeroEmpleadoNavigation,txtPuertaNavigation;
+    CircularImageView imageProfesor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,22 +36,38 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
     }
 
     private void cargarElementos(){
+        Toolbar toolbar = añadirToolbar();
+        añadirGestoNavigationDrawer(toolbar);
+        View headerLayout = muestraChecadas();
+        txtNombreNavigation = (TextView) headerLayout.findViewById(R.id.txtNombreNavigation);
+        txtNumeroEmpleadoNavigation = (TextView) headerLayout.findViewById(R.id.txtNumeroEmpleadoNavigation);
+        txtPuertaNavigation = (TextView) headerLayout.findViewById(R.id.txtPuertaNavigation);
+        imageProfesor = (CircularImageView) headerLayout.findViewById(R.id.perfil);
+
+    }
+
+    private Toolbar añadirToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        return toolbar;
+    }
+
+    private void añadirGestoNavigationDrawer(Toolbar toolbar){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    private View muestraChecadas(){
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
-        TextView txtNombreUsuario = (TextView) headerLayout.findViewById(R.id.txtNombreUsuario);
-        TextView txtCorreo = (TextView) headerLayout.findViewById(R.id.txtCorreo);
-        CircularImageView imageProfesor = (CircularImageView) headerLayout.findViewById(R.id.perfil);
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.main_content, new checadas());
         tx.commit();
         navigationView.setNavigationItemSelectedListener(this);
+        return headerLayout;
     }
 
     //SE USA PARA CAPTURAR EL BOTON DE RETROSESO
