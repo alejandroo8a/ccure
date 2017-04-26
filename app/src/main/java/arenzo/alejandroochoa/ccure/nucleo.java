@@ -31,8 +31,8 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nucleo);
-        centrarTituloActionBar();
         cargarElementos();
+        centrarTituloActionBar();
     }
 
     private void cargarElementos(){
@@ -148,4 +148,6 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }

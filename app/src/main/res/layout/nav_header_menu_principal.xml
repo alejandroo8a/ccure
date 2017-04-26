@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="16dp"
-            android:text="Alejandro Ochoa"
+            android:text="GALINDO ESCOBAR CESAR"
             android:id="@+id/txtNombreNavigation"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -37,13 +37,13 @@
             android:id="@+id/txtNumeroEmpleadoNavigation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="aochoa0@ucol.mx"
+            android:text="9828381"
             android:layout_weight="10.34" />
         <TextView
             android:id="@+id/txtPuertaNavigation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="aochoa0@ucol.mx"
+            android:text="Caseta Cole Poblado"
             android:layout_weight="10.34" />
     </LinearLayout>
 
