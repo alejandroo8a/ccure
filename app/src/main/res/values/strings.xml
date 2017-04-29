@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">CCURE MÓVIL</string>
+    <string name="entrar">Entrar</string>
+    <string name="escribe_tu_numero_de_empleado">Escribe tu numero de empleado</string>
+    <string name="olvid_mi_tarjeta">Olvidé mi tarjeta</string>
+    <string name="favor_de_pasar_la_tarjeta_por_el_lector_para_iniciar_sesi_n">Favor de pasar la tarjeta por el lector para iniciar sesión</string>
+    <string name="checadas">Checadas</string>
+    <string name="sincronizar_informaci_n">Sincronizar información</string>
+    <string name="cerrar_sesi_n">Cerrar sesión</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="guardar">Guardar</string>
+    <string name="puerta">Puerta</string>
+    <string name="url_exportaci_n">URL Exportación</string>
+    <string name="dispositivo">Dispositivo</string>
+    <string name="webservice">WebService</string>
+    <string name="sincronizaci_n">Sincronización</string>
+    <string name="selecciona_una_opci_n_para_exportar_la_informaci_n">Selecciona una opción para exportar la información:</string>
+    <string name="red">Red</string>
+    <string name="archivo">Archivo</string>
+
+
+    <string-array name="items">
+        <item>Item 1</item>
+        <item>Item 2</item>
+        <item>Item 3</item>
+        <item>Item 4</item>
+        <item>Item 5</item>
+    </string-array>
+</resources>

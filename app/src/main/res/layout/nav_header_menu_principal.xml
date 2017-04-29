@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primary"
+    android:gravity="bottom"
+    android:orientation="horizontal"
+    android:paddingBottom="16dp"
+    android:paddingRight="16dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:weightSum="1">
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_account_circle"
+        app:civ_border_color="#EEEEEE"
+        app:civ_border_width="4dp"
+        android:id="@+id/perfil"
+        app:civ_shadow="true"
+        app:civ_shadow_radius="10"
+        app:civ_shadow_color="@color/primary"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:text="GALINDO ESCOBAR CESAR"
+            android:id="@+id/txtNombreNavigation"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <TextView
+            android:id="@+id/txtNumeroEmpleadoNavigation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9828381"
+            android:layout_weight="10.34" />
+        <TextView
+            android:id="@+id/txtPuertaNavigation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Caseta Cole Poblado"
+            android:layout_weight="10.34" />
+    </LinearLayout>
+
+</LinearLayout>
