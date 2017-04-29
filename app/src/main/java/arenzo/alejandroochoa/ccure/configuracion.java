@@ -1,18 +1,30 @@
 package arenzo.alejandroochoa.ccure;
 
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-public class configuracion extends Fragment {
+import arenzo.alejandroochoa.ccure.Realm.RealmController;
+import arenzo.alejandroochoa.ccure.Realm.realmDispositivo;
+import io.realm.Realm;
+
+public class configuracion extends Fragment implements helper {
+
+    //TODO FALTA OBTENER ID DEL USUARIO - OBTENER LA FASE - OBTENER EL AGRUPADOR (AGRId) -
 
     private final static String TAG = "configuracion";
+    private Realm realm;
+    private datosConfiguracion datosConfiguracion;
 
     private EditText edtNombreDispositivo, edtWebService, edtURLExportacion;
     private Spinner spPuertas;
@@ -26,7 +38,6 @@ public class configuracion extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -37,7 +48,68 @@ public class configuracion extends Fragment {
         edtNombreDispositivo = (EditText)view.findViewById(R.id.edtNombreDispositivo);
         edtWebService = (EditText)view.findViewById(R.id.edtWebService);
         edtURLExportacion = (EditText)view.findViewById(R.id.edtURLExportacion);
+        spPuertas = (Spinner)view.findViewById(R.id.spPuertas);
+        btnGuardarConfiguracion = (Button)view.findViewById(R.id.btnGuardarConfiguracion);
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        configurarRealm();
+        eventosVista();
+        cargarDatosVista();
+
+    }
+
+    private void eventosVista(){
+        btnGuardarConfiguracion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guardarDatos();
+            }
+        });
+    }
+
+    private void cargarDatosVista(){
+        realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
+        if (dispositivo != null){
+            edtNombreDispositivo.setText(dispositivo.getDescripcion().toString());
+            edtWebService.setText(dispositivo.getURLWebService().toString());
+            edtURLExportacion.setText(dispositivo.getURLExportacion());
+        }
+    }
+
+    private void guardarDatos(){
+        if (edtNombreDispositivo.length() > 0 && edtURLExportacion.length() > 0 && edtWebService.length() > 0){
+            realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
+            boolean saberEstadoInsercion = false;
+            if(dispositivo == null){
+                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivo.getText().toString(),"1",1,edtWebService.getText().toString(),edtURLExportacion.getText().toString(),"1");
+            }else{
+                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivo.getText().toString(),"1",1,edtWebService.getText().toString(),edtURLExportacion.getText().toString(),"1");
+            }
+            if (saberEstadoInsercion){
+                crearDialog("Éxito", "Sus datos se guardaron correctamente");
+            }else{
+                crearDialog("Error", "Sus datos no se guardaron.");
+            }
+         }else{
+            Toast.makeText(getContext(), "Complete todos los campos para guardar", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void crearDialog(String titulo,String mensaje){
+        AlertDialog.Builder dialog =  new AlertDialog.Builder(getContext());
+        dialog.setTitle(titulo)
+                .setMessage(mensaje)
+                .setPositiveButton("Aceptar", null)
+                .show();
+    }
+
+    @Override
+    public void configurarRealm() {
+        this.realm = RealmController.with(getActivity()).getRealm();
+        RealmController.with(getActivity()).refresh();
+    }
 }

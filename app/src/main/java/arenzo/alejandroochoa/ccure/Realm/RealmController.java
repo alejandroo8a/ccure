@@ -3,24 +3,35 @@ package arenzo.alejandroochoa.ccure.Realm;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Fragment;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.Log;
+
+import java.util.Date;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
 
 /**
  * Created by AlejandroMissael on 22/04/2017.
  */
 
 public class RealmController {
-
+    private final static String TAG = "RealmController";
     private static RealmController instance;
     private final Realm realm;
+    private int siguienteId = 0;
+    private Boolean saberEstadoConsulta = false;
 
     public RealmController(Application application) {
         realm = Realm.getDefaultInstance();
     }
 
     public static RealmController with(Fragment fragment) {
-
         if (instance == null) {
             instance = new RealmController(fragment.getActivity().getApplication());
         }
@@ -28,7 +39,6 @@ public class RealmController {
     }
 
     public static RealmController with(Activity activity) {
-
         if (instance == null) {
             instance = new RealmController(activity.getApplication());
         }
@@ -56,6 +66,76 @@ public class RealmController {
     public void refresh() {
         realm.refresh();
     }
+
+     //OBTENER EL ULTIMO ID DE UNA TABLA Y GENERAR UNO NUEVO
+    public int obtenerIdDispositivo(){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Number currentIdNum = realm.where(realmDispositivo.class).maximumInt("DISId");
+                if(currentIdNum == null) {
+                    siguienteId = 1;
+                } else {
+                    siguienteId = currentIdNum.intValue() + 1;
+                }
+            }
+        });
+        return siguienteId;
+    }
+
+    public boolean insertarConfiguracion(final String descripcion, final String fase, final int AGRId, final String URLWebService, final String URLExportacion, final String MUsuarioId){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void execute(Realm realm) {
+                realmDispositivo dispositivo = realm.createObject(realmDispositivo.class);
+                dispositivo.setDISId(1);
+                dispositivo.setDescripcion(descripcion);
+                dispositivo.setFase(fase);
+                dispositivo.setAGRId(AGRId);
+                dispositivo.setURLWebService(URLWebService);
+                dispositivo.setURLExportacion(URLExportacion);
+                dispositivo.setMFechaHora(obtenerFecha());
+                dispositivo.setMUsuarioId(MUsuarioId);
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
+    }
+
+    public boolean actualizarConfiguracion(final String descripcion, final String fase, final int AGRId, final String URLWebService, final String URLExportacion, final String MUsuarioId){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void execute(Realm realm) {
+                realmDispositivo dispositivo = realm.where(realmDispositivo.class).equalTo("DISId",1).findFirst();
+                dispositivo.setDescripcion(descripcion);
+                dispositivo.setFase(fase);
+                dispositivo.setAGRId(AGRId);
+                dispositivo.setURLWebService(URLWebService);
+                dispositivo.setURLExportacion(URLExportacion);
+                dispositivo.setMFechaHora(obtenerFecha());
+                dispositivo.setMUsuarioId(MUsuarioId);
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
+    }
+
+    public realmDispositivo obtenerDispositivo(){
+        return realm.where(realmDispositivo.class).equalTo("DISId",1).findFirst();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private String obtenerFecha(){
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        return dateFormat.format(date);
+    }
+
+
 
     /*
     //clear all objects from Book.class
@@ -93,25 +173,6 @@ public class RealmController {
                 .contains("title", "Realm")
                 .findAll();
 
-    }
+    }*/
 
-     OBTENER EL ULTIMO ID DE UNA TABLA Y GENERAR UNO NUEVO
-     realm.executeTransaction(new Realm.Transaction() { // must be in transaction for this to work
-     @Override
-     public void execute(Realm realm) {
-         // increment index
-         Number currentIdNum = realm.where(users.class).max(usersFields.ID);
-         int nextId;
-         if(currentIdNum == null) {
-            nextId = 1;
-         } else {
-            nextId = currentIdNum.intValue() + 1;
-         }
-         users user = new users(); // unmanaged
-         user.setId(nextId);
-         //...
-         realm.insertOrUpdate(user); // using insert API
-     }
- }
-    */
 }
