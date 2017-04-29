@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class loginManual extends AppCompatActivity {
+public class loginManual extends AppCompatActivity implements vista {
+
+    private final static String TAG = "loginManual";
 
     private TextView txtFechaLoginManual;
     private EditText edtNumeroEmpleado;
@@ -25,12 +27,7 @@ public class loginManual extends AppCompatActivity {
         setContentView(R.layout.activity_login_manual);
         centrarTituloActionBar();
         cargarElementos();
-        btnLoginManual.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cargarNucleo();
-            }
-        });
+        eventosVista();
     }
 
 
@@ -38,6 +35,16 @@ public class loginManual extends AppCompatActivity {
         txtFechaLoginManual = (TextView) findViewById(R.id.txtFechaLoginManual);
         edtNumeroEmpleado = (EditText) findViewById(R.id.edtNumeroEmpleado);
         btnLoginManual = (Button)findViewById(R.id.btnLoginManual);
+    }
+
+    @Override
+    public void eventosVista(){
+        btnLoginManual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cargarNucleo();
+            }
+        });
     }
 
     private void cargarNucleo(){

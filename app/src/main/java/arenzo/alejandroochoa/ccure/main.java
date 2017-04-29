@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class main extends AppCompatActivity {
+public class main extends AppCompatActivity implements vista {
 
     private final static String TAG = "main";
 
@@ -27,12 +27,7 @@ public class main extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         cargarElementos();
         centrarTituloActionBar();
-        btnOlvideTarjetaLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cargarLoginManual();
-            }
-        });
+        eventosVista();
     }
 
     private void cargarElementos(){
@@ -72,4 +67,13 @@ public class main extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void eventosVista() {
+        btnOlvideTarjetaLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cargarLoginManual();
+            }
+        });
+    }
 }

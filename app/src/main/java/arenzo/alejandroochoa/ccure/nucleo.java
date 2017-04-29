@@ -1,5 +1,6 @@
 package arenzo.alejandroochoa.ccure;
 
+import android.app.AlertDialog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 
 public class nucleo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-
+    private final static String TAG = "nucleo";
     TextView txtNombreNavigation, txtNumeroEmpleadoNavigation,txtPuertaNavigation;
     CircularImageView imageProfesor;
 
@@ -73,27 +74,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
     //SE USA PARA CAPTURAR EL BOTON DE RETROSESO
     @Override
     public void onBackPressed() {
-        /*String saber=sharedPreferences.getString("MOSTRAR","1");
-        if(saber.equals("0")){
-            Fragment fragment= new buscar();
-            FragmentManager fragmentManager= getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.main_content,fragment).commit();
-            SharedPreferences.Editor editor=sharedPreferences.edit();
-            editor.putString("MOSTRAR","0");
-            editor.commit();
-
-        }
-        else {
-            new AlertDialog.Builder(this)
-                    .setTitle("Cerrar sesión")
-                    .setMessage("¿Seguro que deseas cerrar sesión?")
-                    .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            finish();
-                        }
-                    }).create().show();
-        }*/
+        //AlertDialog
     }
 
     private void centrarTituloActionBar() {
