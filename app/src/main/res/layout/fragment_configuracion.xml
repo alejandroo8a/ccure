@@ -42,7 +42,6 @@
         android:hint="Escribe el nombre del dispositivo"
         android:inputType="textPersonName"
         android:singleLine="true"
-        android:text="Name"
         app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
