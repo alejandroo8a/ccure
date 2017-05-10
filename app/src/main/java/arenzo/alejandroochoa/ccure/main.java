@@ -1,9 +1,10 @@
 package arenzo.alejandroochoa.ccure;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -15,12 +16,15 @@ import java.util.ArrayList;
 
 public class main extends AppCompatActivity implements vista {
 
+    //TODO HACER LOGIN
+
     private final static String TAG = "main";
 
     private Button btnOlvideTarjetaLogin;
     private TextView txtFechaLogin;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +44,7 @@ public class main extends AppCompatActivity implements vista {
         startActivity(intent);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void centrarTituloActionBar() {
         ArrayList<View> textViews = new ArrayList<>();
 
@@ -76,4 +81,5 @@ public class main extends AppCompatActivity implements vista {
             }
         });
     }
+
 }
