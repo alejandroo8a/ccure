@@ -18,12 +18,11 @@ import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmDispositivo;
 import io.realm.Realm;
 
-public class configuracion extends Fragment implements helper {
+public class configuracion extends Fragment {
 
-    //TODO FALTA OBTENER ID DEL USUARIO - OBTENER LA FASE - OBTENER EL AGRUPADOR (AGRId) -
+    //TODO FALTA OBTENER ID DEL USUARIO - OBTENER LA FASE - OBTENER EL AGRUPADOR (AGRId) - CARGAR SPINNER
 
     private final static String TAG = "configuracion";
-    private Realm realm;
     private datosConfiguracion datosConfiguracion;
 
     private EditText edtNombreDispositivo, edtWebService, edtURLExportacion;
@@ -56,10 +55,8 @@ public class configuracion extends Fragment implements helper {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        configurarRealm();
         eventosVista();
         cargarDatosVista();
-
     }
 
     private void eventosVista(){
@@ -72,6 +69,7 @@ public class configuracion extends Fragment implements helper {
     }
 
     private void cargarDatosVista(){
+        RealmController.with(getActivity());
         realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
         if (dispositivo != null){
             edtNombreDispositivo.setText(dispositivo.getDescripcion().toString());
@@ -80,21 +78,21 @@ public class configuracion extends Fragment implements helper {
         }
     }
 
-    private void guardarDatos(){
-        if (edtNombreDispositivo.length() > 0 && edtURLExportacion.length() > 0 && edtWebService.length() > 0){
+    private void guardarDatos() {
+        if (edtNombreDispositivo.length() > 0 && edtURLExportacion.length() > 0 && edtWebService.length() > 0) {
             realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
             boolean saberEstadoInsercion = false;
-            if(dispositivo == null){
-                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivo.getText().toString(),"1",1,edtWebService.getText().toString(),edtURLExportacion.getText().toString(),"1");
-            }else{
-                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivo.getText().toString(),"1",1,edtWebService.getText().toString(),edtURLExportacion.getText().toString(),"1");
+            if (dispositivo == null) {
+                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivo.getText().toString(), "1", 1, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "1");
+            } else {
+                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivo.getText().toString(), "1", 1, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "1");
             }
-            if (saberEstadoInsercion){
+            if (saberEstadoInsercion) {
                 crearDialog("Éxito", "Sus datos se guardaron correctamente");
-            }else{
-                crearDialog("Error", "Sus datos no se guardaron.");
+            } else {
+                crearDialog("Error", "Sus datos no se guardaron, intentelo de nuevo.");
             }
-         }else{
+        } else {
             Toast.makeText(getContext(), "Complete todos los campos para guardar", Toast.LENGTH_SHORT).show();
         }
     }
@@ -107,9 +105,4 @@ public class configuracion extends Fragment implements helper {
                 .show();
     }
 
-    @Override
-    public void configurarRealm() {
-        this.realm = RealmController.with(getActivity()).getRealm();
-        RealmController.with(getActivity()).refresh();
-    }
 }

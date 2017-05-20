@@ -11,7 +11,9 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import java.util.Date;
+import java.util.List;
 
+import arenzo.alejandroochoa.ccure.WebService.oChecada;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
@@ -72,7 +74,7 @@ public class RealmController {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Number currentIdNum = realm.where(realmDispositivo.class).maximumInt("DISId");
+                Number currentIdNum = realm.where(realmDispositivo.class).max("DISId");
                 if(currentIdNum == null) {
                     siguienteId = 1;
                 } else {
@@ -82,6 +84,8 @@ public class RealmController {
         });
         return siguienteId;
     }
+
+    //INSERCIONES
 
     public boolean insertarConfiguracion(final String descripcion, final String fase, final int AGRId, final String URLWebService, final String URLExportacion, final String MUsuarioId){
         saberEstadoConsulta = false;
@@ -104,6 +108,8 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
+    //ACTUALIZACIONES
+
     public boolean actualizarConfiguracion(final String descripcion, final String fase, final int AGRId, final String URLWebService, final String URLExportacion, final String MUsuarioId){
         saberEstadoConsulta = false;
         realm.executeTransaction(new Realm.Transaction() {
@@ -124,8 +130,29 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
+    public boolean actualizarChecadasEnviadas(){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<realmESPersonal> results = RealmController.getInstance().obtenerRegistros();
+                for (realmESPersonal persona : results){
+                    persona.setFase("E");
+                }
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
+    }
+
+    //SELECCIONAR
+
     public realmDispositivo obtenerDispositivo(){
         return realm.where(realmDispositivo.class).equalTo("DISId",1).findFirst();
+    }
+
+    public RealmResults<realmESPersonal> obtenerRegistros(){
+        return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -135,44 +162,24 @@ public class RealmController {
         return dateFormat.format(date);
     }
 
+    //ELIMINAR
 
-
-    /*
-    //clear all objects from Book.class
-    public void clearAll() {
-
-        realm.beginTransaction();
-        realm.clear(Book.class);
-        realm.commitTransaction();
+    public boolean borrarTablasSincronizacion(){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.clear(realmPuerta.class);
+                realm.clear(realmPersonal.class);
+                realm.clear(realmPersonalInfo.class);
+                realm.clear(realmPersonalPuerta.class);
+                realm.clear(realmESPersonal.class);
+                realm.clear(realmNotificacion.class);
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
     }
 
-    //find all objects in the Book.class
-    public RealmResults<Book> getBooks() {
-
-        return realm.where(Book.class).findAll();
-    }
-
-    //query a single item with the given id
-    public Book getBook(String id) {
-
-        return realm.where(Book.class).equalTo("id", id).findFirst();
-    }
-
-    //check if Book.class is empty
-    public boolean hasBooks() {
-
-        return !realm.allObjects(Book.class).isEmpty();
-    }
-
-    //query example
-    public RealmResults<Book> queryedBooks() {
-
-        return realm.where(Book.class)
-                .contains("author", "Author 0")
-                .or()
-                .contains("title", "Realm")
-                .findAll();
-
-    }*/
 
 }

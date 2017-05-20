@@ -38,6 +38,7 @@ public class helperRetrofit {
         helper = adapterRetrofit.create(retrofit.class);
     }
 
+
     public void ValidarEmpleado(String NoEmpleado, String NoTarjeta, String ClavePuerta){
         Call<String> validarCall = helper.getValidarEmpleado(parametrosValidarEmpleado(NoEmpleado,NoTarjeta,ClavePuerta));
         validarCall.enqueue(new Callback<String>() {
@@ -79,6 +80,7 @@ public class helperRetrofit {
                     return;
                 }
                 List<tarjetasPersonal> aTarjetasPersonal = response.body();
+
                 //TODO TERMINAR EL METODO, VER OBTENER TARJETA PERSONAL
             }
 
