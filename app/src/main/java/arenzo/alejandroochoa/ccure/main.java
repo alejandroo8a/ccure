@@ -99,12 +99,7 @@ public class main extends AppCompatActivity implements vista {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, CODIGO_ESCRITURA);
             }else{
                 //Ha denegado
-                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                intent.setData(Uri.parse("package:" + getPackageName()));
-                startActivity(intent);
+                alertaPermisos();
             }
         }
     }
@@ -114,14 +109,15 @@ public class main extends AppCompatActivity implements vista {
         if (requestCode == CODIGO_ESCRITURA){
             String permission = permissions[0];
             int result = grantResults[0];
-            if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                if(result == PackageManager.PERMISSION_GRANTED)
+            if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                if (result == PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         // Se comprueba que fue aceptado
                         return;
                     }
-            else
-                alertaPermisos();
+                }else
+                    alertaPermisos();
+            }
         }else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -129,15 +125,25 @@ public class main extends AppCompatActivity implements vista {
     private void alertaPermisos(){
         AlertDialog.Builder alerta = new AlertDialog.Builder(this)
                 .setTitle("Permiso denegado")
+                .setCancelable(false)
                 .setMessage("Debe de aceptar los permisos para usar la aplicación")
                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        comprobarPermisos();
+                        activarPermiso();
                     }
                 });
         alerta.show();
+    }
+
+    private void activarPermiso(){
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.setData(Uri.parse("package:" + getPackageName()));
+        startActivity(intent);
     }
 
     @Override

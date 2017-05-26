@@ -21,9 +21,7 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
-    <style name="TextViewCustomFont">
-        <item name="fontPath">fonts/RobotoCondensed-Regular.ttf</item>
-    </style>
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

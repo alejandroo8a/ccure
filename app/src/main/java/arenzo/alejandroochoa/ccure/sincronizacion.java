@@ -30,7 +30,13 @@ import java.util.List;
 
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmESPersonal;
+import arenzo.alejandroochoa.ccure.Realm.realmNotificacion;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonal;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
+import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
 import arenzo.alejandroochoa.ccure.WebService.conexion;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 
@@ -163,13 +169,17 @@ public class sincronizacion extends Fragment {
 
     private class segundoPlanoArchivo extends AsyncTask<String, Void, String> {
 
+        Realm realm;
+        boolean saberEstadoConsulta = false;
         @Override
         protected String doInBackground(String... urls) {
-            if (sincronizarArchivo())if (RealmController.getInstance().actualizarChecadasEnviadas()){
+            realm = Realm.getDefaultInstance();
+            if (sincronizarArchivo())
+                if (actualizarChecadasEnviadas()){
                     //Verifico que todos los datos se hayan actualizado a enviado
-                    RealmResults<realmESPersonal> results = RealmController.getInstance().obtenerRegistros();
+                    RealmResults<realmESPersonal> results = obtenerRegistros();
                     if (results.size() == 0)
-                        if (RealmController.getInstance().borrarTablasSincronizacion())
+                        if (borrarTablasSincronizacion())
                             return "true"; //TODO FALTA HACER CONSULTAS PARA LLENAR LA BD
                 }
             return "false";
@@ -183,13 +193,48 @@ public class sincronizacion extends Fragment {
                 resultadoDialog("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
         }
 
+        private boolean actualizarChecadasEnviadas(){
+            saberEstadoConsulta = false;
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmResults<realmESPersonal> results = obtenerRegistros();
+                    for (realmESPersonal persona : results){
+                        persona.setFase("E");
+                    }
+                    saberEstadoConsulta = true;
+                }
+            });
+            return saberEstadoConsulta;
+        }
+
+        private RealmResults<realmESPersonal> obtenerRegistros(){
+            return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
+        }
+
+        public boolean borrarTablasSincronizacion(){
+            saberEstadoConsulta = false;
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.clear(realmPuerta.class);
+                    realm.clear(realmPersonal.class);
+                    realm.clear(realmPersonalInfo.class);
+                    realm.clear(realmPersonalPuerta.class);
+                    realm.clear(realmESPersonal.class);
+                    realm.clear(realmNotificacion.class);
+                    saberEstadoConsulta = true;
+                }
+            });
+            return saberEstadoConsulta;
+        }
+
         private boolean sincronizarArchivo(){
-            /* TODO SE DEBE DE PENSAR COMO HACER LA INSTANCIA DE REALM
-            *  Realm re = Realm.getInstance(getContext());
-            RealmResults<realmESPersonal> results = re.where(realmESPersonal.class).equalTo("Fase","N").findAll();*/
-            RealmResults<realmESPersonal> results = RealmController.getInstance().obtenerRegistros();
+            // TODO SE DEBE DE PENSAR COMO HACER LA INSTANCIA DE REALM
+            RealmResults<realmESPersonal> results = obtenerRegistros();
             if (crearDirectorio()){
-                String contenido = crearContenidoArchivo(null);
+                String contenido = crearContenidoArchivo(results);
+                Log.i(TAG, "CONTENIDO"+ results);
                 try {
                     File file = new File(Environment.getExternalStorageDirectory()+"/CCURE", "respaldo.txt");
                     FileOutputStream outputStream = new FileOutputStream(file);
