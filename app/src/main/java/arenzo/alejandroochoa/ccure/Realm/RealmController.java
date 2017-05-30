@@ -74,7 +74,7 @@ public class RealmController {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Number currentIdNum = realm.where(realmDispositivo.class).max("DISId");
+                Number currentIdNum = realm.where(realmDispositivo.class).maximumInt("DISId");
                 if(currentIdNum == null) {
                     siguienteId = 1;
                 } else {

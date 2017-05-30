@@ -1,6 +1,9 @@
 package arenzo.alejandroochoa.ccure.WebService;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +12,7 @@ import java.util.Map;
 
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
+import arenzo.alejandroochoa.ccure.nucleo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,7 +43,7 @@ public class helperRetrofit {
     }
 
 
-    public void ValidarEmpleado(String NoEmpleado, String NoTarjeta, String ClavePuerta){
+    public void ValidarEmpleado(String NoEmpleado, String NoTarjeta, String ClavePuerta, final Context context){
         Call<String> validarCall = helper.getValidarEmpleado(parametrosValidarEmpleado(NoEmpleado,NoTarjeta,ClavePuerta));
         validarCall.enqueue(new Callback<String>() {
             @Override
@@ -49,10 +53,15 @@ public class helperRetrofit {
                 }
                 String resultado = response.body();
                 //TODO TRABAJAR LA RESPUESTA DEL WEB SERVICE, VER VALIDAREMPLEADO
-                if(resultado == "PERMITIDO")
-                    ;
+                //TODO GUARDAR EL RESULTADO Y MOSTRAR EL NUCLEO
+                if(resultado == "PERMITIDO"){
+                    Intent intent = new Intent(context, nucleo.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    //intent.putExtra()
+                    context.startActivity(intent);
+                }
                 else
-                    ;
+                    Toast.makeText(context, "No se encontró el usuario", Toast.LENGTH_SHORT).show();;
             }
 
             @Override

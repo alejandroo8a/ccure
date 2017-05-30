@@ -230,7 +230,6 @@ public class sincronizacion extends Fragment {
         }
 
         private boolean sincronizarArchivo(){
-            // TODO SE DEBE DE PENSAR COMO HACER LA INSTANCIA DE REALM
             RealmResults<realmESPersonal> results = obtenerRegistros();
             if (crearDirectorio()){
                 String contenido = crearContenidoArchivo(results);
@@ -270,6 +269,7 @@ public class sincronizacion extends Fragment {
 
         private String crearContenidoArchivo(RealmResults<realmESPersonal> resultsESPersonal){
             ArrayList<realmESPersonal> aPer = new ArrayList<>();
+            //TODO Esto es de prueba en realidad el parametro es lo que se guardará
             for ( int i = 0 ; i < 5000 ; i++){
                 realmESPersonal personal = new realmESPersonal();
                 personal.setNoEmpleado(String.valueOf(i));

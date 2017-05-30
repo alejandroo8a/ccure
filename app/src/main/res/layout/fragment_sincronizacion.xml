@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     tools:context="arenzo.alejandroochoa.ccure.sincronizacion">
 
-    <!-- TODO: Update blank fragment layout -->
-
 
     <TextView
         android:id="@+id/textView"

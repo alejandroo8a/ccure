@@ -7,8 +7,6 @@
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <TextView
         android:id="@+id/txtCaseta"
         android:layout_width="wrap_content"
@@ -16,7 +14,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:fontFamily="@font/roboto_bold"
         android:text="CASETA ENTRADA A MINA 1090"
         android:textColor="@android:color/black"
         android:textSize="24sp"
@@ -24,37 +21,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ToggleButton
-        android:id="@+id/tbTipoChecada"
-        android:layout_width="0dp"
+    <com.kyleduo.switchbutton.SwitchButton
+        android:id="@+id/sbTipoChecada"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/primary_dark"
-        android:fontFamily="@font/roboto_medium"
+        android:layout_marginTop="16dp"
         android:textColor="@color/icons"
-        android:textOff="Salida"
-        android:textOn="Entrada"
+        app:kswTextOn= "Entrada"
+        app:kswTextOff= "Salida "
+        app:kswThumbMargin="@dimen/ksw_md_thumb_shadow_inset_top"
+        app:kswThumbHeight="50dp"
+        app:kswThumbWidth="50dp"
+        android:textSize="35dp"
+        app:kswThumbColor="@color/icons"
+        style="@style/AppTheme"
+        app:kswAnimationDuration="300"
+        app:kswBackColor="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCaseta" />
+        app:layout_constraintTop_toBottomOf="@+id/txtCaseta"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/txtNoEmpleado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_medium"
         android:text="No. Empleado"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/tbTipoChecada"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/sbTipoChecada"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="8dp" />
+        android:layout_marginStart="8dp"
+        tools:layout_editor_absoluteX="149dp" />
 
     <EditText
         android:id="@+id/edtNoEmpleado"
@@ -65,7 +72,6 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/borde"
         android:ems="10"
-        android:fontFamily="@font/roboto_medium"
         android:gravity="center_horizontal"
         android:inputType="textPersonName"
         android:textColor="@android:color/black"
@@ -103,7 +109,6 @@
         android:id="@+id/txtNombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_medium"
         android:text="Dario Anastacio Verón"
         android:textColor="@android:color/black"
         android:textSize="18sp"
@@ -120,7 +125,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/roboto_medium"
         android:text="Guardia/Peña Colorada"
         android:textColor="@android:color/black"
         android:textSize="18sp"
@@ -144,7 +148,6 @@
         android:id="@+id/txtResultadoChecada"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_medium"
         android:text="Acceso correcto"
         android:textColor="@android:color/white"
         android:textSize="24sp"
@@ -155,5 +158,20 @@
         android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="8dp" />
+
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/imgIndicadorOnline"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:background="@drawable/cuadro_verde"
+        android:elevation="1dp"
+        app:civ_border_width="9dp"
+        app:civ_shadow="true"
+        app:civ_shadow_radius="10"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

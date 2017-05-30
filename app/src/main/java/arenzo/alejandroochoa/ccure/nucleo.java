@@ -1,6 +1,8 @@
 package arenzo.alejandroochoa.ccure;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +29,13 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class nucleo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-
+//TODO COMPROBAR QUE FUNCIONE EL FILTRO DE TIPO DE USUARIO
     private final static String TAG = "nucleo";
     TextView txtNombreNavigation, txtNumeroEmpleadoNavigation,txtPuertaNavigation;
     CircularImageView imageProfesor;
+    NavigationView nav_view;
+
+    String tipoUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +43,18 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         setContentView(R.layout.activity_nucleo);
         cargarElementos();
         centrarTituloActionBar();
+        habilitarItemsNavigation();
     }
 
     private void cargarElementos(){
         Toolbar toolbar = añadirToolbar();
         añadirGestoNavigationDrawer(toolbar);
-        View headerLayout = muestraChecadas();
+        View headerLayout = crearVista();
         txtNombreNavigation = (TextView) headerLayout.findViewById(R.id.txtNombreNavigation);
         txtNumeroEmpleadoNavigation = (TextView) headerLayout.findViewById(R.id.txtNumeroEmpleadoNavigation);
         txtPuertaNavigation = (TextView) headerLayout.findViewById(R.id.txtPuertaNavigation);
         imageProfesor = (CircularImageView) headerLayout.findViewById(R.id.perfil);
-
+        nav_view = (NavigationView)headerLayout.findViewById(R.id.nav_view);
     }
 
     private Toolbar añadirToolbar(){
@@ -64,20 +71,62 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         toggle.syncState();
     }
 
-    private View muestraChecadas(){
+    private View crearVista(){
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.main_content, new checadas());
-        tx.commit();
+        this.tipoUsuario = obtenerTipoUsuario();
+        mostrarPantallaCorrecta(tx, this.tipoUsuario);
         navigationView.setNavigationItemSelectedListener(this);
         return headerLayout;
+    }
+
+    private void habilitarItemsNavigation(){
+        Menu menuNav = nav_view.getMenu();
+        MenuItem item = null;
+        switch (this.tipoUsuario){
+            case "G":
+                item = menuNav.findItem(R.id.configuración);
+                item.setEnabled(false);
+                return;
+            case "C":
+                item = menuNav.findItem(R.id.checadas);
+                item.setEnabled(false);
+                item = menuNav.findItem(R.id.sincronizar);
+                item.setEnabled(false);
+                return;
+            case "A":
+                item = menuNav.findItem(R.id.checadas);
+                item.setEnabled(false);
+                item = menuNav.findItem(R.id.sincronizar);
+                item.setEnabled(false);
+                return;
+        }
+    }
+
+    private String obtenerTipoUsuario(){
+        return (getIntent().getExtras().getString("TIPO",""));
+    }
+
+    private void mostrarPantallaCorrecta(FragmentTransaction tx ,String tipoUsuario){
+        switch (tipoUsuario){
+            case "G":
+                tx.replace(R.id.main_content, new checadas());
+                return;
+            case "C":
+                tx.replace(R.id.main_content, new configuracion());
+                return;
+            case "A":
+                tx.replace(R.id.main_content, new configuracion());
+                return;
+        }
+        tx.commit();
     }
 
     //SE USA PARA CAPTURAR EL BOTON DE RETROSESO
     @Override
     public void onBackPressed() {
-        //AlertDialog
+        alertCerrarSesion();
     }
 
     private void centrarTituloActionBar() {
@@ -133,6 +182,20 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         return true;
     }
 
-
-
+    private void alertCerrarSesion(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext())
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Está seguro de cerrar sesión?")
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(getApplicationContext(), main.class);
+                        getApplicationContext().startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancelar",null);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 }
