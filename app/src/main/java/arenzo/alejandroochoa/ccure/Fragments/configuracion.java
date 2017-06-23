@@ -43,10 +43,10 @@ public class configuracion extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_configuracion, container, false);
-        edtNombreDispositivo = (EditText)view.findViewById(R.id.edtNombreDispositivo);
-        edtWebService = (EditText)view.findViewById(R.id.edtWebService);
-        edtURLExportacion = (EditText)view.findViewById(R.id.edtURLExportacion);
-        spPuertas = (Spinner)view.findViewById(R.id.spPuertas);
+        edtNombreDispositivo = (EditText)view.findViewById(R.id.edtNombreDispositivoUnico);
+        edtWebService = (EditText)view.findViewById(R.id.edtWebServiceUnico);
+        edtURLExportacion = (EditText)view.findViewById(R.id.edtURLExportacionUnico);
+        spPuertas = (Spinner)view.findViewById(R.id.spPuertasUnico);
         btnGuardarConfiguracion = (Button)view.findViewById(R.id.btnGuardarConfiguracion);
         return view;
     }

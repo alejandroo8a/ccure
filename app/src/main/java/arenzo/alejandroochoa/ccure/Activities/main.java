@@ -3,6 +3,7 @@ package arenzo.alejandroochoa.ccure.Activities;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import arenzo.alejandroochoa.ccure.Fragments.configuracion;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Helpers.vista;
 
@@ -29,9 +32,9 @@ public class main extends AppCompatActivity implements vista {
     //TODO HACER LOGIN
     final static int CODIGO_ESCRITURA = 100;
     private final static String TAG = "main";
+    private SharedPreferences PREF_MAIN;
 
     private Button btnOlvideTarjetaLogin;
-    private TextView txtFechaLogin;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -39,6 +42,8 @@ public class main extends AppCompatActivity implements vista {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        PREF_MAIN = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
+        comprobarConfiguracion();
         cargarElementos();
         centrarTituloActionBar();
         eventosVista();
@@ -52,7 +57,6 @@ public class main extends AppCompatActivity implements vista {
     }
 
     private void cargarElementos(){
-        txtFechaLogin = (TextView)findViewById(R.id.txtFechaLogin);
         btnOlvideTarjetaLogin = (Button)findViewById(R.id.btnOlvideTarjetaLogin);
     }
 
@@ -162,6 +166,18 @@ public class main extends AppCompatActivity implements vista {
     private boolean checkPermission(String permission){
         int result = this.checkCallingOrSelfPermission(permission);
         return result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void comprobarConfiguracion(){
+        if (!PREF_MAIN.getBoolean("CONFIGURADO", false)){
+            mostrarConfiguracion();
+        }
+    }
+
+    private void mostrarConfiguracion(){
+        Intent intent = new Intent(this, configuracionUnica.class);
+        startActivity(intent);
+        finish();
     }
 
 }

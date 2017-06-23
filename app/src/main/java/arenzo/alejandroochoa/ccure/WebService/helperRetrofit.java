@@ -62,10 +62,6 @@ public class helperRetrofit {
                 anillo.dismiss();
                 if(resultado.equals("PERMITIDO")){
                     new checadas().mostrarAlertaEmpleado(context, txtResultadoChecada, imgFondoAcceso);
-                    /*Intent intent = new Intent(context, nucleo.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    //intent.putExtra()
-                    context.startActivity(intent);*/
                 }
                 else {
                     txtResultadoChecada.setText("Acceso Denegado");
