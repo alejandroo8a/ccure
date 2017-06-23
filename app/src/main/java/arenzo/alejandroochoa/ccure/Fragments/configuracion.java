@@ -1,11 +1,10 @@
-package arenzo.alejandroochoa.ccure;
+package arenzo.alejandroochoa.ccure.Fragments;
 
 
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmDispositivo;
-import io.realm.Realm;
 
 public class configuracion extends Fragment {
 
     //TODO FALTA OBTENER ID DEL USUARIO - OBTENER LA FASE - OBTENER EL AGRUPADOR (AGRId) - CARGAR SPINNER
 
     private final static String TAG = "configuracion";
-    private datosConfiguracion datosConfiguracion;
+    private arenzo.alejandroochoa.ccure.Helpers.datosConfiguracion datosConfiguracion;
 
     private EditText edtNombreDispositivo, edtWebService, edtURLExportacion;
     private Spinner spPuertas;

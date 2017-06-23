@@ -1,4 +1,4 @@
-package arenzo.alejandroochoa.ccure;
+package arenzo.alejandroochoa.ccure.Fragments;
 
 
 import android.app.ProgressDialog;
@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmESPersonal;
 import arenzo.alejandroochoa.ccure.Realm.realmNotificacion;
@@ -50,7 +51,6 @@ public class sincronizacion extends Fragment {
     ProgressDialog anillo = null;
 
     public sincronizacion() {
-        // Required empty public constructor
     }
 
 
@@ -63,11 +63,10 @@ public class sincronizacion extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sincronizacion, container, false);
-        rdRed = (RadioButton)view.findViewById(R.id.rdRed);
-        rdArchivo = (RadioButton)view.findViewById(R.id.rdArchivo);
-        btnSincronizar = (Button)view.findViewById(R.id.btnSincronizar);
+        rdRed = view.findViewById(R.id.rdRed);
+        rdArchivo = view.findViewById(R.id.rdArchivo);
+        btnSincronizar = view.findViewById(R.id.btnSincronizar);
         return view;
     }
 
@@ -88,25 +87,26 @@ public class sincronizacion extends Fragment {
 
     private void sincronizar(){
         int tipo = tipoSincronizacion();
-        if (tipo != 0){
+        if (tipo != 0) {
             conexion conexion = new conexion();
             //Verificar conexion
             mostrarCargandoAnillo();
-            if (conexion.isAvaliable(getContext())){
-                if (conexion.isOnline()){
-                    //Archivo
-                    if (tipo == 1){
-                        RealmController.with(getActivity());
-                        segundoPlanoArchivo sincronizar =  new segundoPlanoArchivo();
-                        sincronizar.execute(new String[]{});
-                    }else{
+            if (tipo == 1) {
+                //Archivo
+                RealmController.with(getActivity());
+                segundoPlanoArchivo sincronizar = new segundoPlanoArchivo();
+                sincronizar.execute(new String[]{});
+            } else {
+                if (conexion.isAvaliable(getContext())) {
+                    if (conexion.isOnline()) {
                         //Red
                         sincronizarRed();
-                    }
-                }else
-                    avisoNoConexion();
-            }else
-                avisoNoRed();
+                        ocultarCargandoAnillo();
+                    } else
+                        avisoNoConexion();
+                } else
+                    avisoNoRed();
+            }
         }else{
             Toast.makeText(getContext(), "Seleccione un método de sincronización  ", Toast.LENGTH_SHORT).show();
         }
@@ -164,8 +164,6 @@ public class sincronizacion extends Fragment {
     private void ocultarCargandoAnillo(){
         this.anillo.dismiss();
     }
-
-
 
     private class segundoPlanoArchivo extends AsyncTask<String, Void, String> {
 
@@ -274,14 +272,13 @@ public class sincronizacion extends Fragment {
                 realmESPersonal personal = new realmESPersonal();
                 personal.setNoEmpleado(String.valueOf(i));
                 personal.setNoTarjeta("123BD");
-                personal.setPUEId(1);
+                personal.setPUEId("1");
                 personal.setFechaHoraEntrada("2017/05/16 23:12:23");
                 aPer.add(personal);
             }
             String archivo = "";
             for (realmESPersonal persona : aPer){
                 archivo += "NoEmpleado | " + persona.getNoEmpleado()  + " | NoTarjeta | " + persona.getNoTarjeta() + " | PUEClave | " + persona.getPUEId() + " | FechaHoraEntrada |" + persona.getFechaHoraEntrada() +" | ";
-
             }
             return archivo;
         }

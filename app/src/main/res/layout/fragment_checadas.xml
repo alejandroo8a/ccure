@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="arenzo.alejandroochoa.ccure.checadas"
+    tools:context="arenzo.alejandroochoa.ccure.Fragments.checadas"
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
@@ -73,7 +73,9 @@
         android:background="@drawable/borde"
         android:ems="10"
         android:gravity="center_horizontal"
-        android:inputType="textPersonName"
+        android:inputType="number"
+        android:maxLength="5"
+        android:singleLine="true"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

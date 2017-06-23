@@ -1,5 +1,7 @@
 package arenzo.alejandroochoa.ccure.Realm;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 

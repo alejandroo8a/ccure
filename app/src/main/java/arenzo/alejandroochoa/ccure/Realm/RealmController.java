@@ -86,7 +86,6 @@ public class RealmController {
     }
 
     //INSERCIONES
-
     public boolean insertarConfiguracion(final String descripcion, final String fase, final int AGRId, final String URLWebService, final String URLExportacion, final String MUsuarioId){
         saberEstadoConsulta = false;
         realm.executeTransaction(new Realm.Transaction() {
@@ -102,6 +101,27 @@ public class RealmController {
                 dispositivo.setURLExportacion(URLExportacion);
                 dispositivo.setMFechaHora(obtenerFecha());
                 dispositivo.setMUsuarioId(MUsuarioId);
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
+    }
+
+    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEId, final String FechaHoraEntrada, final String FaseIngreso, final String Fase, final String Observaciones, final String MFechaHora, final String MUsuarioId){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realmESPersonal personal = realm.createObject(realmESPersonal.class);
+                personal.setNoEmpleado(NoEmpleado);
+                personal.setNoTarjeta(NoTarjeta);
+                personal.setPUEId(PUEId);
+                personal.setFechaHoraEntrada(FechaHoraEntrada);
+                personal.setFaseIngreso(FaseIngreso);
+                personal.setFase(Fase);
+                personal.setObservaciones(Observaciones);
+                personal.setMFechaHora(MFechaHora);
+                personal.setMUsuarioId(MUsuarioId);
                 saberEstadoConsulta = true;
             }
         });
@@ -160,6 +180,14 @@ public class RealmController {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         return dateFormat.format(date);
+    }
+
+    public realmPersonalPuerta obtenerPersonalManual(String numeroEmpleado){
+        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).findFirst();
+    }
+
+    public realmPersonalInfo obtenerInformacionPersonal(String numeroEmpleado){
+        return realm.where(realmPersonalInfo.class).equalTo("NoEmpleado", numeroEmpleado).findFirst();
     }
 
     //ELIMINAR

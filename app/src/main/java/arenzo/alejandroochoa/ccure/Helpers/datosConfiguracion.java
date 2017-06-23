@@ -1,4 +1,4 @@
-package arenzo.alejandroochoa.ccure;
+package arenzo.alejandroochoa.ccure.Helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;

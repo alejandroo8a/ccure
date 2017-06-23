@@ -11,6 +11,16 @@ public class oChecada {
     private String PUEClave;
     private String FechaHoraEntrada;
 
+    public oChecada() {
+    }
+
+    public oChecada(String noEmpleado, String noTarjeta, String PUEClave, String fechaHoraEntrada) {
+        NoEmpleado = noEmpleado;
+        NoTarjeta = noTarjeta;
+        this.PUEClave = PUEClave;
+        FechaHoraEntrada = fechaHoraEntrada;
+    }
+
     public String getNoEmpleado() {
         return NoEmpleado;
     }

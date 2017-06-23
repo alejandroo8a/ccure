@@ -1,18 +1,17 @@
 package arenzo.alejandroochoa.ccure.WebService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
 /**
@@ -21,31 +20,29 @@ import retrofit2.http.QueryMap;
 
 public interface retrofit{
 
-    public static final String URLVALIDAREMPLEADO="http://localhost:3000";
-    public static final String URLTARJETASPERSONAL="http://localhost:3000";
-    public static final String URLPERSONALPUERTA="http://localhost:3000";
-    public static final String URLINFOPERSONAL="http://localhost:3000";
-    public static final String URLACTUALIZARPUERTAS="http://localhost:3000";
-    public static final String URLACTUALIZARCHECADAS="http://localhost:3000";
+    public static final String URL="http://192.168.1.10/CCUREMOVIL/ServiceMethods.svc/";
 
-    @FormUrlEncoded
-    @GET("ValidarEmpleado")
-    Call<String> getValidarEmpleado(@QueryMap Map<String, String> parametros);
+    @GET("ValidarEmpleadoJSON/{noEmpleado}/{noTarjeta}/{clavePuerta}")
+    Call<String> getValidarEmpleado(@Path("noEmpleado") String noEmpleado,
+                                    @Path("noTarjeta") String noTarjeta,
+                                    @Path("clavePuerta") String clavePuerta );
 
     @GET("ObtenerTarjetasPersonal")
     Call<List<tarjetasPersonal>> getTarjetasPersonal(@QueryMap Map<String, String> parametros);
 
-    @GET("ObtenerPersonalPuerta")
-    Call<List<realmPersonalPuerta>> getPersonalPuerta();
+    @GET("ObtenerPersonalPuertaJSON")
+    Call<List<personalPuerta>> getPersonalPuerta();
 
-    @GET("ObtenerInfoPersonal")
-    Call<List<realmPersonalInfo>> getPersonalInfo();
+    @GET("ObtenerInfoPersonalJSON")
+    @Headers("Content-Type: application/json")
+    Call<List<personalInfo>> getPersonalInfo();
 
     @GET("ActualizarPuertas")
     Call<List<puertas>> getActualizarPuertas();
 
-    @POST("ActualizarChecadas")
-    Call<List<String>> getActualizarChecadas(@Body List<oChecada> aChecadas);
+    @FormUrlEncoded
+    @POST("ActualizarChecadasArrayJSON/{checadas}")
+    Call<List<String>> getActualizarChecadas(@Field("checadas") List<oChecada> aChecadas);
 
 
 /*con parametros

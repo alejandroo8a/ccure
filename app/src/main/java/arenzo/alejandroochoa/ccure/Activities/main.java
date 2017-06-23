@@ -1,4 +1,4 @@
-package arenzo.alejandroochoa.ccure;
+package arenzo.alejandroochoa.ccure.Activities;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +20,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import arenzo.alejandroochoa.ccure.R;
+import arenzo.alejandroochoa.ccure.Helpers.vista;
 
 public class main extends AppCompatActivity implements vista {
 

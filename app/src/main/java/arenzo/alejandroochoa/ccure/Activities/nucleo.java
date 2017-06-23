@@ -1,9 +1,8 @@
-package arenzo.alejandroochoa.ccure;
+package arenzo.alejandroochoa.ccure.Activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,10 +22,12 @@ import android.widget.TextView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+
+import arenzo.alejandroochoa.ccure.Fragments.checadas;
+import arenzo.alejandroochoa.ccure.Fragments.configuracion;
+import arenzo.alejandroochoa.ccure.R;
+import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
 
 public class nucleo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 //TODO COMPROBAR QUE FUNCIONE EL FILTRO DE TIPO DE USUARIO
@@ -50,11 +51,11 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         Toolbar toolbar = añadirToolbar();
         añadirGestoNavigationDrawer(toolbar);
         View headerLayout = crearVista();
-        txtNombreNavigation = (TextView) headerLayout.findViewById(R.id.txtNombreNavigation);
-        txtNumeroEmpleadoNavigation = (TextView) headerLayout.findViewById(R.id.txtNumeroEmpleadoNavigation);
-        txtPuertaNavigation = (TextView) headerLayout.findViewById(R.id.txtPuertaNavigation);
-        imageProfesor = (CircularImageView) headerLayout.findViewById(R.id.perfil);
-        nav_view = (NavigationView)headerLayout.findViewById(R.id.nav_view);
+        txtNombreNavigation = headerLayout.findViewById(R.id.txtNombreNavigation);
+        txtNumeroEmpleadoNavigation = headerLayout.findViewById(R.id.txtNumeroEmpleadoNavigation);
+        txtPuertaNavigation = headerLayout.findViewById(R.id.txtPuertaNavigation);
+        imageProfesor =  headerLayout.findViewById(R.id.perfil);
+        nav_view = (NavigationView)findViewById(R.id.nav_view);
     }
 
     private Toolbar añadirToolbar(){
@@ -77,6 +78,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         this.tipoUsuario = obtenerTipoUsuario();
         mostrarPantallaCorrecta(tx, this.tipoUsuario);
+        tx.commit();
         navigationView.setNavigationItemSelectedListener(this);
         return headerLayout;
     }
@@ -105,7 +107,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
     }
 
     private String obtenerTipoUsuario(){
-        return (getIntent().getExtras().getString("TIPO",""));
+        return (getIntent().getExtras().getString("TIPO"));
     }
 
     private void mostrarPantallaCorrecta(FragmentTransaction tx ,String tipoUsuario){
@@ -120,7 +122,6 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
                 tx.replace(R.id.main_content, new configuracion());
                 return;
         }
-        tx.commit();
     }
 
     //SE USA PARA CAPTURAR EL BOTON DE RETROSESO
@@ -175,7 +176,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.main_content, fragment).commit();
         }else{
-            finish();
+            alertCerrarSesion();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -183,7 +184,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
     }
 
     private void alertCerrarSesion(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext())
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle("Cerrar sesión")
                 .setMessage("¿Está seguro de cerrar sesión?")
                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
