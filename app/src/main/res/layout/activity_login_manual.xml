@@ -44,7 +44,7 @@
         android:ems="10"
         android:hint="2389"
         android:inputType="number"
-        android:maxLength="4"
+        android:maxLength="5"
         android:singleLine="true"
         android:textSize="18dp"
         app:layout_constraintLeft_toLeftOf="parent"

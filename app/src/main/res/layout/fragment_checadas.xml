@@ -144,7 +144,8 @@
         android:src="@drawable/ic_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPuestoEmpresa" />
+        app:layout_constraintTop_toBottomOf="@+id/txtPuestoEmpresa"
+        tools:layout_editor_absoluteX="105dp" />
 
     <TextView
         android:id="@+id/txtResultadoChecada"

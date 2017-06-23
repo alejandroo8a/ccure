@@ -27,8 +27,8 @@ public interface retrofit{
                                     @Path("noTarjeta") String noTarjeta,
                                     @Path("clavePuerta") String clavePuerta );
 
-    @GET("ObtenerTarjetasPersonal")
-    Call<List<tarjetasPersonal>> getTarjetasPersonal(@QueryMap Map<String, String> parametros);
+    @GET("ObtenerTarjetasPersonalJSON/{Tipo}")
+    Call<List<tarjetasPersonal>> getTarjetasPersonal(@Path("Tipo") String tipo);
 
     @GET("ObtenerPersonalPuertaJSON")
     Call<List<personalPuerta>> getPersonalPuerta();
@@ -37,7 +37,7 @@ public interface retrofit{
     @Headers("Content-Type: application/json")
     Call<List<personalInfo>> getPersonalInfo();
 
-    @GET("ActualizarPuertas")
+    @GET("ActualizarPuertasJSON")
     Call<List<puertas>> getActualizarPuertas();
 
     @FormUrlEncoded

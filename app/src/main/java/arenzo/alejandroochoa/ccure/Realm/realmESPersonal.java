@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class realmESPersonal extends RealmObject {
 
-    @PrimaryKey
+
     private String NoEmpleado;
     private String NoTarjeta;
     private String PUEId;

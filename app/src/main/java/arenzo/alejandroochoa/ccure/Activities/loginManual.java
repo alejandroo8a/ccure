@@ -1,6 +1,7 @@
 package arenzo.alejandroochoa.ccure.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -32,11 +33,13 @@ public class loginManual extends AppCompatActivity implements vista {
     private TextView txtFechaLoginManual;
     private EditText edtNumeroEmpleado;
     private Button btnLoginManual;
+    private SharedPreferences PREF_LOGIN_MANUAL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_manual);
+        PREF_LOGIN_MANUAL = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
         centrarTituloActionBar();
         cargarElementos();
         eventosVista();
@@ -109,22 +112,26 @@ public class loginManual extends AppCompatActivity implements vista {
         RealmController.with(this);
         realmPersonalInfo personal = RealmController.getInstance().obtenerInformacionPersonal(edtNumeroEmpleado.getText().toString());
         if (personal != null){
-            if (personal.getFase() != "I"){
-                mostrarNucleo(personal);
-            }else{
-                Toast.makeText(this, "El usuario no tiene permitido ingresar a la aplicación, favor de contactar al administrador.", Toast.LENGTH_SHORT).show();
-            }
+            mostrarNucleo(personal);
         }else{
-            Toast.makeText(this, "El usuario no tiene permitido ingresar a la aplicación, favor de contactar al administrador.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El usuario no tiene permitido ingresar a la aplicación, favor de contactar al administrador.", Toast.LENGTH_LONG).show();
         }
     }
     //TODO OBTENER LA PUERTA CON SUS DATOS QUITAR COMPARACION DE FASE
     private void mostrarNucleo(realmPersonalInfo personal){
+        guardarDatosPreferencias(personal);
         Intent intent = new Intent(this, nucleo.class);
         intent.putExtra("TIPO", personal.getPuesto());
-        intent.putExtra("NOMBRE", personal.getNombre());
-        intent.putExtra("NUMERO_EMPLEADO", personal.getNoEmpleado());
-        intent.putExtra("FOTO", personal.getFoto());
         startActivity(intent);
+    }
+
+    private void guardarDatosPreferencias(realmPersonalInfo personal){
+        SharedPreferences.Editor editor = PREF_LOGIN_MANUAL.edit();
+        editor.putString("TIPO", personal.getPuesto());
+        editor.putString("NOMBRE", personal.getNombre());
+        editor.putString("NUMERO_EMPLEADO", personal.getNoEmpleado());
+        editor.putString("FOTO", personal.getFoto());
+        editor.commit();
+
     }
 }

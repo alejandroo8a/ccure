@@ -11,10 +11,10 @@ import io.realm.annotations.PrimaryKey;
 
 public class realmPersonalPuerta extends RealmObject {
 
-    @PrimaryKey
+
     private String NoEmpleado;
     private String NoTarjeta;
-    private int PUEId;
+    private String PUEId;
 
     private String Fase;
     private String MFechaHora;
@@ -36,11 +36,11 @@ public class realmPersonalPuerta extends RealmObject {
         NoTarjeta = noTarjeta;
     }
 
-    public int getPUEId() {
+    public String getPUEId() {
         return PUEId;
     }
 
-    public void setPUEId(int PUEId) {
+    public void setPUEId(String PUEId) {
         this.PUEId = PUEId;
     }
 

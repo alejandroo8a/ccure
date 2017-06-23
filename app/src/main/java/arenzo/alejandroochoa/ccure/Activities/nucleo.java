@@ -3,6 +3,9 @@ package arenzo.alejandroochoa.ccure.Activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -28,15 +33,17 @@ import arenzo.alejandroochoa.ccure.Fragments.checadas;
 import arenzo.alejandroochoa.ccure.Fragments.configuracion;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
+import retrofit2.Retrofit;
 
 public class nucleo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 //TODO COMPROBAR QUE FUNCIONE EL FILTRO DE TIPO DE USUARIO
     private final static String TAG = "nucleo";
     TextView txtNombreNavigation, txtNumeroEmpleadoNavigation,txtPuertaNavigation;
-    CircularImageView imageProfesor;
+    CircularImageView imgEmpleado;
     NavigationView nav_view;
 
     String tipoUsuario;
+    private SharedPreferences PREF_NUCLEO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,8 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         cargarElementos();
         centrarTituloActionBar();
         habilitarItemsNavigation();
+        PREF_NUCLEO = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
+        configurarInformacionNavigationDrawer();
     }
 
     private void cargarElementos(){
@@ -54,7 +63,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         txtNombreNavigation = headerLayout.findViewById(R.id.txtNombreNavigation);
         txtNumeroEmpleadoNavigation = headerLayout.findViewById(R.id.txtNumeroEmpleadoNavigation);
         txtPuertaNavigation = headerLayout.findViewById(R.id.txtPuertaNavigation);
-        imageProfesor =  headerLayout.findViewById(R.id.perfil);
+        imgEmpleado =  headerLayout.findViewById(R.id.perfil);
         nav_view = (NavigationView)findViewById(R.id.nav_view);
     }
 
@@ -198,5 +207,24 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
                 .setNegativeButton("Cancelar",null);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void configurarInformacionNavigationDrawer(){
+        txtNombreNavigation.setText(PREF_NUCLEO.getString("NOMBRE","Sin nombre"));
+        txtNumeroEmpleadoNavigation.setText(PREF_NUCLEO.getString("NUMERO_EMPLEADO","Sin número"));
+        if (PREF_NUCLEO.getString("FOTO","NO").equals("NO"))
+            decodificarBase64(PREF_NUCLEO.getString("FOTO","NO"));
+        else
+            ponerImagenDefault();
+    }
+
+    private void decodificarBase64(String imagen){
+        byte[] decodificado = Base64.decode(imagen,Base64.DEFAULT);
+        Bitmap decodificadoMap = BitmapFactory.decodeByteArray(decodificado, 0, decodificado.length);
+        imgEmpleado.setImageBitmap(decodificadoMap);
+    }
+
+    private void ponerImagenDefault(){
+        Picasso.with(this).load(R.drawable.ic_card).into(imgEmpleado);
     }
 }

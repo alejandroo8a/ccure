@@ -13,9 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import arenzo.alejandroochoa.ccure.Activities.main;
 import arenzo.alejandroochoa.ccure.Activities.nucleo;
 import arenzo.alejandroochoa.ccure.Fragments.checadas;
 import arenzo.alejandroochoa.ccure.R;
+import arenzo.alejandroochoa.ccure.Realm.RealmController;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,7 +51,7 @@ public class helperRetrofit {
     }
 
 
-    public void ValidarEmpleado(String NoEmpleado, String NoTarjeta, String ClavePuerta, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada){
+    public void ValidarEmpleado(final String NoEmpleado, String NoTarjeta, String ClavePuerta, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final realmPersonalPuerta personal){
         Call<String> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, ClavePuerta);
         Log.d(TAG, "HICE LA PETISION ");
         validarCall.enqueue(new Callback<String>() {
@@ -56,12 +61,14 @@ public class helperRetrofit {
                     return;
                 }
                 String resultado = response.body();
-                //TODO TRABAJAR LA RESPUESTA DEL WEB SERVICE, VER VALIDAREMPLEADO
-                //TODO GUARDAR EL RESULTADO Y MOSTRAR EL NUCLEO
                 Log.d(TAG, "onResponse: "+resultado);
                 anillo.dismiss();
                 if(resultado.equals("PERMITIDO")){
-                    new checadas().mostrarAlertaEmpleado(context, txtResultadoChecada, imgFondoAcceso);
+                    realmPersonalInfo detallesPersonal = new realmPersonalInfo();
+                    detallesPersonal.setNoEmpleado(NoEmpleado);
+                    detallesPersonal.setNombre("Sin nombre");
+                    detallesPersonal.setFoto("NO");
+                    new checadas().mostrarAlertaEmpleado(context, txtResultadoChecada, imgFondoAcceso, detallesPersonal, personal);
                 }
                 else {
                     txtResultadoChecada.setText("Acceso Denegado");
@@ -86,8 +93,8 @@ public class helperRetrofit {
         return parametros;
     }
 
-    public void ObtenerTarjetasPersonal(String tipo){
-        Call<List<tarjetasPersonal>> tarjetasCall = helper.getTarjetasPersonal(parametrosTarjetasPersonal(tipo));
+    public void ObtenerTarjetasPersonal(String tipo, final Context context, final ProgressDialog anillo){
+        Call<List<tarjetasPersonal>> tarjetasCall = helper.getTarjetasPersonal(tipo);
         tarjetasCall.enqueue(new Callback<List<tarjetasPersonal>>() {
             @Override
             public void onResponse(Call<List<tarjetasPersonal>> call, Response<List<tarjetasPersonal>> response) {
@@ -95,13 +102,17 @@ public class helperRetrofit {
                     return;
                 }
                 List<tarjetasPersonal> aTarjetasPersonal = response.body();
-
-                //TODO TERMINAR EL METODO, VER OBTENER TARJETA PERSONAL
+                Log.d(TAG, "OBTUVE OBTENER TARJETAS PERSONAL "+aTarjetasPersonal.size());
+                Realm.getInstance(context);
+                if (RealmController.getInstance().insertarTarjetasPersonal(aTarjetasPersonal)){
+                    obtenerPersonalPuerta(context, anillo);
+                }
             }
 
             @Override
             public void onFailure(Call<List<tarjetasPersonal>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                anillo.dismiss();
             }
         });
 
@@ -113,7 +124,7 @@ public class helperRetrofit {
         return parametros;
     }
 
-    public void obtenerPersonalPuerta(){
+    public void obtenerPersonalPuerta(final Context context, final ProgressDialog anillo){
         Call<List<personalPuerta>> personalCall = helper.getPersonalPuerta();
         personalCall.enqueue(new Callback<List<personalPuerta>>() {
             @Override
@@ -122,18 +133,22 @@ public class helperRetrofit {
                     return;
                 }
                 List<personalPuerta> aPersonalPuerta = response.body();
-                Log.d(TAG, "EL tamaño personal puerta es: "+ aPersonalPuerta.size());
-                //TODO TERMINAR EL METODO, VER OBTENER PERSONAL PUERTA
+                Log.d(TAG, "OBTUVE PERSONAL PUUERTA "+ aPersonalPuerta.size());
+                Realm.getInstance(context);
+                if (RealmController.getInstance().insertarPersonalPuerta(aPersonalPuerta)){
+                    actualizarPuertas(context, anillo);
+                }
             }
 
             @Override
             public void onFailure(Call<List<personalPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                anillo.dismiss();
             }
         });
     }
 
-    public void obtenerPersonalInfo(){
+    public void obtenerPersonalInfo(final Context context, final ProgressDialog anillo){
         Call<List<personalInfo>> personalCall = helper.getPersonalInfo();
         personalCall.enqueue(new Callback<List<personalInfo>>() {
             @Override
@@ -142,18 +157,22 @@ public class helperRetrofit {
                     return;
                 }
                 List<personalInfo> aPersonalInfo = response.body();
-                Log.d(TAG, "EL tamaño es: "+ aPersonalInfo.size());
-                //TODO TERMINAR EL METODO, VER OBTENER INFO PERSONAL
+                Log.d(TAG, "OBTUVE EL PERSONAL INFO "+aPersonalInfo.size());
+                Realm.getInstance(context);
+                if (RealmController.getInstance().insertarInfoPersonal(aPersonalInfo)){
+                    ObtenerTarjetasPersonal("G", context, anillo);
+                }
             }
 
             @Override
             public void onFailure(Call<List<personalInfo>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                anillo.dismiss();
             }
         });
     }
 
-    public void actualizarPuertas(){
+    public void actualizarPuertas(final Context context, final ProgressDialog anillo){
         Call<List<puertas>> puertasCall = helper.getActualizarPuertas();
         puertasCall.enqueue(new Callback<List<puertas>>() {
             @Override
@@ -162,12 +181,19 @@ public class helperRetrofit {
                     return;
                 }
                 List<puertas> aPersonalPuerta = response.body();
-                //TODO TERMINAR EL METODO, VER ACTUALIZAR PUERTAS
+                Log.d(TAG, "OBTUVE ACTUALIZAR PUERTAS "+aPersonalPuerta.size());
+                Realm.getInstance(context);
+                if (RealmController.getInstance().insertarPuertas(aPersonalPuerta)){
+                    anillo.dismiss();
+                    Intent intent = new Intent(context, main.class);
+                    context.startActivity(intent);
+                }
             }
 
             @Override
             public void onFailure(Call<List<puertas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                anillo.dismiss();
             }
         });
     }
