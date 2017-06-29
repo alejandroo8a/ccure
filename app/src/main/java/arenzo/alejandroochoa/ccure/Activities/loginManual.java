@@ -14,17 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Helpers.vista;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
-import arenzo.alejandroochoa.ccure.Realm.realmPersonal;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
-import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
-import arenzo.alejandroochoa.ccure.WebService.oChecada;
-import arenzo.alejandroochoa.ccure.WebService.retrofit;
 
 public class loginManual extends AppCompatActivity implements vista {
 
@@ -35,11 +29,14 @@ public class loginManual extends AppCompatActivity implements vista {
     private Button btnLoginManual;
     private SharedPreferences PREF_LOGIN_MANUAL;
 
+    private String URL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_manual);
         PREF_LOGIN_MANUAL = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
+        URL = PREF_LOGIN_MANUAL.getString("URL", "");
         centrarTituloActionBar();
         cargarElementos();
         eventosVista();
@@ -63,10 +60,10 @@ public class loginManual extends AppCompatActivity implements vista {
     }
 
     private void cargarNucleo(){
-        /*helperRetrofit helperRetrofit = new helperRetrofit(retrofit.URL);
+        /*helperRetrofit helperRetrofit = new helperRetrofit(URL);
         helperRetrofit.obtenerPersonalInfo();
         helperRetrofit.obtenerPersonalPuerta();
-        helperRetrofit helperRetrofit = new helperRetrofit(retrofit.URL);
+        helperRetrofit helperRetrofit = new helperRetrofit(URL);
         helperRetrofit.actualizarChecadas(getChecadas());*/
     }
 
@@ -95,17 +92,6 @@ public class loginManual extends AppCompatActivity implements vista {
                 appCompatTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
         }
-    }
-
-    private List<oChecada> getChecadas(){
-        return new ArrayList<oChecada>(){{
-            add(new oChecada("12345","12345","PUERTOTA", ""));
-            add(new oChecada("12345","12345","PUERTOTA", ""));
-            add(new oChecada("12345","12345","PUERTOTA", ""));
-            add(new oChecada("12345","12345","PUERTOTA", ""));
-            add(new oChecada("12345","12345","PUERTOTA", ""));
-            add(new oChecada("12345","12345","PUERTOTA", ""));
-        }};
     }
     
     private void buscarUsuario(){

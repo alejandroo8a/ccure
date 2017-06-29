@@ -1,4 +1,4 @@
-package arenzo.alejandroochoa.ccure.WebService;
+package arenzo.alejandroochoa.ccure.Helpers;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

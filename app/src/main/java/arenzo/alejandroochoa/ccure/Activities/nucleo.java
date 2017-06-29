@@ -36,7 +36,7 @@ import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
 import retrofit2.Retrofit;
 
 public class nucleo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
-//TODO COMPROBAR QUE FUNCIONE EL FILTRO DE TIPO DE USUARIO
+
     private final static String TAG = "nucleo";
     TextView txtNombreNavigation, txtNumeroEmpleadoNavigation,txtPuertaNavigation;
     CircularImageView imgEmpleado;

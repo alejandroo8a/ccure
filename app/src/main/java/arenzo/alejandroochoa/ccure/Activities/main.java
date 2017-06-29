@@ -169,7 +169,8 @@ public class main extends AppCompatActivity implements vista {
     }
 
     private void comprobarConfiguracion(){
-        if (!PREF_MAIN.getBoolean("CONFIGURADO", false)){
+        boolean configurado = PREF_MAIN.getBoolean("CONFIGURADO", false);
+        if (!configurado){
             mostrarConfiguracion();
         }
     }

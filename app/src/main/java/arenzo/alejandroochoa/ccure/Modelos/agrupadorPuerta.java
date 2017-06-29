@@ -1,19 +1,13 @@
-package arenzo.alejandroochoa.ccure.Realm;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+package arenzo.alejandroochoa.ccure.Modelos;
 
 /**
- * Created by AlejandroMissael on 22/04/2017.
+ * Created by AlejandroMissael on 27/06/2017.
  */
 
-public class realmAgrupadorPuerta extends RealmObject {
-
+public class agrupadorPuerta {
 
     private int AGRId;
-
     private int PUEId;
-
     private String Fase;
     private int Tipo;
     private String FechaHora;
@@ -66,6 +60,4 @@ public class realmAgrupadorPuerta extends RealmObject {
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
     }
-
-
 }

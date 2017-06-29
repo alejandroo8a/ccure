@@ -10,8 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -32,8 +35,8 @@ public class configuracionUnica extends AppCompatActivity {
     private Spinner spPuertasUnico;
     private Button btnGuardarConfiguracionUnico;
     ProgressDialog anillo = null;
-
     private SharedPreferences PREF_CONFIGURACION_UNICA;
+    private String URL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class configuracionUnica extends AppCompatActivity {
         cargarDatosVista();
         centrarTituloActionBar();
         PREF_CONFIGURACION_UNICA = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
+        mostrarDialogUrl();
     }
 
 
@@ -73,13 +77,15 @@ public class configuracionUnica extends AppCompatActivity {
     private void guardarDatos() {
         if (edtNombreDispositivoUnico.length() > 0 && edtURLExportacionUnico.length() > 0 && edtWebServiceUnico.length() > 0) {
             realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
-            boolean saberEstadoInsercion = false;
+            final int idAgrupador = RealmController.getInstance().obtenerIdAgrupador(spPuertasUnico.getSelectedItem().toString());
+            boolean saberEstadoInsercion;
             if (dispositivo == null) {
-                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", 1, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "1");
+                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             } else {
-                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", 1, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "1");
+                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             }
             if (saberEstadoInsercion) {
+                guardarURL(edtWebServiceUnico.getText().toString());
                 guardarYaExisteConfiguracion();
                 obtenerTodosDatos();
             } else {
@@ -126,12 +132,6 @@ public class configuracionUnica extends AppCompatActivity {
         }
     }
 
-    private void mostrarMain(Context context){
-        Intent intent = new Intent(context, main.class);
-        startActivity(intent);
-        finish();
-    }
-
     private void guardarYaExisteConfiguracion(){
         SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
         editor.putBoolean("CONFIGURADO", true);
@@ -139,16 +139,53 @@ public class configuracionUnica extends AppCompatActivity {
     }
 
     private void obtenerTodosDatos(){
-        mostrarCargandoAnillo();
+        mostrarCargandoAnillo("Obteniendo todos los datos...");
         helperRetrofit helper = new helperRetrofit(retrofit.URL);
-        helper.obtenerPersonalInfo(getApplicationContext(), this.anillo);
+        helper.obtenerPersonalInfo(getApplicationContext(), this.anillo, true);
     }
 
-    private void mostrarCargandoAnillo(){
-        this.anillo = ProgressDialog.show(this, "Sincronizando", "Obteniendo todos los datos iniciales...", true, false);
+    private void mostrarCargandoAnillo(String mensaje){
+        this.anillo = ProgressDialog.show(this, "Sincronizando", mensaje, true, false);
     }
 
-    private void ocultarCargandoAnillo(){
-        this.anillo.dismiss();
+    private void guardarURL(String url){
+        SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
+        editor.putString("URL", url);
+        editor.commit();
     }
+
+    private void obtenerAgrupadores(){
+        mostrarCargandoAnillo("Obteniendo puertas...");
+        helperRetrofit helperRetrofit = new helperRetrofit(URL);
+        helperRetrofit.actualizarAgrupadores(this, anillo, spPuertasUnico);
+    }
+
+    private void mostrarDialogUrl(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_url, null);
+        final EditText edtUrlDialog = view.findViewById(R.id.edtUrlDialog);
+
+        builder.setTitle("Agregar URL")
+                .setView(view)
+                .setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ocultarTeclado();
+                        guardarURL(edtUrlDialog.getText().toString());
+                        URL = PREF_CONFIGURACION_UNICA.getString("URL","");
+                        edtWebServiceUnico.setText(edtUrlDialog.getText().toString());
+                        obtenerAgrupadores();
+                    }
+                })
+                .setCancelable(false)
+        .show();
+    }
+
+    private void ocultarTeclado(){
+        InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+
 }

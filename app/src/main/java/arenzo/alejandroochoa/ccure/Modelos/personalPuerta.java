@@ -1,4 +1,4 @@
-package arenzo.alejandroochoa.ccure.WebService;
+package arenzo.alejandroochoa.ccure.Modelos;
 
 /**
  * Created by AlejandroMissael on 20/06/2017.

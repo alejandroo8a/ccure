@@ -8,10 +8,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import arenzo.alejandroochoa.ccure.WebService.personalInfo;
-import arenzo.alejandroochoa.ccure.WebService.personalPuerta;
-import arenzo.alejandroochoa.ccure.WebService.puertas;
-import arenzo.alejandroochoa.ccure.WebService.tarjetasPersonal;
+import arenzo.alejandroochoa.ccure.Modelos.agrupador;
+import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
+import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
+import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
+import arenzo.alejandroochoa.ccure.Modelos.puertas;
+import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -186,7 +188,26 @@ public class RealmController {
                     rPersonal.setPUEId(persona.getClavePuerta());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
-                    rPersonal.setMUsuarioId("1");
+                    rPersonal.setMUsuarioId("CONFIGURACION");
+                }
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
+    }
+
+    public boolean insertarAgrupador(final List<agrupador> aAgrupador){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (agrupador agrupador : aAgrupador){
+                    realmAgrupador rAgrupador = realm.createObject(realmAgrupador.class);
+                    rAgrupador.setAGRId(agrupador.getAGRId());
+                    rAgrupador.setDescripcion(agrupador.getDescripcion());
+                    rAgrupador.setFase(agrupador.getFase());
+                    rAgrupador.setMFechaHora(obtenerFecha());
+                    rAgrupador.setMUsuarioId("CONFIGURACION");
                 }
                 saberEstadoConsulta = true;
             }
@@ -200,14 +221,33 @@ public class RealmController {
             @Override
             public void execute(Realm realm) {
                 for (puertas puerta : aPersonalPuerta){
-                    realmPuerta rPersonal = realm.createObject(realmPuerta.class);
-                    rPersonal.setPUEId(obtenerIdPuerta());
-                    rPersonal.setPUEClave(puerta.getClavePuerta());
-                    rPersonal.setDescripcion(puerta.getDescripcion());
-                    rPersonal.setFase("A");
-                    rPersonal.setGRUID(puerta.getGrupo());
-                    rPersonal.setMFechaHora(obtenerFecha());
-                    rPersonal.setMUsuarioId("1");
+                    realmPuerta rPuerta = realm.createObject(realmPuerta.class);
+                    rPuerta.setPUEId(puerta.getPUEId());
+                    rPuerta.setPUEClave(puerta.getPUEClave());
+                    rPuerta.setDescripcion(puerta.getDescripcion());
+                    rPuerta.setFase(puerta.getFase());
+                    rPuerta.setGRUID(puerta.getGRUID());
+                    rPuerta.setMFechaHora(obtenerFecha());
+                    rPuerta.setMUsuarioId("CONFIGURACION");
+                }
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
+    }
+
+    public boolean insertarAgrupadorPuerta(final List<agrupadorPuerta> aPersonalPuerta){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (agrupadorPuerta agrupadorPuerta : aPersonalPuerta){
+                    realmAgrupadorPuerta rAgrupadorPuerta = realm.createObject(realmAgrupadorPuerta.class);
+                    rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
+                    rAgrupadorPuerta.setPUEId(agrupadorPuerta.getPUEId());
+                    rAgrupadorPuerta.setFase(agrupadorPuerta.getFase());
+                    rAgrupadorPuerta.setFechaHora(obtenerFecha());
+                    rAgrupadorPuerta.setMUsuarioId("CONFIGURACION");
                 }
                 saberEstadoConsulta = true;
             }
@@ -267,6 +307,11 @@ public class RealmController {
 
     public realmPersonalInfo obtenerInformacionPersonal(String numeroEmpleado){
         return realm.where(realmPersonalInfo.class).equalTo("NoEmpleado", numeroEmpleado).findFirst();
+    }
+
+    public int obtenerIdAgrupador(String descripcion){
+        realmAgrupador agrupador = realm.where(realmAgrupador.class).equalTo("Descripcion", descripcion).findFirst();
+        return agrupador.getAGRId();
     }
 
     //ELIMINAR

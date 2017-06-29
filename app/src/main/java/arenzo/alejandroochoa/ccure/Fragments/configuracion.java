@@ -2,9 +2,11 @@ package arenzo.alejandroochoa.ccure.Fragments;
 
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ public class configuracion extends Fragment {
     private EditText edtNombreDispositivo, edtWebService, edtURLExportacion;
     private Spinner spPuertas;
     private Button btnGuardarConfiguracion;
+    private SharedPreferences PREF_CONFIGURACION;
 
     public configuracion() {
         // Required empty public constructor
@@ -48,6 +51,7 @@ public class configuracion extends Fragment {
         edtURLExportacion = (EditText)view.findViewById(R.id.edtURLExportacionUnico);
         spPuertas = (Spinner)view.findViewById(R.id.spPuertasUnico);
         btnGuardarConfiguracion = (Button)view.findViewById(R.id.btnGuardarConfiguracion);
+        PREF_CONFIGURACION = getContext().getSharedPreferences("CCURE", getContext().MODE_PRIVATE);
         return view;
     }
 
@@ -80,13 +84,15 @@ public class configuracion extends Fragment {
     private void guardarDatos() {
         if (edtNombreDispositivo.length() > 0 && edtURLExportacion.length() > 0 && edtWebService.length() > 0) {
             realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
-            boolean saberEstadoInsercion = false;
+            final int idAgrupador = RealmController.getInstance().obtenerIdAgrupador(spPuertas.getSelectedItem().toString());
+            boolean saberEstadoInsercion;
             if (dispositivo == null) {
-                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivo.getText().toString(), "1", 1, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "1");
+                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivo.getText().toString(), "A", idAgrupador, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "CONFIGURACION");
             } else {
-                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivo.getText().toString(), "1", 1, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "1");
+                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivo.getText().toString(), "A", idAgrupador, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "CONFIGURACION");
             }
             if (saberEstadoInsercion) {
+                guardarURL(edtURLExportacion.getText().toString());
                 crearDialog("Éxito", "Sus datos se guardaron correctamente");
             } else {
                 crearDialog("Error", "Sus datos no se guardaron, intentelo de nuevo.");
@@ -102,6 +108,12 @@ public class configuracion extends Fragment {
                 .setMessage(mensaje)
                 .setPositiveButton("Aceptar", null)
                 .show();
+    }
+
+    private void guardarURL(String url){
+        SharedPreferences.Editor editor = PREF_CONFIGURACION.edit();
+        editor.putString("URL", url);
+        editor.commit();
     }
 
 }

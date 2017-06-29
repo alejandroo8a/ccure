@@ -1,18 +1,18 @@
 package arenzo.alejandroochoa.ccure.WebService;
 
 import java.util.List;
-import java.util.Map;
 
-import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
+import arenzo.alejandroochoa.ccure.Modelos.agrupador;
+import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
+import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
+import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
+import arenzo.alejandroochoa.ccure.Modelos.puertas;
+import arenzo.alejandroochoa.ccure.Modelos.respuestaChecadas;
+import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.QueryMap;
 
 /**
  * Created by AlejandroMissael on 08/05/2017.
@@ -20,7 +20,7 @@ import retrofit2.http.QueryMap;
 
 public interface retrofit{
 
-    public static final String URL="http://192.168.1.10/CCUREMOVIL/ServiceMethods.svc/";
+    public static String URL = "http://192.168.1.10/CCUREMOVIL/ServiceMethods.svc/";
 
     @GET("ValidarEmpleadoJSON/{noEmpleado}/{noTarjeta}/{clavePuerta}")
     Call<String> getValidarEmpleado(@Path("noEmpleado") String noEmpleado,
@@ -37,13 +37,20 @@ public interface retrofit{
     @Headers("Content-Type: application/json")
     Call<List<personalInfo>> getPersonalInfo();
 
+    @GET("ActualizarAgrupadoresJSON")
+    Call<List<agrupador>> getAgrupadores();
+
     @GET("ActualizarPuertasJSON")
     Call<List<puertas>> getActualizarPuertas();
 
-    @FormUrlEncoded
-    @POST("ActualizarChecadasArrayJSON/{checadas}")
-    Call<List<String>> getActualizarChecadas(@Field("checadas") List<oChecada> aChecadas);
+    @GET("ActualizarAgrupadorPuertasJSON")
+    Call<List<agrupadorPuerta>> getAgrupadorPuerta();
 
+    @GET("ActualizarChecadasJSON/{noEmpleado}/{noTarjeta}/{pueClave}/{fechaHoraEntrada}")
+    Call<List<respuestaChecadas>> getActualizarChecadas(@Path("noEmpleado") String noEmpleado,
+                                                        @Path("noTarjeta") String noTarjeta,
+                                                        @Path("pueClave") String pueClave,
+                                                        @Path("fechaHoraEntrada") String fechaHoraEntrada);
 
 /*con parametros
     @FormUrlEncoded
