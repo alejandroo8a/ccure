@@ -2,6 +2,7 @@ package arenzo.alejandroochoa.ccure.Fragments;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,7 +44,7 @@ import io.realm.RealmResults;
 
 public class sincronizacion extends Fragment {
 
-    //TODO TERMINAR SINCRONIZACION DE RED Y ARCHIVO
+    //TODO ACOMODAR FECHA DE SINCRONIZACION RED
     private final static String TAG = "sincronizacion";
 
     private RadioButton rdRed, rdArchivo;
@@ -51,6 +52,7 @@ public class sincronizacion extends Fragment {
     ProgressDialog anillo = null;
     Realm realmPrincipal;
     String URL = "";
+    boolean saberEstadoConsulta;
 
     private SharedPreferences PREF_SINCRONIZACION;
 
@@ -95,7 +97,6 @@ public class sincronizacion extends Fragment {
     private void sincronizar(){
         int tipo = tipoSincronizacion();
         if (tipo != 0) {
-            //Verificar conexion
             mostrarCargandoAnillo();
             if (tipo == 1) {
                 //Archivo
@@ -131,22 +132,45 @@ public class sincronizacion extends Fragment {
     }
 
     private void sincronizarRed(){
-        //TODO BORRAR LOS DATOS ENVIADOS
         final helperRetrofit helperRetrofit = new helperRetrofit(URL);
         realmPrincipal.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 RealmResults<realmESPersonal> resultado = obtenerRegistrosRed();
-                for (int i = 0 ; i < resultado.size() ; i++){
-                    realmESPersonal persona = resultado.get(i);
-                    helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEId());
-                }
-                ocultarCargandoAnillo();
+                if (resultado.size() > 0) {
+                    for (int i = 0; i < resultado.size(); i++) {
+                        realmESPersonal persona = resultado.get(i);
+                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEId(), "2017-07-02", resultado.size() - 1, i, getContext(), anillo);
+                    }
+                }else
+                    resultadoDialog("Actualmente todo está sincronizado.", getContext());
             }
         });
+
+        anillo.dismiss();
     }
+
     private RealmResults<realmESPersonal> obtenerRegistrosRed(){
         return realmPrincipal.where(realmESPersonal.class).equalTo("Fase","N").findAll();
+    }
+
+    public boolean borrarTablasSincronizacion(){
+        saberEstadoConsulta = false;
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.clear(realmPuerta.class);
+                realm.clear(realmPersonal.class);
+                realm.clear(realmPersonalInfo.class);
+                realm.clear(realmPersonalPuerta.class);
+                realm.clear(realmESPersonal.class);
+                realm.clear(realmNotificacion.class);
+                saberEstadoConsulta = true;
+            }
+        });
+
+        return saberEstadoConsulta;
     }
 
     private void avisoNoRed(){
@@ -179,11 +203,25 @@ public class sincronizacion extends Fragment {
     }
 
     private void mostrarCargandoAnillo(){
-        this.anillo = ProgressDialog.show(getContext(), "Sincronizando datos", "Cargando...", true, false);
+        this.anillo = ProgressDialog.show(getActivity(), "Sincronizando datos", "Cargando...", true, false);
     }
 
     private void ocultarCargandoAnillo(){
         this.anillo.dismiss();
+    }
+
+    public void resultadoDialog(String mensaje, Context context){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle("ÉXITO")
+                .setMessage(mensaje)
+                .setPositiveButton("Aceptar", null)
+                .show();
+    }
+
+    private String obtenerFecha(){
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        return dateFormat.format(date);
     }
 
     private class segundoPlanoArchivo extends AsyncTask<String, Void, String> {
@@ -216,7 +254,7 @@ public class sincronizacion extends Fragment {
             if (result.equals("true"))
                 resultadoDialog("El proceso ha finalizado correctamente. El dispositivo quedó actualizado con la información.");
             else if(result.equals("actualizado"))
-                resultadoDialog("Actualmente todo esta sincronizado.");
+                resultadoDialog("Actualmente todo está sincronizado.");
             else
                 resultadoDialog("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
         }
@@ -242,7 +280,7 @@ public class sincronizacion extends Fragment {
             return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
         }
 
-        public boolean borrarTablasSincronizacion(){
+        private boolean borrarTablasSincronizacion(){
             saberEstadoConsulta = false;
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
@@ -320,12 +358,6 @@ public class sincronizacion extends Fragment {
                     .setMessage(mensaje)
                     .setPositiveButton("Aceptar", null)
                     .show();
-        }
-
-        private String obtenerFecha(){
-            Date date = new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-            return dateFormat.format(date);
         }
 
     }
