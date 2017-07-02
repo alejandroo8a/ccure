@@ -17,6 +17,7 @@ public class realmESPersonal extends RealmObject {
 
     private String FaseIngreso;
     private String Fase;
+    private String TipoEntrada;
     private String Observaciones;
     private String MFechaHora;
     private String MUsuarioId;
@@ -91,5 +92,13 @@ public class realmESPersonal extends RealmObject {
 
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
+    }
+
+    public String getTipoEntrada() {
+        return TipoEntrada;
+    }
+
+    public void setTipoEntrada(String tipoEntrada) {
+        TipoEntrada = tipoEntrada;
     }
 }

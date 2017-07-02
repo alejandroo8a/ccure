@@ -304,7 +304,7 @@ public class sincronizacion extends Fragment {
                 personal.setNoEmpleado(resultsESPersonal.get(i).getNoEmpleado());
                 personal.setNoTarjeta(resultsESPersonal.get(i).getNoTarjeta());
                 personal.setPUEId(resultsESPersonal.get(i).getPUEId());
-                personal.setFechaHoraEntrada(obtenerFecha());
+                personal.setFechaHoraEntrada(resultsESPersonal.get(i).getFechaHoraEntrada());
                 aPer.add(personal);
             }
             String archivo = "";

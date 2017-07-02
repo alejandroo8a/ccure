@@ -9,6 +9,7 @@ public class personalPuerta {
     private String ClavePuerta;
     private String NoEmpleado;
     private String NoTarjeta;
+    private String PUEId;
 
     public personalPuerta() {
     }
@@ -35,5 +36,13 @@ public class personalPuerta {
 
     public void setNoTarjeta(String noTarjeta) {
         NoTarjeta = noTarjeta;
+    }
+
+    public String getPUEId() {
+        return PUEId;
+    }
+
+    public void setPUEId(String PUEId) {
+        this.PUEId = PUEId;
     }
 }

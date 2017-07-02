@@ -212,6 +212,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
     private void configurarInformacionNavigationDrawer(){
         txtNombreNavigation.setText(PREF_NUCLEO.getString("NOMBRE","Sin nombre"));
         txtNumeroEmpleadoNavigation.setText(PREF_NUCLEO.getString("NUMERO_EMPLEADO","Sin número"));
+        txtPuertaNavigation.setText(PREF_NUCLEO.getString("NOMBREPUERTA","Sin nombre"));
         if (PREF_NUCLEO.getString("FOTO","NO").equals("NO"))
             decodificarBase64(PREF_NUCLEO.getString("FOTO","NO"));
         else

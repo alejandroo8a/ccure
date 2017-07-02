@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,12 +18,13 @@ import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Helpers.vista;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
+import arenzo.alejandroochoa.ccure.Realm.realmUsuario;
 
 public class loginManual extends AppCompatActivity implements vista {
 
     private final static String TAG = "loginManual";
 
-    private TextView txtFechaLoginManual;
+
     private EditText edtNumeroEmpleado;
     private Button btnLoginManual;
     private SharedPreferences PREF_LOGIN_MANUAL;
@@ -44,7 +44,6 @@ public class loginManual extends AppCompatActivity implements vista {
 
 
     private void cargarElementos(){
-        txtFechaLoginManual = (TextView) findViewById(R.id.txtFechaLoginManual);
         edtNumeroEmpleado = (EditText) findViewById(R.id.edtNumeroEmpleado);
         btnLoginManual = (Button)findViewById(R.id.btnLoginManual);
     }
@@ -57,14 +56,6 @@ public class loginManual extends AppCompatActivity implements vista {
                 buscarUsuario();
             }
         });
-    }
-
-    private void cargarNucleo(){
-        /*helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        helperRetrofit.obtenerPersonalInfo();
-        helperRetrofit.obtenerPersonalPuerta();
-        helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        helperRetrofit.actualizarChecadas(getChecadas());*/
     }
 
     private void centrarTituloActionBar() {
@@ -96,27 +87,29 @@ public class loginManual extends AppCompatActivity implements vista {
     
     private void buscarUsuario(){
         RealmController.with(this);
-        realmPersonalInfo personal = RealmController.getInstance().obtenerInformacionPersonal(edtNumeroEmpleado.getText().toString());
+        realmUsuario personal = RealmController.getInstance().obtenerUsuario(edtNumeroEmpleado.getText().toString());
         if (personal != null){
             mostrarNucleo(personal);
         }else{
             Toast.makeText(this, "El usuario no tiene permitido ingresar a la aplicación, favor de contactar al administrador.", Toast.LENGTH_LONG).show();
         }
     }
-    //TODO OBTENER LA PUERTA CON SUS DATOS QUITAR COMPARACION DE FASE
-    private void mostrarNucleo(realmPersonalInfo personal){
+
+    private void mostrarNucleo(realmUsuario personal){
         guardarDatosPreferencias(personal);
         Intent intent = new Intent(this, nucleo.class);
-        intent.putExtra("TIPO", personal.getPuesto());
+        intent.putExtra("TIPO", personal.getTipo());
         startActivity(intent);
     }
 
-    private void guardarDatosPreferencias(realmPersonalInfo personal){
+    private void guardarDatosPreferencias(realmUsuario personal){
         SharedPreferences.Editor editor = PREF_LOGIN_MANUAL.edit();
-        editor.putString("TIPO", personal.getPuesto());
+        realmPersonalInfo personalInfo = RealmController.getInstance().obtenerInfoPersonal(personal.getNoEmpleado());
+        editor.putString("TIPO", personal.getTipo());
         editor.putString("NOMBRE", personal.getNombre());
         editor.putString("NUMERO_EMPLEADO", personal.getNoEmpleado());
-        editor.putString("FOTO", personal.getFoto());
+        editor.putString("FOTO", personalInfo.getFoto());
+        editor.putString("EMPRESA", personal.getEmpresa());
         editor.commit();
 
     }

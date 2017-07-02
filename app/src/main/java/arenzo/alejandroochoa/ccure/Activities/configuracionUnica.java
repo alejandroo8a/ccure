@@ -21,12 +21,16 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmDispositivo;
+import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
 import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
 import arenzo.alejandroochoa.ccure.WebService.retrofit;
+import io.realm.RealmResults;
 
 public class configuracionUnica extends AppCompatActivity {
     private final static String TAG = "configuracionUnica";
@@ -78,6 +82,7 @@ public class configuracionUnica extends AppCompatActivity {
         if (edtNombreDispositivoUnico.length() > 0 && edtURLExportacionUnico.length() > 0 && edtWebServiceUnico.length() > 0) {
             realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
             final int idAgrupador = RealmController.getInstance().obtenerIdAgrupador(spPuertasUnico.getSelectedItem().toString());
+            RealmResults<realmPuerta> aPuertas = RealmController.getInstance().obtenerPuertas(idAgrupador);
             boolean saberEstadoInsercion;
             if (dispositivo == null) {
                 saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
@@ -85,8 +90,8 @@ public class configuracionUnica extends AppCompatActivity {
                 saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             }
             if (saberEstadoInsercion) {
-                guardarURL(edtWebServiceUnico.getText().toString());
-                guardarYaExisteConfiguracion();
+                guardarPuerta(aPuertas.get(0), aPuertas.get(1));
+                guardarYaExisteConfiguracionUrlNombrePuerta(edtWebServiceUnico.getText().toString(), spPuertasUnico.getSelectedItem().toString());
                 obtenerTodosDatos();
             } else {
                 crearDialogError("Error", "Sus datos no se guardaron, intentelo de nuevo.");
@@ -132,9 +137,28 @@ public class configuracionUnica extends AppCompatActivity {
         }
     }
 
-    private void guardarYaExisteConfiguracion(){
+    private void guardarYaExisteConfiguracionUrlNombrePuerta(String url, String nombrePuerta){
         SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
         editor.putBoolean("CONFIGURADO", true);
+        editor.putString("URL", url);
+        editor.putString("NOMBREPUERTA", nombrePuerta);
+        editor.commit();
+    }
+
+    private void guardarURL(String url){
+        SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
+        editor.putString("URL", url);
+        editor.commit();
+    }
+
+    private void guardarPuerta(realmPuerta puerta1, realmPuerta puerta2){
+        SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
+        editor.putString("NOMBREPUERTAENTRADA", puerta1.getDescripcion());
+        editor.putString("NOMBREPUERTASALIDA", puerta2.getDescripcion());
+        editor.putInt("IDPUERTAENTRADA", puerta1.getPUEId());
+        editor.putInt("IDPUERTASALIDA", puerta2.getPUEId());
+        editor.putString("CLAVEPUERTAENTRADA", puerta1.getPUEClave());
+        editor.putString("CLAVEPUERTASALIDA", puerta2.getPUEClave());
         editor.commit();
     }
 
@@ -146,12 +170,6 @@ public class configuracionUnica extends AppCompatActivity {
 
     private void mostrarCargandoAnillo(String mensaje){
         this.anillo = ProgressDialog.show(this, "Sincronizando", mensaje, true, false);
-    }
-
-    private void guardarURL(String url){
-        SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
-        editor.putString("URL", url);
-        editor.commit();
     }
 
     private void obtenerAgrupadores(){

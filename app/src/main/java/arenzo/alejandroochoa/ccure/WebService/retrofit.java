@@ -9,6 +9,8 @@ import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.Modelos.respuestaChecadas;
 import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
+import arenzo.alejandroochoa.ccure.Modelos.usuario;
+import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -23,12 +25,15 @@ public interface retrofit{
     public static String URL = "http://192.168.1.10/CCUREMOVIL/ServiceMethods.svc/";
 
     @GET("ValidarEmpleadoJSON/{noEmpleado}/{noTarjeta}/{clavePuerta}")
-    Call<String> getValidarEmpleado(@Path("noEmpleado") String noEmpleado,
-                                    @Path("noTarjeta") String noTarjeta,
-                                    @Path("clavePuerta") String clavePuerta );
+    Call<validarEmpleado> getValidarEmpleado(@Path("noEmpleado") String noEmpleado,
+                                             @Path("noTarjeta") String noTarjeta,
+                                             @Path("clavePuerta") String clavePuerta );
 
     @GET("ObtenerTarjetasPersonalJSON/{Tipo}")
-    Call<List<tarjetasPersonal>> getTarjetasPersonal(@Path("Tipo") String tipo);
+    Call<List<usuario>> getTarjetasPersonal(@Path("Tipo") String tipo);
+
+    @GET("ObtenerTarjetasPersonalJSON/{Tipo}")
+    Call<List<usuario>> getUsuario(@Path("Tipo") String tipo);
 
     @GET("ObtenerPersonalPuertaJSON")
     Call<List<personalPuerta>> getPersonalPuerta();

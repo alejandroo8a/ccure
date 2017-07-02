@@ -14,6 +14,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="CASETA ENTRADA A MINA 1090"
         android:textColor="@android:color/black"
         android:textSize="24sp"

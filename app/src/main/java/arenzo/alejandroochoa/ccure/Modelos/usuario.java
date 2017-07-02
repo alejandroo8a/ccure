@@ -1,22 +1,16 @@
-package arenzo.alejandroochoa.ccure.Realm;
-
-import com.google.gson.annotations.SerializedName;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+package arenzo.alejandroochoa.ccure.Modelos;
 
 /**
- * Created by AlejandroMissael on 22/04/2017.
+ * Created by AlejandroMissael on 29/06/2017.
  */
 
-public class realmPersonalPuerta extends RealmObject {
-
+public class usuario {
 
     private String NoEmpleado;
     private String NoTarjeta;
-    private String PUEId;
-    private String ClavePuerta;
-
+    private String Nombre;
+    private String Empresa;
+    private String Tipo;
     private String Fase;
     private String MFechaHora;
     private String MUsuarioId;
@@ -37,12 +31,28 @@ public class realmPersonalPuerta extends RealmObject {
         NoTarjeta = noTarjeta;
     }
 
-    public String getPUEId() {
-        return PUEId;
+    public String getNombre() {
+        return Nombre;
     }
 
-    public void setPUEId(String PUEId) {
-        this.PUEId = PUEId;
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+    }
+
+    public String getEmpresa() {
+        return Empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        Empresa = empresa;
+    }
+
+    public String getTipo() {
+        return Tipo;
+    }
+
+    public void setTipo(String tipo) {
+        Tipo = tipo;
     }
 
     public String getFase() {
@@ -67,13 +77,5 @@ public class realmPersonalPuerta extends RealmObject {
 
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
-    }
-
-    public String getClavePuerta() {
-        return ClavePuerta;
-    }
-
-    public void setClavePuerta(String clavePuerta) {
-        ClavePuerta = clavePuerta;
     }
 }

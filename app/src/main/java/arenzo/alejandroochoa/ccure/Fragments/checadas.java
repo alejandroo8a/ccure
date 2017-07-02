@@ -4,11 +4,9 @@ package arenzo.alejandroochoa.ccure.Fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -18,7 +16,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,20 +25,16 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.kyleduo.switchbutton.SwitchButton;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
+import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
 import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
-import arenzo.alejandroochoa.ccure.WebService.retrofit;
-import io.realm.Realm;
 
 
 public class checadas extends Fragment {
@@ -55,9 +48,13 @@ public class checadas extends Fragment {
     private Button btnAceptarAlerta, btnCancelarAlerta;
     ProgressDialog anillo = null;
 
-    private Boolean tipoChecada;
+    private String tipoChecada;
+    private String nombreCaseta;
+    private int idCaseta;
+    private String puertaClave;
     private SharedPreferences PREF_CHECADAS;
     private String URL;
+    private String numeroEmpleado;
 
     public checadas() {
     }
@@ -88,6 +85,7 @@ public class checadas extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         PREF_CHECADAS = getContext().getSharedPreferences("CCURE", getContext().MODE_PRIVATE);
         URL = PREF_CHECADAS.getString("URL", "");
+        numeroEmpleado = PREF_CHECADAS.getString("NUMERO_EMPLEADO","0");
         activarTipoChecada();
         configurarChecadas();
         edtNoEmpleado.addTextChangedListener(new TextWatcher() {
@@ -103,7 +101,7 @@ public class checadas extends Fragment {
                     realmPersonalPuerta personal = buscarPersonalLocal(edtNoEmpleado.getText().toString());
                     realmPersonalInfo detallesPersonal = buscarDetallePersonaLocal(edtNoEmpleado.getText().toString());
                     ocultarTeclado();
-                    if (detallesPersonal != null){
+                    if (personal != null){
                         ocultarCargandoAnillo();
                         mostrarAlertaEmpleado(getContext(), txtResultadoChecada, imgFondoAcceso, detallesPersonal, personal);
                     }else{
@@ -124,12 +122,19 @@ public class checadas extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     sbTipoChecada.setBackColorRes(R.color.accent);
-                    tipoChecada = true;
+                    tipoChecada = "1";
+                    nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
+                    idCaseta = PREF_CHECADAS.getInt("IDPUERTAENTRADA", 0);
+                    puertaClave = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
                 }
                 else {
                     sbTipoChecada.setBackColorRes(R.color.primary);
-                    tipoChecada = false;
+                    tipoChecada = "2";
+                    nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTASALIDA","");
+                    idCaseta = PREF_CHECADAS.getInt("IDPUERTASALIDA", 0);
+                    puertaClave = PREF_CHECADAS.getString("CLAVEPUERTASALIDA","");
                 }
+                txtCaseta.setText(nombreCaseta);
             }
         });
     }
@@ -146,7 +151,7 @@ public class checadas extends Fragment {
         btnAceptarAlerta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                guardarResultadoChecada(detallesPersonal, personal);
+                guardarResultadoChecadaCorrecta(detallesPersonal, personal);
                 builder.dismiss();
                 mostrarPermitido(txtResultadoChecada, imgFondoAcceso);
             }
@@ -163,23 +168,58 @@ public class checadas extends Fragment {
         builder.show();
     }
 
-    private void guardarResultadoChecada(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal){
+    public void mostrarAlertaEmpleadoValidado(final Context context, final TextView txtResultadoChecada, final ImageView imgFondoAcceso, final validarEmpleado empleado, final String idCaseta, final String numeroEmpleado, final String tipoChecada){
+        View view = LayoutInflater.from(context).inflate(R.layout.item_checada, null);
+        final AlertDialog builder = new AlertDialog.Builder(context).create();
+        builder.setView(view);
+        btnAceptarAlerta = view.findViewById(R.id.btnAceptarAlerta);
+        btnCancelarAlerta = view.findViewById(R.id.btnCancelarAlerta);
+        txtNombreAlerta = view.findViewById(R.id.txtNombreAlerta);
+        imgPerfilAlerta = view.findViewById(R.id.imgPerfilAlerta);
+        configurarAlertaValidada(txtNombreAlerta, imgPerfilAlerta, empleado);
+        btnAceptarAlerta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                guardarResultadoChecadaValidada(empleado, "P", idCaseta, numeroEmpleado, tipoChecada);
+                builder.dismiss();
+                mostrarPermitido(txtResultadoChecada, imgFondoAcceso);
+            }
+        });
+        btnCancelarAlerta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                builder.dismiss();
+                guardarResultadoChecadaValidada(empleado, "D", idCaseta, numeroEmpleado, tipoChecada);
+                mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
+                vibrarCelular(context);
+            }
+        });
+        builder.show();
+    }
+
+    private void guardarResultadoChecadaCorrecta(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal){
         RealmController.getInstance();
         if (personal != null)
-            RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(), personal.getPUEId(), "P", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"));
+            RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(),String.valueOf(idCaseta), "P", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
         else
-            RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), "123", "1", "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"));
+            RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), " ", String.valueOf(idCaseta), "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+    }
+
+    private void guardarResultadoChecadaValidada(final validarEmpleado empleado, final String faseIngreso, final String idCaseta, final String numeroEmpleado, final String tipoChecada){
+        RealmController.getInstance();
+        RealmController.with(getActivity()).insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), " ",String.valueOf(idCaseta), faseIngreso, "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+
     }
 
     private void guardarResultadoChecadaDenegado(final realmPersonalInfo detallesPersonal){
         RealmController.getInstance();
-        RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), "123", "1", "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"));
+        RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), " ", String.valueOf(idCaseta), "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
     }
 
-    public void guardarResultadoChecadaNoEncontrado(String noEmpleado, Context context){
+    public void guardarResultadoChecadaNoEncontrado(String noEmpleado, Context context, String idCaseta, String numeroEmpleado, String tipoChecada){
         PREF_CHECADAS = context.getSharedPreferences("CCURE", getContext().MODE_PRIVATE);
         RealmController.getInstance();
-        RealmController.with(getActivity()).insertarPersonalNuevo(noEmpleado, "123", "1", "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"));
+        RealmController.with(getActivity()).insertarPersonalNuevo(noEmpleado, " ", String.valueOf(idCaseta), "D", "N", "",numeroEmpleado, tipoChecada);
     }
 
     private void decodificarBase64(String imagen){
@@ -197,17 +237,20 @@ public class checadas extends Fragment {
     private void activarTipoChecada(){
         sbTipoChecada.setChecked(true);
         sbTipoChecada.setBackColorRes(R.color.accent);
-        tipoChecada = true;
+        tipoChecada = "1";
+        nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
+        idCaseta = PREF_CHECADAS.getInt("IDPUERTAENTRADA", 0);
+        puertaClave = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
     }
 
     private realmPersonalPuerta buscarPersonalLocal(String numeroEmpleado){
         RealmController.with(getActivity());
-        return RealmController.getInstance().obtenerPersonalManual(numeroEmpleado);
+        return RealmController.getInstance().obtenerPersonalManual(numeroEmpleado, puertaClave);
     }
 
     private realmPersonalInfo buscarDetallePersonaLocal(String numeroEmpleado){
         RealmController.with(getActivity());
-        return RealmController.getInstance().obtenerInformacionPersonal(numeroEmpleado);
+        return RealmController.getInstance().obtenerInfoPersonal(numeroEmpleado);
     }
 
     private void ocultarTeclado(){
@@ -221,10 +264,10 @@ public class checadas extends Fragment {
 
     private void validarEmpleado(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal){
         helperRetrofit helper = new helperRetrofit(URL);
-        if (detallesPersonal != null)
-            helper.ValidarEmpleado(detallesPersonal.getNoEmpleado(),personal.getNoTarjeta(),"P3MINA", getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada, personal);
+        if (personal != null)
+            helper.ValidarEmpleado(detallesPersonal.getNoEmpleado(),personal.getNoTarjeta(),puertaClave, getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada, String.valueOf(idCaseta), numeroEmpleado, tipoChecada);
         else
-            helper.ValidarEmpleado(edtNoEmpleado.getText().toString()," ","P3MINA", getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada, personal);
+            helper.ValidarEmpleado(edtNoEmpleado.getText().toString()," ",puertaClave, getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada, String.valueOf(idCaseta), numeroEmpleado, tipoChecada);
     }
 
     private void mostrarCargandoAnillo(){
@@ -252,6 +295,8 @@ public class checadas extends Fragment {
 
     private void configurarChecadas(){
         txtNombre.setText(PREF_CHECADAS.getString("NOMBRE","Sin nombre"));
+        txtCaseta.setText(PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","Sin nombre"));
+        txtPuestoEmpresa.setText("Guardia de " + PREF_CHECADAS.getString("EMPRESA", "Sin empresa"));
         if (PREF_CHECADAS.getString("FOTO","NO").equals("NO"))
             decodificarBase64(PREF_CHECADAS.getString("FOTO","NO"));
         else
@@ -262,10 +307,18 @@ public class checadas extends Fragment {
         Picasso.with(getContext()).load(R.drawable.ic_card).into(imgFotoPerfil);
     }
 
-    private void configurarAlerta(TextView txtNombreAlerta, ImageView imgPerfilAlerta, realmPersonalInfo detallesPersonal){
-        txtNombreAlerta.setText(detallesPersonal.getNombre());
-        if (detallesPersonal.getFoto().equals("NO")){
-            decodificarBase64Alerta(detallesPersonal.getFoto(), imgPerfilAlerta);
+    private void configurarAlertaValidada(TextView txtNombreAlerta, ImageView imgPerfilAlerta, validarEmpleado empleado){
+        txtNombreAlerta.setText(empleado.getEmpleado().getNombre());
+        if(!empleado.getEmpleado().getFoto().equals("NO")){
+            decodificarBase64Alerta(empleado.getEmpleado().getFoto(), imgPerfilAlerta);
+        }else
+            ponerImagenDefaultAlerta(imgPerfilAlerta);
+    }
+
+    private void configurarAlerta(TextView txtNombreAlerta, ImageView imgPerfilAlerta, realmPersonalInfo empleado){
+        txtNombreAlerta.setText(empleado.getNombre());
+        if(!empleado.getFoto().equals("NO")){
+            decodificarBase64Alerta(empleado.getFoto(), imgPerfilAlerta);
         }else
             ponerImagenDefaultAlerta(imgPerfilAlerta);
     }

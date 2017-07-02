@@ -2,6 +2,7 @@ package arenzo.alejandroochoa.ccure.Fragments;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,14 +11,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
+import arenzo.alejandroochoa.ccure.Realm.realmAgrupador;
 import arenzo.alejandroochoa.ccure.Realm.realmDispositivo;
+import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
+import io.realm.RealmResults;
 
 public class configuracion extends Fragment {
 
@@ -79,12 +88,14 @@ public class configuracion extends Fragment {
             edtWebService.setText(dispositivo.getURLWebService().toString());
             edtURLExportacion.setText(dispositivo.getURLExportacion());
         }
+        llenarSpinnerAgrupador();
     }
 
     private void guardarDatos() {
         if (edtNombreDispositivo.length() > 0 && edtURLExportacion.length() > 0 && edtWebService.length() > 0) {
             realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
             final int idAgrupador = RealmController.getInstance().obtenerIdAgrupador(spPuertas.getSelectedItem().toString());
+            RealmResults<realmPuerta> aPuertas = RealmController.getInstance().obtenerPuertas(idAgrupador);
             boolean saberEstadoInsercion;
             if (dispositivo == null) {
                 saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivo.getText().toString(), "A", idAgrupador, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "CONFIGURACION");
@@ -93,6 +104,8 @@ public class configuracion extends Fragment {
             }
             if (saberEstadoInsercion) {
                 guardarURL(edtURLExportacion.getText().toString());
+                guardarPuerta(aPuertas.get(0), aPuertas.get(1));
+                guardarYaExisteConfiguracionUrlNombrePuerta(edtWebService.getText().toString(), spPuertas.getSelectedItem().toString());
                 crearDialog("Éxito", "Sus datos se guardaron correctamente");
             } else {
                 crearDialog("Error", "Sus datos no se guardaron, intentelo de nuevo.");
@@ -114,6 +127,36 @@ public class configuracion extends Fragment {
         SharedPreferences.Editor editor = PREF_CONFIGURACION.edit();
         editor.putString("URL", url);
         editor.commit();
+    }
+
+    private void guardarYaExisteConfiguracionUrlNombrePuerta(String url, String nombrePuerta){
+        SharedPreferences.Editor editor = PREF_CONFIGURACION.edit();
+        editor.putBoolean("CONFIGURADO", true);
+        editor.putString("URL", url);
+        editor.putString("NOMBREPUERTA", nombrePuerta);
+        editor.commit();
+    }
+
+    private void guardarPuerta(realmPuerta puerta1, realmPuerta puerta2){
+        SharedPreferences.Editor editor = PREF_CONFIGURACION.edit();
+        editor.putString("NOMBREPUERTAENTRADA", puerta1.getDescripcion());
+        editor.putString("NOMBREPUERTASALIDA", puerta2.getDescripcion());
+        editor.putInt("IDPUERTAENTRADA", puerta1.getPUEId());
+        editor.putInt("IDPUERTASALIDA", puerta2.getPUEId());
+        editor.putString("CLAVEPUERTAENTRADA", puerta1.getPUEClave());
+        editor.putString("CLAVEPUERTASALIDA", puerta2.getPUEClave());
+        editor.commit();
+    }
+
+    private void llenarSpinnerAgrupador(){
+        List<realmAgrupador> aAgrupadores = RealmController.getInstance().obtenerAgrupadores();
+        ArrayList<String> aAgrupadoresDescripcion = new ArrayList<>();
+        for (realmAgrupador agrupador : aAgrupadores){
+            aAgrupadoresDescripcion.add(agrupador.getDescripcion());
+        }
+        ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, aAgrupadoresDescripcion);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spPuertas.setAdapter(adapter);
     }
 
 }

@@ -14,6 +14,7 @@ import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
 import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
+import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -115,7 +116,7 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEId,  final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId){
+    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEId,  final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada){
         saberEstadoConsulta = false;
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -130,6 +131,7 @@ public class RealmController {
                 personal.setObservaciones(Observaciones);
                 personal.setMFechaHora(obtenerFecha());
                 personal.setMUsuarioId(MUsuarioId);
+                personal.setTipoEntrada(TipoEntrada);
                 saberEstadoConsulta = true;
             }
         });
@@ -157,18 +159,40 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarTarjetasPersonal(final List<tarjetasPersonal> aTarjetasPersonal){
+    public boolean insertarTarjetasPersonal(final List<usuario> aTarjetasPersonal){
         saberEstadoConsulta = false;
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                for (tarjetasPersonal persona : aTarjetasPersonal){
+                for (usuario persona : aTarjetasPersonal){
                     realmPersonal rPersonal = realm.createObject(realmPersonal.class);
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId("1");
+                }
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
+    }
+
+    public boolean insertarUsuarios(final List<usuario> aUsuario){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (usuario usuario : aUsuario){
+                    realmUsuario rUsuario = realm.createObject(realmUsuario.class);
+                    rUsuario.setNoEmpleado(usuario.getNoEmpleado());
+                    rUsuario.setNoTarjeta(usuario.getNoTarjeta());
+                    rUsuario.setNombre(usuario.getNombre());
+                    rUsuario.setEmpresa(usuario.getEmpresa());
+                    rUsuario.setTipo(usuario.getTipo());
+                    rUsuario.setFase("A");
+                    rUsuario.setMFechaHora(obtenerFecha());
+                    rUsuario.setMUsuarioId("CONFIGURACION");
                 }
                 saberEstadoConsulta = true;
             }
@@ -185,7 +209,8 @@ public class RealmController {
                     realmPersonalPuerta rPersonal = realm.createObject(realmPersonalPuerta.class);
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
-                    rPersonal.setPUEId(persona.getClavePuerta());
+                    rPersonal.setPUEId(persona.getPUEId());
+                    rPersonal.setClavePuerta(persona.getClavePuerta());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId("CONFIGURACION");
@@ -301,17 +326,29 @@ public class RealmController {
         return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }
 
-    public realmPersonalPuerta obtenerPersonalManual(String numeroEmpleado){
-        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).findFirst();
+    public realmPersonalPuerta obtenerPersonalManual(String numeroEmpleado, String clavePuerta){
+        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("ClavePuerta", clavePuerta).findFirst();
     }
 
-    public realmPersonalInfo obtenerInformacionPersonal(String numeroEmpleado){
+    public realmUsuario obtenerUsuario(String numeroEmpleado){
+        return realm.where(realmUsuario.class).equalTo("NoEmpleado", numeroEmpleado).findFirst();
+    }
+
+    public realmPersonalInfo obtenerInfoPersonal(String numeroEmpleado){
         return realm.where(realmPersonalInfo.class).equalTo("NoEmpleado", numeroEmpleado).findFirst();
     }
 
     public int obtenerIdAgrupador(String descripcion){
         realmAgrupador agrupador = realm.where(realmAgrupador.class).equalTo("Descripcion", descripcion).findFirst();
         return agrupador.getAGRId();
+    }
+
+    public RealmResults<realmPuerta> obtenerPuertas(int GRUId){
+        return realm.where(realmPuerta.class).equalTo("GRUID", String.valueOf(GRUId)).findAll();
+    }
+
+    public RealmResults<realmAgrupador> obtenerAgrupadores(){
+        return realm.where(realmAgrupador.class).findAll();
     }
 
     //ELIMINAR
