@@ -90,7 +90,12 @@ public class configuracionUnica extends AppCompatActivity {
                 saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             }
             if (saberEstadoInsercion) {
-                guardarPuerta(aPuertas.get(0), aPuertas.get(1));
+                if (aPuertas.size() > 0)
+                    guardarPuerta(aPuertas.get(0), aPuertas.get(1), idAgrupador);
+                else {
+                    crearDialogError("Error", "Sus datos no se guardaron, el agrupador que seleccionó no contiene puertas.");
+                    return;
+                }
                 guardarYaExisteConfiguracionUrlNombrePuerta(edtWebServiceUnico.getText().toString(), spPuertasUnico.getSelectedItem().toString());
                 obtenerTodosDatos();
             } else {
@@ -151,7 +156,7 @@ public class configuracionUnica extends AppCompatActivity {
         editor.commit();
     }
 
-    private void guardarPuerta(realmPuerta puerta1, realmPuerta puerta2){
+    private void guardarPuerta(realmPuerta puerta1, realmPuerta puerta2, int idAgrupador){
         SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
         editor.putString("NOMBREPUERTAENTRADA", puerta1.getDescripcion());
         editor.putString("NOMBREPUERTASALIDA", puerta2.getDescripcion());
@@ -159,6 +164,7 @@ public class configuracionUnica extends AppCompatActivity {
         editor.putInt("IDPUERTASALIDA", puerta2.getPUEId());
         editor.putString("CLAVEPUERTAENTRADA", puerta1.getPUEClave());
         editor.putString("CLAVEPUERTASALIDA", puerta2.getPUEClave());
+        editor.putInt("IDAGRUPADOR", idAgrupador);
         editor.commit();
     }
 

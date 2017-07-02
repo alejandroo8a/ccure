@@ -30,8 +30,6 @@ import io.realm.RealmResults;
 
 public class configuracion extends Fragment {
 
-    //TODO FALTA OBTENER ID DEL USUARIO - OBTENER LA FASE - OBTENER EL AGRUPADOR (AGRId) - CARGAR SPINNER
-
     private final static String TAG = "configuracion";
     private arenzo.alejandroochoa.ccure.Helpers.datosConfiguracion datosConfiguracion;
 
@@ -98,13 +96,18 @@ public class configuracion extends Fragment {
             RealmResults<realmPuerta> aPuertas = RealmController.getInstance().obtenerPuertas(idAgrupador);
             boolean saberEstadoInsercion;
             if (dispositivo == null) {
-                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivo.getText().toString(), "A", idAgrupador, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "CONFIGURACION");
+                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivo.getText().toString(), "A", idAgrupador, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), PREF_CONFIGURACION.getString("NUMERO_EMPLEADO",""));
             } else {
-                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivo.getText().toString(), "A", idAgrupador, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), "CONFIGURACION");
+                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivo.getText().toString(), "A", idAgrupador, edtWebService.getText().toString(), edtURLExportacion.getText().toString(), PREF_CONFIGURACION.getString("NUMERO_EMPLEADO",""));
             }
             if (saberEstadoInsercion) {
+                if (aPuertas.size() > 0)
+                    guardarPuerta(aPuertas.get(0), aPuertas.get(1), idAgrupador);
+                else {
+                    crearDialog("Error", "Sus datos no se guardaron, el agrupador que seleccionó no contiene puertas.");
+                    return;
+                }
                 guardarURL(edtURLExportacion.getText().toString());
-                guardarPuerta(aPuertas.get(0), aPuertas.get(1));
                 guardarYaExisteConfiguracionUrlNombrePuerta(edtWebService.getText().toString(), spPuertas.getSelectedItem().toString());
                 crearDialog("Éxito", "Sus datos se guardaron correctamente");
             } else {
@@ -137,7 +140,7 @@ public class configuracion extends Fragment {
         editor.commit();
     }
 
-    private void guardarPuerta(realmPuerta puerta1, realmPuerta puerta2){
+    private void guardarPuerta(realmPuerta puerta1, realmPuerta puerta2, int idAgrupador){
         SharedPreferences.Editor editor = PREF_CONFIGURACION.edit();
         editor.putString("NOMBREPUERTAENTRADA", puerta1.getDescripcion());
         editor.putString("NOMBREPUERTASALIDA", puerta2.getDescripcion());
@@ -145,18 +148,31 @@ public class configuracion extends Fragment {
         editor.putInt("IDPUERTASALIDA", puerta2.getPUEId());
         editor.putString("CLAVEPUERTAENTRADA", puerta1.getPUEClave());
         editor.putString("CLAVEPUERTASALIDA", puerta2.getPUEClave());
+        editor.putInt("IDAGRUPADOR", idAgrupador);
         editor.commit();
     }
 
     private void llenarSpinnerAgrupador(){
         List<realmAgrupador> aAgrupadores = RealmController.getInstance().obtenerAgrupadores();
         ArrayList<String> aAgrupadoresDescripcion = new ArrayList<>();
+        int posicionPuertaSeleccionada = obtenerPosicionAgrupadorSeleccionado(aAgrupadores);
         for (realmAgrupador agrupador : aAgrupadores){
             aAgrupadoresDescripcion.add(agrupador.getDescripcion());
         }
         ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, aAgrupadoresDescripcion);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spPuertas.setAdapter(adapter);
+        spPuertas.setSelection(posicionPuertaSeleccionada);
+    }
+
+    private int obtenerPosicionAgrupadorSeleccionado(List<realmAgrupador> aAgrupadores){
+        int idAgrupador = PREF_CONFIGURACION.getInt("IDAGRUPADOR",0);
+        for (int i = 0 ; i<aAgrupadores.size() ; i++){
+            if (aAgrupadores.get(i).getAGRId() == idAgrupador) {
+                return i;
+            }
+        }
+        return 0;
     }
 
 }
