@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.squareup.picasso.Picasso;
 
+import arenzo.alejandroochoa.ccure.Helpers.conexion;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
@@ -91,7 +92,6 @@ public class checadas extends Fragment {
         edtNoEmpleado.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.d(TAG, "before: "+i);
             }
 
             @Override
@@ -105,7 +105,12 @@ public class checadas extends Fragment {
                         ocultarCargandoAnillo();
                         mostrarAlertaEmpleado(getContext(), txtResultadoChecada, imgFondoAcceso, detallesPersonal, personal);
                     }else{
-                        validarEmpleado(detallesPersonal, personal);
+                        conexion conexion = new conexion();
+                        if (conexion.isAvaliable(getContext())) {
+                            validarEmpleado(detallesPersonal, personal);
+                        }else{
+                            guardarResultadoChecadaDenegadoNoInternet(edtNoEmpleado.getText().toString());
+                        }
                     }
                     limpiarEditText();
                 }
@@ -214,6 +219,11 @@ public class checadas extends Fragment {
     private void guardarResultadoChecadaDenegado(final realmPersonalInfo detallesPersonal){
         RealmController.getInstance();
         RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), " ", String.valueOf(idCaseta), "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+    }
+
+    private void guardarResultadoChecadaDenegadoNoInternet(String noEmpleado){
+        RealmController.getInstance();
+        RealmController.with(getActivity()).insertarPersonalNuevo(noEmpleado, " ", String.valueOf(idCaseta), "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
     }
 
     public void guardarResultadoChecadaNoEncontrado(String noEmpleado, Context context, String idCaseta, String numeroEmpleado, String tipoChecada){
