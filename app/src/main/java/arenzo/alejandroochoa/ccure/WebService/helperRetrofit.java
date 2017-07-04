@@ -311,9 +311,9 @@ public class helperRetrofit {
                 if (!response.isSuccessful()){
                     return;
                 }
-                List<puertas> aPersonalPuerta = response.body();
+                List<puertas> aPuertas = response.body();
                 Realm.getInstance(context);
-                if (RealmController.getInstance().insertarPuertas(aPersonalPuerta)){
+                if (RealmController.getInstance().insertarPuertas(aPuertas)){
                     obtenerPersonalPuertaSincronizacion(context, anillo);
                 }
             }

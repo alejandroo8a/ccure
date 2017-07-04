@@ -73,6 +73,20 @@
             android:layout_weight="1"
             android:text="@string/archivo"
             android:textSize="18dp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:id="@+id/rdLeerArchivo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Leer archivo"
+            android:textSize="18dp" />
     </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>

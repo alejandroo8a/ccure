@@ -1,13 +1,17 @@
 package arenzo.alejandroochoa.ccure.Activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,6 +23,7 @@ import arenzo.alejandroochoa.ccure.Helpers.vista;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmUsuario;
+import io.realm.RealmResults;
 
 public class loginManual extends AppCompatActivity implements vista {
 
@@ -53,7 +58,11 @@ public class loginManual extends AppCompatActivity implements vista {
         btnLoginManual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buscarUsuario();
+                ocultarTeclado();
+                if (existenDatos())
+                    buscarUsuario();
+                else
+                    mostrarDialogNoExistenDatos();
             }
         });
     }
@@ -95,6 +104,12 @@ public class loginManual extends AppCompatActivity implements vista {
         }
     }
 
+    private boolean existenDatos(){
+        RealmController.with(this);
+        RealmResults<realmPersonalInfo> aPersonalInfo = RealmController.getInstance().verificarExistenciaDatos();
+        return aPersonalInfo.size() > 0;
+    }
+
     private void mostrarNucleo(realmUsuario personal){
         guardarDatosPreferencias(personal);
         Intent intent = new Intent(this, nucleo.class);
@@ -112,5 +127,27 @@ public class loginManual extends AppCompatActivity implements vista {
         editor.putString("EMPRESA", personal.getEmpresa());
         editor.commit();
 
+    }
+
+    private void mostrarDialogNoExistenDatos(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("ATENCIÓN")
+                .setMessage("El equipo no tiene los datos suficientes para iniciar sesión, es necesario sincronizar antes de comenzar.")
+                .setPositiveButton("Ir a sincronizar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        RealmController.getInstance().borrarTablasSincronizacion();
+                        Intent intent = new Intent(getApplicationContext(), configuracionUnica.class);
+                        startActivity(intent);
+
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void ocultarTeclado(){
+        InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
