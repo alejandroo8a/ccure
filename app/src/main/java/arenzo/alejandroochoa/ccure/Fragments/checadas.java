@@ -165,7 +165,7 @@ public class checadas extends Fragment {
             @Override
             public void onClick(View view) {
                 builder.dismiss();
-                guardarResultadoChecadaDenegado(detallesPersonal);
+                guardarResultadoChecadaDenegado(detallesPersonal, personal);
                 mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
                 vibrarCelular(context);
             }
@@ -216,9 +216,9 @@ public class checadas extends Fragment {
 
     }
 
-    private void guardarResultadoChecadaDenegado(final realmPersonalInfo detallesPersonal){
+    private void guardarResultadoChecadaDenegado(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal){
         RealmController.getInstance();
-        RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), " ", String.valueOf(idCaseta), "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+        RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(), String.valueOf(idCaseta), "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
     }
 
     private void guardarResultadoChecadaDenegadoNoInternet(String noEmpleado){

@@ -466,18 +466,23 @@ public class sincronizacion extends Fragment {
         }
 
         private String crearContenidoArchivo(RealmResults<realmESPersonal> resultsESPersonal){
-            ArrayList<realmESPersonal> aPer = new ArrayList<>();
+            ArrayList<realmESPersonal> aPersonal = new ArrayList<>();
             for ( int i = 0 ; i < resultsESPersonal.size() ; i++){
                 realmESPersonal personal = new realmESPersonal();
                 personal.setNoEmpleado(resultsESPersonal.get(i).getNoEmpleado());
                 personal.setNoTarjeta(resultsESPersonal.get(i).getNoTarjeta());
                 personal.setPUEId(resultsESPersonal.get(i).getPUEId());
                 personal.setFechaHoraEntrada(resultsESPersonal.get(i).getFechaHoraEntrada());
-                aPer.add(personal);
+                aPersonal.add(personal);
             }
             String archivo = "";
-            for (realmESPersonal persona : aPer){
-                archivo += "NoEmpleado | " + persona.getNoEmpleado()  + " | NoTarjeta | " + persona.getNoTarjeta() + " | PUEClave | " + persona.getPUEId() + " | FechaHoraEntrada |" + persona.getFechaHoraEntrada() +" | ";
+            int i = 0;
+            for (realmESPersonal persona : aPersonal){
+                if (i == aPersonal.size() - 1)
+                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEId() + "-" + persona.getFechaHoraEntrada();
+                else
+                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEId() + "-" + persona.getFechaHoraEntrada() +"\n~";
+                i++;
             }
             return archivo;
         }
