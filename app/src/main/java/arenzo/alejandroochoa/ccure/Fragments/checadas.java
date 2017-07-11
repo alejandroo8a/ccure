@@ -25,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kyleduo.switchbutton.SwitchButton;
 import com.squareup.picasso.Picasso;
@@ -46,7 +47,7 @@ public class checadas extends Fragment {
     private TextView txtCaseta, txtResultadoChecada, txtNombre, txtPuestoEmpresa, txtNombreAlerta;
     private SwitchButton sbTipoChecada;
     private ImageView imgFotoPerfil, imgFondoAcceso, imgPerfilAlerta;
-    private Button btnAceptarAlerta, btnCancelarAlerta;
+    private Button btnAceptarAlerta, btnCancelarAlerta, btnBuscarEmpleado;
     ProgressDialog anillo = null;
 
     private String tipoChecada;
@@ -78,6 +79,7 @@ public class checadas extends Fragment {
         sbTipoChecada =  view.findViewById(R.id.sbTipoChecada);
         imgFotoPerfil = view.findViewById(R.id.imgFotoPerfil);
         imgFondoAcceso = view.findViewById(R.id.imgFondoAcceso);
+        btnBuscarEmpleado = view.findViewById(R.id.btnBuscarEmpleado);
         return view;
     }
 
@@ -89,36 +91,30 @@ public class checadas extends Fragment {
         numeroEmpleado = PREF_CHECADAS.getString("NUMERO_EMPLEADO","0");
         activarTipoChecada();
         configurarChecadas();
-        edtNoEmpleado.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
 
+        btnBuscarEmpleado.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(++i == 5){
+            public void onClick(View view) {
+                if ( edtNoEmpleado.getText().toString() != "0") {
                     mostrarCargandoAnillo();
                     realmPersonalPuerta personal = buscarPersonalLocal(edtNoEmpleado.getText().toString());
                     realmPersonalInfo detallesPersonal = buscarDetallePersonaLocal(edtNoEmpleado.getText().toString());
                     ocultarTeclado();
-                    if (personal != null){
+                    if (personal != null) {
                         ocultarCargandoAnillo();
                         mostrarAlertaEmpleado(getContext(), txtResultadoChecada, imgFondoAcceso, detallesPersonal, personal);
-                    }else{
+                    } else {
                         conexion conexion = new conexion();
                         if (conexion.isAvaliable(getContext())) {
                             validarEmpleado(detallesPersonal, personal);
-                        }else{
+                        } else {
                             guardarResultadoChecadaDenegadoNoInternet(edtNoEmpleado.getText().toString());
                         }
                     }
                     limpiarEditText();
+                }else{
+                    Toast.makeText(getActivity(), "El número de empleado no puede ser 0", Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
             }
         });
 
