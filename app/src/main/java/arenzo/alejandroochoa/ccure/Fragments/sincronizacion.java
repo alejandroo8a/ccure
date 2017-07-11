@@ -154,7 +154,7 @@ public class sincronizacion extends Fragment {
                 if (resultado.size() > 0) {
                     for (int i = 0; i < resultado.size(); i++) {
                         realmESPersonal persona = resultado.get(i);
-                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEId(), "2017-07-02", resultado.size() - 1, i, getContext(), anillo);
+                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEId(), "2017-07-02", resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso());
                     }
                 }else
                     resultadoDialog("Actualmente todo está sincronizado.", getContext());

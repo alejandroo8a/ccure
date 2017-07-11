@@ -51,11 +51,12 @@ public interface retrofit{
     @GET("ActualizarAgrupadorPuertasJSON")
     Call<List<agrupadorPuerta>> getAgrupadorPuerta();
 
-    @GET("ActualizarChecadasJSON/{noEmpleado}/{noTarjeta}/{pueClave}/{fechaHoraEntrada}")
+    @GET("ActualizarChecadasJSON/{noEmpleado}/{noTarjeta}/{pueClave}/{fechaHoraEntrada}/{faseIngreso}")
     Call<List<respuestaChecadas>> getActualizarChecadas(@Path("noEmpleado") String noEmpleado,
                                                         @Path("noTarjeta") String noTarjeta,
                                                         @Path("pueClave") String pueClave,
-                                                        @Path("fechaHoraEntrada") String fechaHoraEntrada);
+                                                        @Path("fechaHoraEntrada") String fechaHoraEntrada,
+                                                        @Path("faseIngreso") String faseIngreso);
 
 /*con parametros
     @FormUrlEncoded

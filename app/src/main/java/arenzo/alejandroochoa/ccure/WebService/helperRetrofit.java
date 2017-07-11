@@ -268,8 +268,8 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarChecadas(String NoEmpleado, String NoTarjeta, String PueClave, String fecha, final int totalPeticiones, final int numeroPeticion, final Context context, final ProgressDialog anillo) {
-        Call<List<respuestaChecadas>> checadasCall = helper.getActualizarChecadas(NoEmpleado, NoTarjeta, PueClave, fecha);
+    public void actualizarChecadas(String NoEmpleado, String NoTarjeta, String PueClave, String fecha, final int totalPeticiones, final int numeroPeticion, final Context context, final ProgressDialog anillo, final String faseIngreso) {
+        Call<List<respuestaChecadas>> checadasCall = helper.getActualizarChecadas(NoEmpleado, NoTarjeta, PueClave, fecha, faseIngreso);
         Log.d(TAG, "HICE LA PETICION ");
         checadasCall.enqueue(new Callback<List<respuestaChecadas>>() {
             @Override
