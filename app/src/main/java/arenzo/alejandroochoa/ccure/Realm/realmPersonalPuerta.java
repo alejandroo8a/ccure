@@ -1,5 +1,7 @@
 package arenzo.alejandroochoa.ccure.Realm;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -9,10 +11,11 @@ import io.realm.annotations.PrimaryKey;
 
 public class realmPersonalPuerta extends RealmObject {
 
-    @PrimaryKey
+
     private String NoEmpleado;
     private String NoTarjeta;
-    private int PUEId;
+    private String PUEId;
+    private String ClavePuerta;
 
     private String Fase;
     private String MFechaHora;
@@ -34,11 +37,11 @@ public class realmPersonalPuerta extends RealmObject {
         NoTarjeta = noTarjeta;
     }
 
-    public int getPUEId() {
+    public String getPUEId() {
         return PUEId;
     }
 
-    public void setPUEId(int PUEId) {
+    public void setPUEId(String PUEId) {
         this.PUEId = PUEId;
     }
 
@@ -64,5 +67,13 @@ public class realmPersonalPuerta extends RealmObject {
 
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
+    }
+
+    public String getClavePuerta() {
+        return ClavePuerta;
+    }
+
+    public void setClavePuerta(String clavePuerta) {
+        ClavePuerta = clavePuerta;
     }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/drawer_layout"
     android:layout_height="match_parent"
-    tools:context="arenzo.alejandroochoa.ccure.nucleo">
+    tools:context="arenzo.alejandroochoa.ccure.Activities.nucleo">
 
     <include
         layout="@layout/app_bar_menu_principal"

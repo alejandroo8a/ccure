@@ -1,18 +1,18 @@
 package arenzo.alejandroochoa.ccure.Realm;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by AlejandroMissael on 22/04/2017.
+ * Created by AlejandroMissael on 29/06/2017.
  */
 
-public class realmPersonal extends RealmObject {
-
+public class realmUsuario extends RealmObject {
 
     private String NoEmpleado;
     private String NoTarjeta;
-
+    private String Nombre;
+    private String Empresa;
+    private String Tipo;
     private String Fase;
     private String MFechaHora;
     private String MUsuarioId;
@@ -31,6 +31,30 @@ public class realmPersonal extends RealmObject {
 
     public void setNoTarjeta(String noTarjeta) {
         NoTarjeta = noTarjeta;
+    }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+    }
+
+    public String getEmpresa() {
+        return Empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        Empresa = empresa;
+    }
+
+    public String getTipo() {
+        return Tipo;
+    }
+
+    public void setTipo(String tipo) {
+        Tipo = tipo;
     }
 
     public String getFase() {

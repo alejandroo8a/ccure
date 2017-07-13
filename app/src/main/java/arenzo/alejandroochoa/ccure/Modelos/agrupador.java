@@ -1,36 +1,32 @@
-package arenzo.alejandroochoa.ccure.Realm;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+package arenzo.alejandroochoa.ccure.Modelos;
 
 /**
- * Created by AlejandroMissael on 22/04/2017.
+ * Created by AlejandroMissael on 27/06/2017.
  */
 
-public class realmPersonal extends RealmObject {
+public class agrupador {
 
+    private int AGRId;
 
-    private String NoEmpleado;
-    private String NoTarjeta;
-
+    private String Descripcion;
     private String Fase;
     private String MFechaHora;
     private String MUsuarioId;
 
-    public String getNoEmpleado() {
-        return NoEmpleado;
+    public int getAGRId() {
+        return AGRId;
     }
 
-    public void setNoEmpleado(String noEmpleado) {
-        NoEmpleado = noEmpleado;
+    public void setAGRId(int AGRId) {
+        this.AGRId = AGRId;
     }
 
-    public String getNoTarjeta() {
-        return NoTarjeta;
+    public String getDescripcion() {
+        return Descripcion;
     }
 
-    public void setNoTarjeta(String noTarjeta) {
-        NoTarjeta = noTarjeta;
+    public void setDescripcion(String descripcion) {
+        Descripcion = descripcion;
     }
 
     public String getFase() {

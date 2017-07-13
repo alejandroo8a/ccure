@@ -4,26 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="arenzo.alejandroochoa.ccure.loginManual">
+    tools:context="arenzo.alejandroochoa.ccure.Activities.loginManual">
 
-    <TextView
+    <arenzo.alejandroochoa.ccure.Helpers.reloj
         android:id="@+id/txtFechaLoginManual"
-        android:layout_width="118dp"
-        android:layout_height="20dp"
-        android:gravity="center"
-        android:text="22-04-2017 12:23:16"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:text="DigitalClock"
+        android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnLoginManual"
         android:layout_width="88dp"
         android:layout_height="42dp"
         android:text="@string/entrar"
+        android:background="@color/primary_light"
+        android:textColor="@android:color/white"
+        android:foreground="?android:attr/selectableItemBackground"
         android:layout_marginTop="45dp"
         app:layout_constraintTop_toBottomOf="@+id/edtNumeroEmpleado"
         android:layout_marginRight="8dp"
@@ -35,25 +38,29 @@
         android:id="@+id/edtNumeroEmpleado"
         android:layout_width="218dp"
         android:layout_height="45dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="2389"
-        android:layout_marginTop="41dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtNumeroEmpleado"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="41dp"
+        android:ems="10"
+        android:hint="2389"
+        android:inputType="number"
+        android:maxLength="5"
+        android:singleLine="true"
+        android:textSize="18dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtNumeroEmpleado" />
 
     <TextView
         android:id="@+id/txtNumeroEmpleado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/escribe_tu_numero_de_empleado"
-        android:layout_marginTop="27dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtFechaLoginManual"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/escribe_tu_numero_de_empleado"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtFechaLoginManual" />
 </android.support.constraint.ConstraintLayout>

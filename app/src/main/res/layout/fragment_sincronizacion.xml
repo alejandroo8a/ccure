@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="arenzo.alejandroochoa.ccure.sincronizacion">
-
-    <!-- TODO: Update blank fragment layout -->
+    tools:context="arenzo.alejandroochoa.ccure.Fragments.sincronizacion">
 
 
     <TextView
@@ -14,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/sincronizaci_n"
+        android:textSize="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,21 +21,35 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="@string/selecciona_una_opci_n_para_exportar_la_informaci_n"
+        app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintHorizontal_bias="0.501" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/btnSincronizar"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:background="@color/primary_light"
+        android:text="Sincronizar"
+        android:textColor="@android:color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <RadioGroup
-        android:layout_width="191dp"
-        android:layout_height="69dp"
+        android:id="@+id/radioGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
-        android:id="@+id/radioGroup">
+        app:layout_constraintHorizontal_bias="0.0">
 
         <RadioButton
             android:id="@+id/rdRed"
@@ -44,24 +57,36 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginRight="12dp"
-            android:text="@string/red" />
+            android:text="@string/red"
+            android:textSize="18dp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_weight="1" />
 
         <RadioButton
             android:id="@+id/rdArchivo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
-            android:text="@string/archivo" />
+            android:layout_weight="1"
+            android:text="@string/archivo"
+            android:textSize="18dp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:id="@+id/rdLeerArchivo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Leer archivo"
+            android:textSize="18dp" />
     </RadioGroup>
 
-    <Button
-        android:id="@+id/btnSincronizar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sincronizar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 </android.support.constraint.ConstraintLayout>

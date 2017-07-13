@@ -3,236 +3,179 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="arenzo.alejandroochoa.ccure.checadas">
+    tools:context="arenzo.alejandroochoa.ccure.Fragments.checadas"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
 
-    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/txtCaseta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="CASETA ENTRADA A MINA 1090"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="338dp"
-        android:layout_height="218dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:background="@drawable/custom_border"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/constraintDatos"
-        android:id="@+id/constraintRfid">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="135dp"
-            android:layout_height="88dp"
-            app:srcCompat="@drawable/im_rfid"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView13"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <EditText
-            android:id="@+id/edtNumeroEmpleado"
-            android:layout_width="304dp"
-            android:layout_height="31dp"
-            android:background="@drawable/borde"
-            android:ems="10"
-            android:hint="Numero"
-            android:inputType="textPersonName"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView14"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintHorizontal_bias="0.073"
-            tools:layout_editor_absoluteY="171dp" />
-
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No. Empleado"
-            android:layout_marginTop="14dp"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Registro de entradas y salidas."
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="304dp"
-        android:layout_height="159dp"
-        android:background="@drawable/custom_border"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/constraintModo"
+    <com.kyleduo.switchbutton.SwitchButton
+        android:id="@+id/sbTipoChecada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/icons"
+        app:kswTextOn= "Entrada"
+        app:kswTextOff= "Salida "
+        app:kswThumbMargin="@dimen/ksw_md_thumb_shadow_inset_top"
+        app:kswThumbHeight="50dp"
+        app:kswThumbWidth="50dp"
+        android:textSize="35dp"
+        app:kswThumbColor="@color/icons"
+        style="@style/AppTheme"
+        app:kswAnimationDuration="300"
+        app:kswBackColor="@color/primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtCaseta"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/constraintRfid"
         android:layout_marginLeft="8dp"
-        app:layout_constraintHorizontal_bias="0.111">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:background="@drawable/cuadro_verde"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="0dp"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/txtNoEmpleado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No. Empleado"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/sbTipoChecada"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        tools:layout_editor_absoluteX="149dp" />
+
+    <EditText
+        android:id="@+id/edtNoEmpleado"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/borde"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="number"
+        android:maxLength="5"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtNoEmpleado" />
+
+    <ImageView
+        android:id="@+id/imgFondoGuardia"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:src="@color/divider"
+        app:layout_constraintBottom_toTopOf="@+id/imgFondoAcceso"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtNoEmpleado" />
+
+    <ImageView
+        android:id="@+id/imgFondoAcceso"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:src="@android:color/holo_green_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dario Anastacio Verón"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="@+id/imgFondoGuardia"
+        app:layout_constraintEnd_toEndOf="@+id/imgFondoGuardia"
+        app:layout_constraintStart_toStartOf="@+id/imgFondoGuardia"
+        android:layout_marginStart="8dp" />
+
+    <TextView
+        android:id="@+id/txtPuestoEmpresa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Guardia-Peña Colorada"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtNombre" />
+
+    <ImageView
+        android:id="@+id/imgFotoPerfil"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPuestoEmpresa"
+        tools:layout_editor_absoluteX="105dp" />
+
+    <TextView
+        android:id="@+id/txtResultadoChecada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Acceso correcto"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp" />
 
 
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/txtNombreTrabajador"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="8dp"
-            android:text="MORA LOPEZ LUIS"
-            app:layout_constraintBottom_toTopOf="@+id/txtTarjetaEmpleado"
-            app:layout_constraintLeft_toRightOf="@+id/imEmpleado" />
-
-        <TextView
-            android:id="@+id/txtTarjetaEmpleado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="8dp"
-            android:text="No. Tarjeta: 9407653"
-            app:layout_constraintBottom_toTopOf="@+id/txtCuentaEmpleado"
-            app:layout_constraintLeft_toRightOf="@+id/imEmpleado" />
-
-        <TextView
-            android:id="@+id/txtCuentaEmpleado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:text="No. Empleado: 8785"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/imEmpleado" />
-
-        <ImageView
-            android:id="@+id/imEmpleado"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:srcCompat="@drawable/ic_card" />
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintModo"
-        android:layout_width="202dp"
-        android:layout_height="92dp"
-        android:background="@drawable/custom_border"
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/imgIndicadorOnline"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:background="@drawable/cuadro_verde"
+        android:elevation="1dp"
+        app:civ_border_width="9dp"
+        app:civ_shadow="true"
+        app:civ_shadow_radius="10"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <Button
-            android:id="@+id/btnCambiar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="0dp"
-            android:text="Cambiar"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtModo" />
-
-        <TextView
-            android:id="@+id/txtModo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Modo: ENTRADA"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintDatos"
-        android:layout_width="443dp"
-        android:layout_height="92dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/custom_border"
-        app:layout_constraintHorizontal_bias="0.533"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/constraintModo"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/edtPuerta"
-            android:layout_width="323dp"
-            android:layout_height="28dp"
-            android:layout_marginBottom="-1dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/borde"
-            android:ems="10"
-            android:hint="Puerta en la que está"
-            android:inputType="textPersonName"
-            android:singleLine="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edtGuardia" />
-
-        <EditText
-            android:id="@+id/edtGuardia"
-            android:layout_width="323dp"
-            android:layout_height="28dp"
-            android:background="@drawable/borde"
-            android:ems="10"
-            android:hint="Nombre del guardia"
-            android:inputType="textPersonName|textVisiblePassword"
-            android:singleLine="true"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp" />
-
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Guardia"
-            android:layout_marginLeft="24dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="18dp" />
-
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Puerta"
-            android:layout_marginLeft="34dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
-    </android.support.constraint.ConstraintLayout>
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -3,6 +3,10 @@
     package="arenzo.alejandroochoa.ccure">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".Realm.baseDatos"
@@ -12,15 +16,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppThemeActionBar">
-        <activity android:name=".main" android:screenOrientation="portrait">
+        <activity
+            android:name=".Activities.main"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".loginManual" android:screenOrientation="portrait"/>
-        <activity android:name=".nucleo" android:label="@string/app_name" android:screenOrientation="landscape" android:theme="@style/AppTheme" ></activity>
+        <activity
+            android:name=".Activities.loginManual"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.nucleo"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".Activities.configuracionUnica"></activity>
     </application>
 
 </manifest>
