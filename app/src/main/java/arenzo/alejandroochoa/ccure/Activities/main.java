@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,7 +30,7 @@ import arenzo.alejandroochoa.ccure.Helpers.vista;
 
 public class main extends AppCompatActivity implements vista {
 
-    //TODO HACER LOGIN
+
     final static int CODIGO_ESCRITURA = 100;
     private final static String TAG = "main";
     private SharedPreferences PREF_MAIN;
@@ -170,6 +171,7 @@ public class main extends AppCompatActivity implements vista {
 
     private void comprobarConfiguracion(){
         boolean configurado = PREF_MAIN.getBoolean("CONFIGURADO", false);
+        Log.d(TAG, "comprobarConfiguracion: "+configurado);
         if (!configurado){
             mostrarConfiguracion();
         }

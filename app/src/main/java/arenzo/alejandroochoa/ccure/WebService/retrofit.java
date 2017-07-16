@@ -22,7 +22,7 @@ import retrofit2.http.Path;
 
 public interface retrofit{
 
-    public static String URL = "http://192.168.1.10/CCUREMOVIL/ServiceMethods.svc/";
+    //public static String URL = "http://192.168.1.10/CCUREMOVIL/ServiceMethods.svc/";
 
     @GET("ValidarEmpleadoJSON/{noEmpleado}/{noTarjeta}/{clavePuerta}")
     Call<validarEmpleado> getValidarEmpleado(@Path("noEmpleado") String noEmpleado,

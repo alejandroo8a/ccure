@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,15 +22,11 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
@@ -54,7 +49,6 @@ import io.realm.RealmResults;
 
 public class sincronizacion extends Fragment {
 
-    //TODO HACER LECTURA DE ARCHIVO
     private final static String TAG = "sincronizacion";
 
     private RadioButton rdRed, rdArchivo, rdLeerArchivo;
@@ -174,12 +168,12 @@ public class sincronizacion extends Fragment {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.clear(realmPuerta.class);
-                realm.clear(realmPersonal.class);
-                realm.clear(realmPersonalInfo.class);
-                realm.clear(realmPersonalPuerta.class);
-                realm.clear(realmESPersonal.class);
-                realm.clear(realmNotificacion.class);
+                realm.delete(realmPuerta.class);
+                realm.delete(realmPersonal.class);
+                realm.delete(realmPersonalInfo.class);
+                realm.delete(realmPersonalPuerta.class);
+                realm.delete(realmESPersonal.class);
+                realm.delete(realmNotificacion.class);
                 saberEstadoConsulta = true;
             }
         });
@@ -304,7 +298,7 @@ public class sincronizacion extends Fragment {
             personalPuerta personalPuerta = new personalPuerta();
             personalPuerta.setNoEmpleado(elementosPersonalPuerta[0]);
             personalPuerta.setNoTarjeta(elementosPersonalPuerta[1]);
-            personalPuerta.setClavePuerta(elementosPersonalPuerta[2]);
+            personalPuerta.setGRUId(elementosPersonalPuerta[2]);
             personalPuerta.setPUEId(elementosPersonalPuerta[3]);
             aPersonalPuerta.add(personalPuerta);
         }
@@ -417,12 +411,12 @@ public class sincronizacion extends Fragment {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    realm.clear(realmPuerta.class);
-                    realm.clear(realmPersonal.class);
-                    realm.clear(realmPersonalInfo.class);
-                    realm.clear(realmPersonalPuerta.class);
-                    realm.clear(realmESPersonal.class);
-                    realm.clear(realmNotificacion.class);
+                    realm.delete(realmPuerta.class);
+                    realm.delete(realmPersonal.class);
+                    realm.delete(realmPersonalInfo.class);
+                    realm.delete(realmPersonalPuerta.class);
+                    realm.delete(realmESPersonal.class);
+                    realm.delete(realmNotificacion.class);
                     saberEstadoConsulta = true;
                 }
             });

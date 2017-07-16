@@ -1,5 +1,6 @@
 package arenzo.alejandroochoa.ccure.WebService;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -52,6 +53,7 @@ public class helperRetrofit {
     private retrofit helper;
 
     public helperRetrofit(String url) {
+        Log.d(TAG, "ME CONFIGURÉ CON LA IP "+ url);
         configurarAdapterRetrofit(url);
     }
 
@@ -87,7 +89,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: "+t.getMessage());
                 anillo.dismiss();
             }
         });
@@ -103,7 +105,7 @@ public class helperRetrofit {
                 }
                 List<usuario> aTarjetasPersonal = response.body();
                 Log.d(TAG, "OBTUVE TARJETAS PERSONAL "+aTarjetasPersonal.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarTarjetasPersonal(aTarjetasPersonal)){
                     obtenerPersonalPuerta(context, anillo, mostrarPrimerPantalla);
                 }
@@ -111,7 +113,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA ObtenerTarjetasPersonal FALLO: "+t.getMessage());
                 anillo.dismiss();
             }
         });
@@ -128,7 +130,7 @@ public class helperRetrofit {
                 }
                 List<personalPuerta> aPersonalPuerta = response.body();
                 Log.d(TAG, "OBTUVE PERSONAL PUERTA "+ aPersonalPuerta.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarPersonalPuerta(aPersonalPuerta)){
                     obtenerUsuarios(context, anillo, mostrarPrimerPantalla);
                 }
@@ -136,7 +138,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<personalPuerta>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA obtenerPersonalPuerta FALLO: "+t.getMessage());
                 anillo.dismiss();
             }
         });
@@ -152,7 +154,6 @@ public class helperRetrofit {
                 }
                 List<personalInfo> aPersonalInfo = response.body();
                 Log.d(TAG, "OBTUVE EL PERSONAL INFO "+aPersonalInfo.size());
-                Realm.getInstance(context);
                 if (RealmController.getInstance().insertarInfoPersonal(aPersonalInfo)){
                     ObtenerTarjetasPersonal(context, anillo, mostrarPrimerPantalla);
                 }
@@ -160,8 +161,8 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<personalInfo>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
-                anillo.dismiss();
+                Log.e(TAG, "LA CONSULTA obtenerPersonalInfo FALLO: "+t.getMessage());
+                obtenerPersonalInfo(context,anillo, mostrarPrimerPantalla);
             }
         });
     }
@@ -176,7 +177,7 @@ public class helperRetrofit {
                 }
                 List<usuario> aUsuarios = response.body();
                 Log.d(TAG, "OBTUVE USUARIOS " + aUsuarios.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarUsuarios(aUsuarios)){
                     actualizarAgrupadorPuerta(context, anillo, mostrarPrimerPantalla);
                 }
@@ -184,13 +185,13 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA obtenerUsuarios FALLO: "+t.getMessage());
                 anillo.dismiss();
             }
         });
     }
 
-    public void actualizarAgrupadores(final Context context, final ProgressDialog anillo, final Spinner spPuertasUnico){
+    public void actualizarAgrupadores(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico){
         Call<List<agrupador>> puertasCall = helper.getAgrupadores();
         puertasCall.enqueue(new Callback<List<agrupador>>() {
             @Override
@@ -200,22 +201,22 @@ public class helperRetrofit {
                 }
                 List<agrupador> aAgrupadores = response.body();
                 Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADORES "+aAgrupadores.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarAgrupador(aAgrupadores)){
-                    actualizarPuertas(context, anillo, spPuertasUnico, aAgrupadores);
+                    actualizarPuertas(activity, anillo, spPuertasUnico, aAgrupadores);
                 }
             }
 
             @Override
             public void onFailure(Call<List<agrupador>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA actualizarAgrupadores FALLO: "+t.getMessage());
                 anillo.dismiss();
             }
         });
     }
 
 
-    public void actualizarPuertas(final Context context, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores){
+    public void actualizarPuertas(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores){
         Call<List<puertas>> puertasCall = helper.getActualizarPuertas();
         puertasCall.enqueue(new Callback<List<puertas>>() {
             @Override
@@ -225,16 +226,16 @@ public class helperRetrofit {
                 }
                 List<puertas> aPersonalPuerta = response.body();
                 Log.d(TAG, "OBTUVE ACTUALIZAR PUERTAS "+aPersonalPuerta.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarPuertas(aPersonalPuerta)){
-                    llenarSpinnerAgrupador(context, aAgrupadores, spPuertasUnico);
+                    llenarSpinnerAgrupador(activity.getApplicationContext(), aAgrupadores, spPuertasUnico);
                     anillo.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<List<puertas>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA actualizarPuertas FALLO: "+t.getMessage());
                 anillo.dismiss();
             }
         });
@@ -250,7 +251,7 @@ public class helperRetrofit {
                 }
                 List<agrupadorPuerta> aAgrupadorPuerta = response.body();
                 Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADOR PUERTA "+aAgrupadorPuerta.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarAgrupadorPuerta(aAgrupadorPuerta)){
                     anillo.dismiss();
                     if (mostrarPrimerPantalla){
@@ -262,7 +263,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuerta FALLO: "+t.getMessage());
                 anillo.dismiss();
             }
         });
@@ -288,7 +289,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<respuestaChecadas>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: " + t.getMessage());
+                Log.e(TAG, "LA CONSULTA actualizarChecadas FALLO: " + t.getMessage());
             }
         });
     }
@@ -312,7 +313,7 @@ public class helperRetrofit {
                     return;
                 }
                 List<puertas> aPuertas = response.body();
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarPuertas(aPuertas)){
                     obtenerPersonalPuertaSincronizacion(context, anillo);
                 }
@@ -320,7 +321,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<puertas>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA actualizarPuertasSincronizacion FALLO: "+t.getMessage());
                 actualizarPuertasSincronizacion(context, anillo);
             }
         });
@@ -336,7 +337,7 @@ public class helperRetrofit {
                 }
                 List<personalPuerta> aPersonalPuerta = response.body();
                 Log.d(TAG, "OBTUVE PERSONAL PUUERTA "+ aPersonalPuerta.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarPersonalPuerta(aPersonalPuerta)){
                     ObtenerTarjetasPersonalSincronizacion(context, anillo);
                 }
@@ -344,7 +345,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<personalPuerta>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA obtenerPersonalPuertaSincronizacion FALLO: "+t.getMessage());
                 obtenerPersonalPuertaSincronizacion(context, anillo);
             }
         });
@@ -360,7 +361,7 @@ public class helperRetrofit {
                 }
                 List<usuario> aTarjetasPersonal = response.body();
                 Log.d(TAG, "OBTUVE OBTENER TARJETAS PERSONAL "+aTarjetasPersonal.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarTarjetasPersonal(aTarjetasPersonal)){
                     obtenerPersonalInfoSincronizacion(context, anillo);
                 }
@@ -368,7 +369,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA ObtenerTarjetasPersonalSincronizacion FALLO: "+t.getMessage());
                 ObtenerTarjetasPersonalSincronizacion(context, anillo);
             }
         });
@@ -385,7 +386,7 @@ public class helperRetrofit {
                 }
                 List<personalInfo> aPersonalInfo = response.body();
                 Log.d(TAG, "OBTUVE EL PERSONAL INFO "+aPersonalInfo.size());
-                Realm.getInstance(context);
+                Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarInfoPersonal(aPersonalInfo)){
                     anillo.dismiss();
                     new sincronizacion().resultadoDialog("El proceso ha finalizado correctamente. El dispositivo quedó actualizado con la información.", context);
@@ -394,7 +395,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<personalInfo>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA obtenerPersonalInfoSincronizacion FALLO: "+t.getMessage());
                 obtenerPersonalInfoSincronizacion(context, anillo);
             }
         });

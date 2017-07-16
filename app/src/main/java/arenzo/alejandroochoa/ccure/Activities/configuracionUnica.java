@@ -172,7 +172,7 @@ public class configuracionUnica extends AppCompatActivity {
 
     private void obtenerTodosDatos(){
         mostrarCargandoAnillo("Obteniendo todos los datos...");
-        helperRetrofit helper = new helperRetrofit(retrofit.URL);
+        helperRetrofit helper = new helperRetrofit(PREF_CONFIGURACION_UNICA.getString("URL",""));
         helper.obtenerPersonalInfo(getApplicationContext(), this.anillo, true);
     }
 

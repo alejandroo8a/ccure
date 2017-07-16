@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class realmPersonalInfo extends RealmObject {
 
-    @PrimaryKey
+
     private String NoEmpleado;
 
     private String Nombre;

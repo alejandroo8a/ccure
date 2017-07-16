@@ -25,11 +25,14 @@ import io.realm.RealmResults;
 public class RealmController {
     private final static String TAG = "RealmController";
     private static RealmController instance;
-    private final Realm realm;
-    private int siguienteId = 0;
+    private static Realm realm;
     private Boolean saberEstadoConsulta = false;
 
     public RealmController(Application application) {
+        realm = Realm.getDefaultInstance();
+    }
+
+    public RealmController() {
         realm = Realm.getDefaultInstance();
     }
 
@@ -56,7 +59,6 @@ public class RealmController {
     }
 
     public static RealmController getInstance() {
-
         return instance;
     }
 
@@ -75,8 +77,7 @@ public class RealmController {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realmDispositivo dispositivo = realm.createObject(realmDispositivo.class);
-                dispositivo.setDISId(1);
+                realmDispositivo dispositivo = realm.createObject(realmDispositivo.class,1);
                 dispositivo.setDescripcion(descripcion);
                 dispositivo.setFase(fase);
                 dispositivo.setAGRId(AGRId);
@@ -263,8 +264,7 @@ public class RealmController {
             @Override
             public void execute(Realm realm) {
                 for (agrupador agrupador : aAgrupador){
-                    realmAgrupador rAgrupador = realm.createObject(realmAgrupador.class);
-                    rAgrupador.setAGRId(agrupador.getAGRId());
+                    realmAgrupador rAgrupador = realm.createObject(realmAgrupador.class, agrupador.getAGRId());
                     rAgrupador.setDescripcion(agrupador.getDescripcion());
                     rAgrupador.setFase(agrupador.getFase());
                     rAgrupador.setMFechaHora(obtenerFecha());
@@ -282,8 +282,7 @@ public class RealmController {
             @Override
             public void execute(Realm realm) {
                 for (puertas puerta : aPersonalPuerta){
-                    realmPuerta rPuerta = realm.createObject(realmPuerta.class);
-                    rPuerta.setPUEId(puerta.getPUEId());
+                    realmPuerta rPuerta = realm.createObject(realmPuerta.class, puerta.getPUEId());
                     rPuerta.setPUEClave(puerta.getPUEClave());
                     rPuerta.setGRUID(puerta.getGRUID());
                     rPuerta.setDescripcion(puerta.getDescripcion());
@@ -422,15 +421,15 @@ public class RealmController {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.clear(realmPuerta.class);
-                realm.clear(realmPersonal.class);
-                realm.clear(realmPersonalInfo.class);
-                realm.clear(realmPersonalPuerta.class);
-                realm.clear(realmESPersonal.class);
-                realm.clear(realmNotificacion.class);
-                realm.clear(realmAgrupador.class);
-                realm.clear(realmAgrupadorPuerta.class);
-                realm.clear(realmUsuario.class);
+                realm.delete(realmPuerta.class);
+                realm.delete(realmPersonal.class);
+                realm.delete(realmPersonalInfo.class);
+                realm.delete(realmPersonalPuerta.class);
+                realm.delete(realmESPersonal.class);
+                realm.delete(realmNotificacion.class);
+                realm.delete(realmAgrupador.class);
+                realm.delete(realmAgrupadorPuerta.class);
+                realm.delete(realmUsuario.class);
                 saberEstadoConsulta = true;
             }
         });
