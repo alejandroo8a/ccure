@@ -13,6 +13,7 @@ public class realmESPersonal extends RealmObject {
     private String NoEmpleado;
     private String NoTarjeta;
     private String PUEId;
+    private String GRUId;
     private String FechaHoraEntrada;
 
     private String FaseIngreso;
@@ -44,6 +45,14 @@ public class realmESPersonal extends RealmObject {
 
     public void setPUEId(String PUEId) {
         this.PUEId = PUEId;
+    }
+
+    public String getGRUId() {
+        return GRUId;
+    }
+
+    public void setGRUId(String GRUId) {
+        this.GRUId = GRUId;
     }
 
     public String getFechaHoraEntrada() {

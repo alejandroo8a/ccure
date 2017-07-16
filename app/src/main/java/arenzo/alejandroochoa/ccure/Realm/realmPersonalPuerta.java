@@ -15,7 +15,7 @@ public class realmPersonalPuerta extends RealmObject {
     private String NoEmpleado;
     private String NoTarjeta;
     private String PUEId;
-    private String ClavePuerta;
+    private String GRUId;
 
     private String Fase;
     private String MFechaHora;
@@ -69,11 +69,11 @@ public class realmPersonalPuerta extends RealmObject {
         this.MUsuarioId = MUsuarioId;
     }
 
-    public String getClavePuerta() {
-        return ClavePuerta;
+    public String getGRUId() {
+        return GRUId;
     }
 
-    public void setClavePuerta(String clavePuerta) {
-        ClavePuerta = clavePuerta;
+    public void setGRUId(String GRUId) {
+        this.GRUId = GRUId;
     }
 }

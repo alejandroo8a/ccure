@@ -164,6 +164,8 @@ public class configuracionUnica extends AppCompatActivity {
         editor.putInt("IDPUERTASALIDA", puerta2.getPUEId());
         editor.putString("CLAVEPUERTAENTRADA", puerta1.getPUEClave());
         editor.putString("CLAVEPUERTASALIDA", puerta2.getPUEClave());
+        editor.putString("GRUIDENTRADA", puerta1.getPUEClave());
+        editor.putString("GRUIDSALIDA", puerta2.getGRUID());
         editor.putInt("IDAGRUPADOR", idAgrupador);
         editor.commit();
     }

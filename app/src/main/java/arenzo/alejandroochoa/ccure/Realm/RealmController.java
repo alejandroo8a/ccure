@@ -69,32 +69,6 @@ public class RealmController {
         realm.refresh();
     }
 
-     //OBTENER EL ULTIMO ID DE UNA TABLA Y GENERAR UNO NUEVO
-    public int obtenerIdDispositivo(){
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                Number currentIdNum = realm.where(realmDispositivo.class).maximumInt("DISId");
-                if(currentIdNum == null) {
-                    siguienteId = 1;
-                } else {
-                    siguienteId = currentIdNum.intValue() + 1;
-                }
-            }
-        });
-        return siguienteId;
-    }
-
-    public int obtenerIdPuerta(){
-        Number currentIdNum = realm.where(realmPuerta.class).maximumInt("PUEId");
-        if(currentIdNum == null) {
-            siguienteId = 1;
-        } else {
-            siguienteId = currentIdNum.intValue() + 1;
-        }
-        return siguienteId;
-    }
-
     //INSERCIONES
     public boolean insertarConfiguracion(final String descripcion, final String fase, final int AGRId, final String URLWebService, final String URLExportacion, final String MUsuarioId){
         saberEstadoConsulta = false;
@@ -116,7 +90,7 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEId,  final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada){
+    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEId, final String GRUId, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada){
         saberEstadoConsulta = false;
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -125,6 +99,7 @@ public class RealmController {
                 personal.setNoEmpleado(NoEmpleado);
                 personal.setNoTarjeta(NoTarjeta);
                 personal.setPUEId(PUEId);
+                personal.setGRUId(GRUId);
                 personal.setFechaHoraEntrada(obtenerFecha());
                 personal.setFaseIngreso(FaseIngreso);
                 personal.setFase(Fase);
@@ -191,7 +166,7 @@ public class RealmController {
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
-                    rPersonal.setMUsuarioId("1");
+                    rPersonal.setMUsuarioId("CONFIGURACION");
                 }
                 saberEstadoConsulta = true;
             }
@@ -250,7 +225,7 @@ public class RealmController {
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
                     rPersonal.setPUEId(persona.getPUEId());
-                    rPersonal.setClavePuerta(persona.getClavePuerta());
+                    rPersonal.setGRUId(persona.getGRUId());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId("CONFIGURACION");
@@ -271,7 +246,7 @@ public class RealmController {
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
                     rPersonal.setPUEId(persona.getPUEId());
-                    rPersonal.setClavePuerta(persona.getClavePuerta());
+                    rPersonal.setGRUId(persona.getGRUId());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId(idUsuario);
@@ -310,6 +285,7 @@ public class RealmController {
                     realmPuerta rPuerta = realm.createObject(realmPuerta.class);
                     rPuerta.setPUEId(puerta.getPUEId());
                     rPuerta.setPUEClave(puerta.getPUEClave());
+                    rPuerta.setGRUID(puerta.getGRUID());
                     rPuerta.setDescripcion(puerta.getDescripcion());
                     rPuerta.setFase(puerta.getFase());
                     rPuerta.setGRUID(puerta.getGRUID());
@@ -331,6 +307,7 @@ public class RealmController {
                     realmPuerta rPuerta = realm.createObject(realmPuerta.class);
                     rPuerta.setPUEId(puerta.getPUEId());
                     rPuerta.setPUEClave(puerta.getPUEClave());
+                    rPuerta.setGRUID(puerta.getGRUID());
                     rPuerta.setDescripcion(puerta.getDescripcion());
                     rPuerta.setFase(puerta.getFase());
                     rPuerta.setGRUID(puerta.getGRUID());
@@ -352,6 +329,7 @@ public class RealmController {
                     realmAgrupadorPuerta rAgrupadorPuerta = realm.createObject(realmAgrupadorPuerta.class);
                     rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
                     rAgrupadorPuerta.setPUEId(agrupadorPuerta.getPUEId());
+                    rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
                     rAgrupadorPuerta.setFase(agrupadorPuerta.getFase());
                     rAgrupadorPuerta.setFechaHora(obtenerFecha());
                     rAgrupadorPuerta.setMUsuarioId("CONFIGURACION");
@@ -408,8 +386,8 @@ public class RealmController {
         return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }
 
-    public realmPersonalPuerta obtenerPersonalManual(String numeroEmpleado, String clavePuerta){
-        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("ClavePuerta", clavePuerta).findFirst();
+    public realmPersonalPuerta obtenerPersonalManual(String numeroEmpleado, String PUEId, String AGRId){
+        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("PUEId", PUEId).equalTo("AGRId", AGRId).findFirst();
     }
 
     public realmUsuario obtenerUsuario(String numeroEmpleado){

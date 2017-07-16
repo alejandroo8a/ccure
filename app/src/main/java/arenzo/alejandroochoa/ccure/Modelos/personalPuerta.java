@@ -6,20 +6,20 @@ package arenzo.alejandroochoa.ccure.Modelos;
 
 public class personalPuerta {
 
-    private String ClavePuerta;
     private String NoEmpleado;
     private String NoTarjeta;
     private String PUEId;
+    private String GRUId;
 
     public personalPuerta() {
     }
 
-    public String getClavePuerta() {
-        return ClavePuerta;
+    public String getPUEId() {
+        return PUEId;
     }
 
-    public void setClavePuerta(String clavePuerta) {
-        ClavePuerta = clavePuerta;
+    public void setPUEId(String PUEId) {
+        this.PUEId = PUEId;
     }
 
     public String getNoEmpleado() {
@@ -38,11 +38,11 @@ public class personalPuerta {
         NoTarjeta = noTarjeta;
     }
 
-    public String getPUEId() {
-        return PUEId;
+    public String getGRUId() {
+        return GRUId;
     }
 
-    public void setPUEId(String PUEId) {
-        this.PUEId = PUEId;
+    public void setGRUId(String GRUId) {
+        this.GRUId = GRUId;
     }
 }

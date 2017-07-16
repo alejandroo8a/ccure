@@ -102,7 +102,7 @@ public class helperRetrofit {
                     return;
                 }
                 List<usuario> aTarjetasPersonal = response.body();
-                Log.d(TAG, "OBTUVE OBTENER TARJETAS PERSONAL "+aTarjetasPersonal.size());
+                Log.d(TAG, "OBTUVE TARJETAS PERSONAL "+aTarjetasPersonal.size());
                 Realm.getInstance(context);
                 if (RealmController.getInstance().insertarTarjetasPersonal(aTarjetasPersonal)){
                     obtenerPersonalPuerta(context, anillo, mostrarPrimerPantalla);
@@ -127,7 +127,7 @@ public class helperRetrofit {
                     return;
                 }
                 List<personalPuerta> aPersonalPuerta = response.body();
-                Log.d(TAG, "OBTUVE PERSONAL PUUERTA "+ aPersonalPuerta.size());
+                Log.d(TAG, "OBTUVE PERSONAL PUERTA "+ aPersonalPuerta.size());
                 Realm.getInstance(context);
                 if (RealmController.getInstance().insertarPersonalPuerta(aPersonalPuerta)){
                     obtenerUsuarios(context, anillo, mostrarPrimerPantalla);
