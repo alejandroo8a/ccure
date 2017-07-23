@@ -1,5 +1,7 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by AlejandroMissael on 20/06/2017.
  */
@@ -8,18 +10,10 @@ public class personalPuerta {
 
     private String NoEmpleado;
     private String NoTarjeta;
-    private String PUEId;
+    @SerializedName("Grupo")
     private String GRUId;
 
     public personalPuerta() {
-    }
-
-    public String getPUEId() {
-        return PUEId;
-    }
-
-    public void setPUEId(String PUEId) {
-        this.PUEId = PUEId;
     }
 
     public String getNoEmpleado() {

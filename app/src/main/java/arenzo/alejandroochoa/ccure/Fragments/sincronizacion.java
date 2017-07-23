@@ -299,7 +299,6 @@ public class sincronizacion extends Fragment {
             personalPuerta.setNoEmpleado(elementosPersonalPuerta[0]);
             personalPuerta.setNoTarjeta(elementosPersonalPuerta[1]);
             personalPuerta.setGRUId(elementosPersonalPuerta[2]);
-            personalPuerta.setPUEId(elementosPersonalPuerta[3]);
             aPersonalPuerta.add(personalPuerta);
         }
         return RealmController.getInstance().insertarPersonalPuertaArchivo(aPersonalPuerta, PREF_SINCRONIZACION.getString("NUMERO_EMPLEADO", "CONFIGURACION"));

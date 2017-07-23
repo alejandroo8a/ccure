@@ -69,7 +69,7 @@ public class configuracionUnica extends AppCompatActivity {
     }
 
     private void cargarDatosVista(){
-        RealmController.with(this);
+        RealmController.getInstance();
         realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
         if (dispositivo != null){
             edtNombreDispositivoUnico.setText(dispositivo.getDescripcion().toString());
@@ -108,7 +108,7 @@ public class configuracionUnica extends AppCompatActivity {
 
 
     private void crearDialogError(String titulo,String mensaje){
-        AlertDialog.Builder dialog =  new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder dialog =  new AlertDialog.Builder(this);
         dialog.setTitle(titulo)
                 .setMessage(mensaje)
                 .setPositiveButton("Aceptar", null)
@@ -164,7 +164,7 @@ public class configuracionUnica extends AppCompatActivity {
         editor.putInt("IDPUERTASALIDA", puerta2.getPUEId());
         editor.putString("CLAVEPUERTAENTRADA", puerta1.getPUEClave());
         editor.putString("CLAVEPUERTASALIDA", puerta2.getPUEClave());
-        editor.putString("GRUIDENTRADA", puerta1.getPUEClave());
+        editor.putString("GRUIDENTRADA", puerta1.getGRUID());
         editor.putString("GRUIDSALIDA", puerta2.getGRUID());
         editor.putInt("IDAGRUPADOR", idAgrupador);
         editor.commit();

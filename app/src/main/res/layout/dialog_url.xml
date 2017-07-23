@@ -14,5 +14,5 @@
         android:inputType="textUri"
         android:maxLength="100"
         android:singleLine="true"
-        android:text="http://192.168.1.10/CCUREMOVIL/ServiceMethods.svc/" />
+        android:text="http://172.20.10.2/ws_CCMOV/ServiceMethods.svc/" />
 </LinearLayout>

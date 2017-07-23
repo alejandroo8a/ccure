@@ -36,7 +36,9 @@ import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
+import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
 import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
+import io.realm.RealmResults;
 
 
 public class checadas extends Fragment {
@@ -54,10 +56,13 @@ public class checadas extends Fragment {
     private String nombreCaseta;
     private int idCaseta;
     private String puertaClave;
+    private String PUEClave;
     private String GRUId;
     private SharedPreferences PREF_CHECADAS;
     private String URL;
     private String numeroEmpleado;
+
+    private realmPersonalPuerta personal;
 
     public checadas() {
     }
@@ -97,10 +102,11 @@ public class checadas extends Fragment {
             @Override
             public void onClick(View view) {
                 if ( edtNoEmpleado.getText().toString() != "0") {
-                    mostrarCargandoAnillo();
-                    realmPersonalPuerta personal = buscarPersonalLocal(edtNoEmpleado.getText().toString());
-                    realmPersonalInfo detallesPersonal = buscarDetallePersonaLocal(edtNoEmpleado.getText().toString());
                     ocultarTeclado();
+                    mostrarCargandoAnillo();
+                    RealmResults<realmPersonalPuerta> aPersonal = buscarPersonalLocal(edtNoEmpleado.getText().toString());
+                    buscarPUEClave(aPersonal);
+                    realmPersonalInfo detallesPersonal = buscarDetallePersonaLocal(edtNoEmpleado.getText().toString());
                     if (personal != null) {
                         ocultarCargandoAnillo();
                         mostrarAlertaEmpleado(getContext(), txtResultadoChecada, imgFondoAcceso, detallesPersonal, personal);
@@ -141,6 +147,19 @@ public class checadas extends Fragment {
                 txtCaseta.setText(nombreCaseta);
             }
         });
+    }
+
+    private void buscarPUEClave(RealmResults<realmPersonalPuerta> aPersonal){
+        for ( realmPersonalPuerta persona : aPersonal){
+            realmPuerta puerta = RealmController.getInstance().obtenerPUEClave(persona.getPUEId(), persona.getGRUId());
+            if (puerta!= null) {
+                PUEClave = puerta.getPUEClave();
+                personal = persona;
+                return;
+            }
+        }
+        PUEClave = null;
+        personal = null;
     }
 
     public void mostrarAlertaEmpleado(final Context context, final TextView txtResultadoChecada, final ImageView imgFondoAcceso, final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal){
@@ -204,31 +223,31 @@ public class checadas extends Fragment {
     private void guardarResultadoChecadaCorrecta(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal){
         RealmController.getInstance();
         if (personal != null)
-            RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(),String.valueOf(idCaseta), GRUId, "P", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+            RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(),PUEClave, "P", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
         else
-            RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), " ", String.valueOf(idCaseta), GRUId, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+            RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), " ", PUEClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
     }
 
     private void guardarResultadoChecadaValidada(final validarEmpleado empleado, final String faseIngreso, final String idCaseta, final String numeroEmpleado, final String tipoChecada){
         RealmController.getInstance();
-        RealmController.with(getActivity()).insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), " ",String.valueOf(idCaseta), GRUId, faseIngreso, "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+        RealmController.with(getActivity()).insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), " ",empleado.getEmpleado().getPUEClave(), faseIngreso, "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
 
     }
 
     private void guardarResultadoChecadaDenegado(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal){
         RealmController.getInstance();
-        RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(), String.valueOf(idCaseta), GRUId, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+        RealmController.with(getActivity()).insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(), PUEClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
     }
 
     private void guardarResultadoChecadaDenegadoNoInternet(String noEmpleado){
         RealmController.getInstance();
-        RealmController.with(getActivity()).insertarPersonalNuevo(noEmpleado, " ", String.valueOf(idCaseta), GRUId, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+        RealmController.with(getActivity()).insertarPersonalNuevo(noEmpleado, " ", " ", "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
     }
 
     public void guardarResultadoChecadaNoEncontrado(String noEmpleado, Context context, String idCaseta, String numeroEmpleado, String tipoChecada){
         PREF_CHECADAS = context.getSharedPreferences("CCURE", getContext().MODE_PRIVATE);
         RealmController.getInstance();
-        RealmController.with(getActivity()).insertarPersonalNuevo(noEmpleado, " ", String.valueOf(idCaseta), GRUId, "D", "N", "",numeroEmpleado, tipoChecada);
+        RealmController.with(getActivity()).insertarPersonalNuevo(noEmpleado, " ", " ", "D", "N", "",numeroEmpleado, tipoChecada);
     }
 
     private void decodificarBase64(String imagen){
@@ -252,9 +271,9 @@ public class checadas extends Fragment {
         puertaClave = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
     }
 
-    private realmPersonalPuerta buscarPersonalLocal(String numeroEmpleado){
+    private RealmResults<realmPersonalPuerta> buscarPersonalLocal(String numeroEmpleado){
         RealmController.with(getActivity());
-        return RealmController.getInstance().obtenerPersonalManual(numeroEmpleado, puertaClave, GRUId);
+        return RealmController.getInstance().obtenerPersonalManual(numeroEmpleado);
     }
 
     private realmPersonalInfo buscarDetallePersonaLocal(String numeroEmpleado){

@@ -228,7 +228,7 @@ public class helperRetrofit {
                 Log.d(TAG, "OBTUVE ACTUALIZAR PUERTAS "+aPersonalPuerta.size());
                 Realm.getDefaultInstance();
                 if (RealmController.getInstance().insertarPuertas(aPersonalPuerta)){
-                    llenarSpinnerAgrupador(activity.getApplicationContext(), aAgrupadores, spPuertasUnico);
+                    actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores);
                     anillo.dismiss();
                 }
             }
@@ -264,6 +264,31 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuerta FALLO: "+t.getMessage());
+                anillo.dismiss();
+            }
+        });
+    }
+
+    public void actualizarAgrupadorPuertaInicio(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores){
+        Call<List<agrupadorPuerta>> puertasCall = helper.getAgrupadorPuerta();
+        puertasCall.enqueue(new Callback<List<agrupadorPuerta>>() {
+            @Override
+            public void onResponse(Call<List<agrupadorPuerta>> call, Response<List<agrupadorPuerta>> response) {
+                if (!response.isSuccessful()){
+                    return;
+                }
+                List<agrupadorPuerta> aAgrupadorPuerta = response.body();
+                Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADOR PUERTA INICIO "+aAgrupadorPuerta.size());
+                Realm.getDefaultInstance();
+                if (RealmController.getInstance().insertarAgrupadorPuerta(aAgrupadorPuerta)){
+                    llenarSpinnerAgrupador(activity.getApplicationContext(), aAgrupadores, spPuertasUnico);
+                    anillo.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaInicio FALLO: "+t.getMessage());
                 anillo.dismiss();
             }
         });

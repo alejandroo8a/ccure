@@ -10,6 +10,7 @@ public class respuestaValidarEmpleado {
     private String NoEmpleado;
     private String Nombre;
     private String Puesto;
+    private String PUEClave;
 
     public String getFoto() {
         return foto;
@@ -41,5 +42,13 @@ public class respuestaValidarEmpleado {
 
     public void setPuesto(String puesto) {
         Puesto = puesto;
+    }
+
+    public String getPUEClave() {
+        return PUEClave;
+    }
+
+    public void setPUEClave(String PUEClave) {
+        this.PUEClave = PUEClave;
     }
 }
