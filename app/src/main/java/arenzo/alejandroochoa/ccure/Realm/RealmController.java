@@ -279,7 +279,8 @@ public class RealmController {
             @Override
             public void execute(Realm realm) {
                 for (puertas puerta : aPersonalPuerta){
-                    realmPuerta rPuerta = realm.createObject(realmPuerta.class, puerta.getPUEId());
+                    realmPuerta rPuerta = realm.createObject(realmPuerta.class);
+                    rPuerta.setPUEId(puerta.getPUEId());
                     rPuerta.setPUEClave(puerta.getPUEClave());
                     rPuerta.setGRUID(puerta.getGRUID());
                     rPuerta.setDescripcion(puerta.getDescripcion());
@@ -325,7 +326,7 @@ public class RealmController {
                     realmAgrupadorPuerta rAgrupadorPuerta = realm.createObject(realmAgrupadorPuerta.class);
                     rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
                     rAgrupadorPuerta.setPUEId(agrupadorPuerta.getPUEId());
-                    rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
+                    rAgrupadorPuerta.setTipo(agrupadorPuerta.getTipo());
                     rAgrupadorPuerta.setFase(agrupadorPuerta.getFase());
                     rAgrupadorPuerta.setFechaHora(obtenerFecha());
                     rAgrupadorPuerta.setMUsuarioId("CONFIGURACION");
@@ -399,8 +400,16 @@ public class RealmController {
         return agrupador.getAGRId();
     }
 
-    public RealmResults<realmPuerta> obtenerPuertas(int GRUId){
-        return realm.where(realmPuerta.class).equalTo("GRUID", String.valueOf(GRUId)).findAll();
+    public RealmResults<realmAgrupadorPuerta> obtenerAgrupadoresPuertas(int AGRID){
+        return realm.where(realmAgrupadorPuerta.class).equalTo("AGRId", AGRID).findAll();
+    }
+
+    public realmPuerta obtenerPuerta(int PUEId){
+        return realm.where(realmPuerta.class).equalTo("PUEId", PUEId).findFirst();
+    }
+
+    public RealmResults<realmPuerta> obtenerPuertas(int PUEId){
+        return realm.where(realmPuerta.class).equalTo("PUEId", PUEId).findAll();
     }
 
     public RealmResults<realmAgrupador> obtenerAgrupadores(){

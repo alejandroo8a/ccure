@@ -8,9 +8,8 @@ public class agrupadorPuerta {
 
     private int AGRId;
     private int PUEId;
-    private String GRUId;
     private String Fase;
-    private int Tipo;
+    private String Tipo;
     private String FechaHora;
     private String MUsuarioId;
 
@@ -30,14 +29,6 @@ public class agrupadorPuerta {
         this.PUEId = PUEId;
     }
 
-    public String getGRUId() {
-        return GRUId;
-    }
-
-    public void setGRUId(String GRUId) {
-        this.GRUId = GRUId;
-    }
-
     public String getFase() {
         return Fase;
     }
@@ -46,11 +37,11 @@ public class agrupadorPuerta {
         Fase = fase;
     }
 
-    public int getTipo() {
+    public String getTipo() {
         return Tipo;
     }
 
-    public void setTipo(int tipo) {
+    public void setTipo(String tipo) {
         Tipo = tipo;
     }
 

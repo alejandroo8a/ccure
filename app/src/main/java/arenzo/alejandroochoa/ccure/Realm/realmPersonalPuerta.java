@@ -14,7 +14,7 @@ public class realmPersonalPuerta extends RealmObject {
 
     private String NoEmpleado;
     private String NoTarjeta;
-    private String PUEId;
+    @SerializedName("Grupo")
     private String GRUId;
 
     private String Fase;
@@ -67,13 +67,5 @@ public class realmPersonalPuerta extends RealmObject {
 
     public void setGRUId(String GRUId) {
         this.GRUId = GRUId;
-    }
-
-    public String getPUEId() {
-        return PUEId;
-    }
-
-    public void setPUEId(String PUEId) {
-        this.PUEId = PUEId;
     }
 }

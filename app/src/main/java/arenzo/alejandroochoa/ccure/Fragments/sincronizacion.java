@@ -148,7 +148,8 @@ public class sincronizacion extends Fragment {
                 if (resultado.size() > 0) {
                     for (int i = 0; i < resultado.size(); i++) {
                         realmESPersonal persona = resultado.get(i);
-                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEId(), "2017-07-02", resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso());
+                        //TODO REV1
+                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), "", "2017-07-02", resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso());
                     }
                 }else
                     resultadoDialog("Actualmente todo está sincronizado.", getContext());
@@ -464,17 +465,19 @@ public class sincronizacion extends Fragment {
                 realmESPersonal personal = new realmESPersonal();
                 personal.setNoEmpleado(resultsESPersonal.get(i).getNoEmpleado());
                 personal.setNoTarjeta(resultsESPersonal.get(i).getNoTarjeta());
-                personal.setPUEId(resultsESPersonal.get(i).getPUEId());
+                //TODO REV2
+                //personal.setPUEId(resultsESPersonal.get(i).getPUEId());
                 personal.setFechaHoraEntrada(resultsESPersonal.get(i).getFechaHoraEntrada());
                 aPersonal.add(personal);
             }
             String archivo = "";
             int i = 0;
             for (realmESPersonal persona : aPersonal){
+                //TODO REV 3
                 if (i == aPersonal.size() - 1)
-                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEId() + "-" + persona.getFechaHoraEntrada();
+                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + "AQUI" + "-" + persona.getFechaHoraEntrada();
                 else
-                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEId() + "-" + persona.getFechaHoraEntrada() +"\n~";
+                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + "AQUI" + "-" + persona.getFechaHoraEntrada() +"\n~";
                 i++;
             }
             return archivo;

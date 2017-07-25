@@ -151,7 +151,8 @@ public class checadas extends Fragment {
 
     private void buscarPUEClave(RealmResults<realmPersonalPuerta> aPersonal){
         for ( realmPersonalPuerta persona : aPersonal){
-            realmPuerta puerta = RealmController.getInstance().obtenerPUEClave(persona.getPUEId(), persona.getGRUId());
+            //Checar
+            realmPuerta puerta = RealmController.getInstance().obtenerPUEClave("1", persona.getGRUId());
             if (puerta!= null) {
                 PUEClave = puerta.getPUEClave();
                 personal = persona;

@@ -26,10 +26,19 @@ import java.util.List;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
+import arenzo.alejandroochoa.ccure.Realm.realmAgrupador;
+import arenzo.alejandroochoa.ccure.Realm.realmAgrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Realm.realmDispositivo;
+import arenzo.alejandroochoa.ccure.Realm.realmESPersonal;
+import arenzo.alejandroochoa.ccure.Realm.realmNotificacion;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonal;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
 import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
+import arenzo.alejandroochoa.ccure.Realm.realmUsuario;
 import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
 import arenzo.alejandroochoa.ccure.WebService.retrofit;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class configuracionUnica extends AppCompatActivity {
@@ -41,6 +50,8 @@ public class configuracionUnica extends AppCompatActivity {
     ProgressDialog anillo = null;
     private SharedPreferences PREF_CONFIGURACION_UNICA;
     private String URL;
+    RealmController realmController;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +63,7 @@ public class configuracionUnica extends AppCompatActivity {
         spPuertasUnico = (Spinner)findViewById(R.id.spPuertasUnico);
         btnGuardarConfiguracionUnico = (Button)findViewById(R.id.btnGuardarConfiguracionUnico);
         eventosVista();
+        borrarDatos();
         cargarDatosVista();
         centrarTituloActionBar();
         PREF_CONFIGURACION_UNICA = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
@@ -69,8 +81,8 @@ public class configuracionUnica extends AppCompatActivity {
     }
 
     private void cargarDatosVista(){
-        RealmController.getInstance();
-        realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
+        realmController = new RealmController(getApplication());
+        realmDispositivo dispositivo = realmController.obtenerDispositivo();
         if (dispositivo != null){
             edtNombreDispositivoUnico.setText(dispositivo.getDescripcion().toString());
             edtWebServiceUnico.setText(dispositivo.getURLWebService().toString());
@@ -78,20 +90,44 @@ public class configuracionUnica extends AppCompatActivity {
         }
     }
 
+    private void borrarDatos() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.delete(realmPuerta.class);
+                realm.delete(realmPersonal.class);
+                realm.delete(realmPersonalInfo.class);
+                realm.delete(realmPersonalPuerta.class);
+                realm.delete(realmESPersonal.class);
+                realm.delete(realmNotificacion.class);
+                realm.delete(realmAgrupador.class);
+                realm.delete(realmAgrupadorPuerta.class);
+                realm.delete(realmDispositivo.class);
+                realm.delete(realmUsuario.class);
+            }
+        });
+    }
+
     private void guardarDatos() {
         if (edtNombreDispositivoUnico.length() > 0 && edtURLExportacionUnico.length() > 0 && edtWebServiceUnico.length() > 0) {
-            realmDispositivo dispositivo = RealmController.getInstance().obtenerDispositivo();
-            final int idAgrupador = RealmController.getInstance().obtenerIdAgrupador(spPuertasUnico.getSelectedItem().toString());
-            RealmResults<realmPuerta> aPuertas = RealmController.getInstance().obtenerPuertas(idAgrupador);
+            realmDispositivo dispositivo = realmController.obtenerDispositivo();
+            final int idAgrupador = realmController.obtenerIdAgrupador(spPuertasUnico.getSelectedItem().toString());
+            RealmResults<realmAgrupadorPuerta> aAgrupadorPuertas = realmController.obtenerAgrupadoresPuertas(idAgrupador);
             boolean saberEstadoInsercion;
             if (dispositivo == null) {
-                saberEstadoInsercion = RealmController.getInstance().insertarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
+                saberEstadoInsercion = realmController.insertarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             } else {
-                saberEstadoInsercion = RealmController.getInstance().actualizarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
+                saberEstadoInsercion = realmController.actualizarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             }
             if (saberEstadoInsercion) {
-                if (aPuertas.size() > 0)
-                    guardarPuerta(aPuertas.get(0), aPuertas.get(1), idAgrupador);
+                if (aAgrupadorPuertas.size() > 0){
+                    realmPuerta puerta1 = realmController.obtenerPuerta(aAgrupadorPuertas.get(0).getPUEId());
+                    realmPuerta puerta2 = realmController.obtenerPuerta(aAgrupadorPuertas.get(1).getPUEId());
+                    guardarPuerta(puerta1, puerta2, idAgrupador);
+                    RealmResults<realmPuerta> aPuertas = realmController.obtenerPuertas(aAgrupadorPuertas.get(0).getPUEId());
+                    iterarPuertas(aPuertas);
+                }
                 else {
                     crearDialogError("Error", "Sus datos no se guardaron, el agrupador que seleccionó no contiene puertas.");
                     return;
@@ -105,6 +141,8 @@ public class configuracionUnica extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Complete todos los campos para guardar", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 
     private void crearDialogError(String titulo,String mensaje){
@@ -167,6 +205,20 @@ public class configuracionUnica extends AppCompatActivity {
         editor.putString("GRUIDENTRADA", puerta1.getGRUID());
         editor.putString("GRUIDSALIDA", puerta2.getGRUID());
         editor.putInt("IDAGRUPADOR", idAgrupador);
+        editor.commit();
+    }
+
+    private void iterarPuertas(RealmResults<realmPuerta> aPuertas){
+        for (int i = 0 ; i < aPuertas.size() ; i++){
+            guardarGRUId(i, aPuertas.get(i));
+        }
+    }
+
+    private void guardarGRUId(int total, realmPuerta puerta){
+        total++;
+        SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
+        editor.putString("GRUIDACTUAL"+total, puerta.getGRUID());
+        editor.putInt("TOTALGRUID", total);
         editor.commit();
     }
 
