@@ -383,8 +383,8 @@ public class RealmController {
         return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }
 
-    public RealmResults<realmPersonalPuerta> obtenerPersonalManual(String numeroEmpleado){
-        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).findAll();
+    public realmPersonalPuerta obtenerPersonalManual(String numeroEmpleado, String grupo){
+        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("GRUId", grupo).findFirst();
     }
 
     public realmUsuario obtenerUsuario(String numeroEmpleado){
@@ -420,7 +420,7 @@ public class RealmController {
         return realm.where(realmPersonalInfo.class).findAll();
     }
 
-    public realmPuerta obtenerPUEClave(String PUEId, String GRUID){
+    public realmPuerta obtenerPUEClave(int PUEId, String GRUID){
         return realm.where(realmPuerta.class).equalTo("PUEId", PUEId).equalTo("GRUID", GRUID).findFirst();
     }
 

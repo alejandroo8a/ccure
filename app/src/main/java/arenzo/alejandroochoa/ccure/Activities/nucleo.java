@@ -200,6 +200,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent = new Intent(getApplicationContext(), main.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getApplicationContext().startActivity(intent);
                         finish();
                     }
@@ -213,7 +214,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         txtNombreNavigation.setText(PREF_NUCLEO.getString("NOMBRE","Sin nombre"));
         txtNumeroEmpleadoNavigation.setText(PREF_NUCLEO.getString("NUMERO_EMPLEADO","Sin número"));
         txtPuertaNavigation.setText(PREF_NUCLEO.getString("NOMBREPUERTA","Sin nombre"));
-        if (PREF_NUCLEO.getString("FOTO","NO").equals("NO"))
+        if (PREF_NUCLEO.getString("FOTO","Base64Foto").equals("Base64Foto"))
             ponerImagenDefault();
         else
             decodificarBase64(PREF_NUCLEO.getString("FOTO","NO"));
@@ -226,6 +227,6 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
     }
 
     private void ponerImagenDefault(){
-        Picasso.with(this).load(R.drawable.ic_card).into(imgEmpleado);
+        Picasso.with(this).load(R.drawable.ic_account_circle).into(imgEmpleado);
     }
 }

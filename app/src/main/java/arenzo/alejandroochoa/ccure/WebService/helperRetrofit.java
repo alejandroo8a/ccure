@@ -70,35 +70,36 @@ public class helperRetrofit {
     private void configurarRealm(){
         realmController = new RealmController();
     }
+//TODO VERIFICAR ESTA FUNCION AL ENVIAR LOS DATOS
+    public void ValidarEmpleado(final String NoEmpleado, String NoTarjeta, ArrayList<String> aGRUID, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String idCaseta, final String numeroEmpleado, final String tipoChecada){
+        for (int i = 0 ; i < aGRUID.size() ; i++) {
+            Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, aGRUID.get(i));
+            validarCall.enqueue(new Callback<validarEmpleado>() {
+                @Override
+                public void onResponse(Call<validarEmpleado> call, Response<validarEmpleado> response) {
+                    if (!response.isSuccessful()) {
+                        return;
+                    }
+                    validarEmpleado resultado = response.body();
+                    Log.d(TAG, "onResponse: " + resultado);
+                    anillo.dismiss();
+                    if (resultado.getRespuesta().equals("PERMITIDO")) {
+                        new checadas().mostrarAlertaEmpleadoValidado(context, txtResultadoChecada, imgFondoAcceso, resultado, idCaseta, numeroEmpleado, tipoChecada);
+                    } else {
+                        imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
+                        txtResultadoChecada.setText("Acceso Denegado");
+                        checadas.vibrarCelular(context);
+                        new checadas().guardarResultadoChecadaNoEncontrado(NoEmpleado, context, idCaseta, numeroEmpleado, tipoChecada);
+                    }
+                }
 
-    public void ValidarEmpleado(final String NoEmpleado, String NoTarjeta, String ClavePuerta, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String idCaseta, final String numeroEmpleado, final String tipoChecada){
-        Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, ClavePuerta);
-        validarCall.enqueue(new Callback<validarEmpleado>() {
-            @Override
-            public void onResponse(Call<validarEmpleado> call, Response<validarEmpleado> response) {
-                if (!response.isSuccessful()){
-                    return;
+                @Override
+                public void onFailure(Call<validarEmpleado> call, Throwable t) {
+                    Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
+                    anillo.dismiss();
                 }
-                validarEmpleado resultado = response.body();
-                Log.d(TAG, "onResponse: "+resultado);
-                anillo.dismiss();
-                if(resultado.getRespuesta().equals("PERMITIDO")){
-                    new checadas().mostrarAlertaEmpleadoValidado(context, txtResultadoChecada, imgFondoAcceso, resultado, idCaseta, numeroEmpleado, tipoChecada);
-                }
-                else {
-                    imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
-                    txtResultadoChecada.setText("Acceso Denegado");
-                    checadas.vibrarCelular(context);
-                    new checadas().guardarResultadoChecadaNoEncontrado(NoEmpleado, context, idCaseta, numeroEmpleado, tipoChecada);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<validarEmpleado> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: "+t.getMessage());
-                anillo.dismiss();
-            }
-        });
+            });
+        }
     }
 
     public void ObtenerTarjetasPersonal(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
