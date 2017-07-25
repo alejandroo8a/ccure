@@ -148,8 +148,7 @@ public class sincronizacion extends Fragment {
                 if (resultado.size() > 0) {
                     for (int i = 0; i < resultado.size(); i++) {
                         realmESPersonal persona = resultado.get(i);
-                        //TODO REV1
-                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), "", "2017-07-02", resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso());
+                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), "2017-07-02", resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso());
                     }
                 }else
                     resultadoDialog("Actualmente todo está sincronizado.", getContext());
@@ -275,7 +274,7 @@ public class sincronizacion extends Fragment {
         }
         return archivo.toString();
     }
-
+//TODO VERIFICAR BASES DE DATOS
     private boolean guardarPuertas(String oPuertas){
         String[] aCantidadPuertas = oPuertas.split("\n");
         List<puertas> aPuertas = new ArrayList<>();
@@ -465,19 +464,18 @@ public class sincronizacion extends Fragment {
                 realmESPersonal personal = new realmESPersonal();
                 personal.setNoEmpleado(resultsESPersonal.get(i).getNoEmpleado());
                 personal.setNoTarjeta(resultsESPersonal.get(i).getNoTarjeta());
-                //TODO REV2
-                //personal.setPUEId(resultsESPersonal.get(i).getPUEId());
+                personal.setPUEClave(resultsESPersonal.get(i).getPUEClave());
                 personal.setFechaHoraEntrada(resultsESPersonal.get(i).getFechaHoraEntrada());
+                personal.setFaseIngreso(resultsESPersonal.get(i).getFaseIngreso());
                 aPersonal.add(personal);
             }
             String archivo = "";
             int i = 0;
             for (realmESPersonal persona : aPersonal){
-                //TODO REV 3
                 if (i == aPersonal.size() - 1)
-                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + "AQUI" + "-" + persona.getFechaHoraEntrada();
+                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEClave() + "-" + persona.getFechaHoraEntrada();
                 else
-                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + "AQUI" + "-" + persona.getFechaHoraEntrada() +"\n~";
+                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEClave() + "-" + persona.getFechaHoraEntrada() +"\n~";
                 i++;
             }
             return archivo;

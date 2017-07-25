@@ -311,7 +311,6 @@ public class helperRetrofit {
                 if (!response.isSuccessful()) {
                     return;
                 }
-                //List<respuestaChecadas>aRespuestaChecadas = response.body();
                 if (totalPeticiones == numeroPeticion){
                     if (new sincronizacion().borrarTablasSincronizacion()){
                         actualizarPuertasSincronizacion(context, anillo);
