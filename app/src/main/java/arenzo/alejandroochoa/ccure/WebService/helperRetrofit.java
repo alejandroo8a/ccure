@@ -32,6 +32,7 @@ import arenzo.alejandroochoa.ccure.Modelos.respuestaChecadas;
 import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
 import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
+import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
@@ -341,6 +342,7 @@ public class helperRetrofit {
             @Override
             public void onResponse(Call<List<respuestaChecadas>> call, Response<List<respuestaChecadas>> response) {
                 if (!response.isSuccessful()) {
+                    Toast.makeText(context, "El servidor no tiene los parametros necesarios para sincronizar", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (totalPeticiones == numeroPeticion){
@@ -354,6 +356,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<respuestaChecadas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarChecadas FALLO: " + t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -363,8 +366,7 @@ public class helperRetrofit {
         for (agrupador agrupador : aAgrupadores){
             aAgrupadoresDescripcion.add(agrupador.getDescripcion());
         }
-        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, aAgrupadoresDescripcion);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter adapter = new ArrayAdapter(context, R.layout.item_spinner, aAgrupadoresDescripcion);
         spPuertasUnico.setAdapter(adapter);
     }
 

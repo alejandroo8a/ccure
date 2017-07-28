@@ -181,8 +181,7 @@ public class configuracion extends Fragment {
         for (realmAgrupador agrupador : aAgrupadores) {
             aAgrupadoresDescripcion.add(agrupador.getDescripcion());
         }
-        ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, aAgrupadoresDescripcion);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.item_spinner, aAgrupadoresDescripcion);
         spPuertas.setAdapter(adapter);
         spPuertas.setSelection(posicionPuertaSeleccionada);
     }
