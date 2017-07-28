@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,15 +22,11 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
@@ -54,7 +49,6 @@ import io.realm.RealmResults;
 
 public class sincronizacion extends Fragment {
 
-    //TODO HACER LECTURA DE ARCHIVO
     private final static String TAG = "sincronizacion";
 
     private RadioButton rdRed, rdArchivo, rdLeerArchivo;
@@ -154,7 +148,7 @@ public class sincronizacion extends Fragment {
                 if (resultado.size() > 0) {
                     for (int i = 0; i < resultado.size(); i++) {
                         realmESPersonal persona = resultado.get(i);
-                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEId(), "2017-07-02", resultado.size() - 1, i, getContext(), anillo);
+                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), "2017-07-02", resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso());
                     }
                 }else
                     resultadoDialog("Actualmente todo está sincronizado.", getContext());
@@ -174,12 +168,12 @@ public class sincronizacion extends Fragment {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.clear(realmPuerta.class);
-                realm.clear(realmPersonal.class);
-                realm.clear(realmPersonalInfo.class);
-                realm.clear(realmPersonalPuerta.class);
-                realm.clear(realmESPersonal.class);
-                realm.clear(realmNotificacion.class);
+                realm.delete(realmPuerta.class);
+                realm.delete(realmPersonal.class);
+                realm.delete(realmPersonalInfo.class);
+                realm.delete(realmPersonalPuerta.class);
+                realm.delete(realmESPersonal.class);
+                realm.delete(realmNotificacion.class);
                 saberEstadoConsulta = true;
             }
         });
@@ -280,7 +274,7 @@ public class sincronizacion extends Fragment {
         }
         return archivo.toString();
     }
-
+//TODO VERIFICAR BASES DE DATOS
     private boolean guardarPuertas(String oPuertas){
         String[] aCantidadPuertas = oPuertas.split("\n");
         List<puertas> aPuertas = new ArrayList<>();
@@ -304,8 +298,7 @@ public class sincronizacion extends Fragment {
             personalPuerta personalPuerta = new personalPuerta();
             personalPuerta.setNoEmpleado(elementosPersonalPuerta[0]);
             personalPuerta.setNoTarjeta(elementosPersonalPuerta[1]);
-            personalPuerta.setClavePuerta(elementosPersonalPuerta[2]);
-            personalPuerta.setPUEId(elementosPersonalPuerta[3]);
+            personalPuerta.setGRUId(elementosPersonalPuerta[2]);
             aPersonalPuerta.add(personalPuerta);
         }
         return RealmController.getInstance().insertarPersonalPuertaArchivo(aPersonalPuerta, PREF_SINCRONIZACION.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
@@ -417,12 +410,12 @@ public class sincronizacion extends Fragment {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    realm.clear(realmPuerta.class);
-                    realm.clear(realmPersonal.class);
-                    realm.clear(realmPersonalInfo.class);
-                    realm.clear(realmPersonalPuerta.class);
-                    realm.clear(realmESPersonal.class);
-                    realm.clear(realmNotificacion.class);
+                    realm.delete(realmPuerta.class);
+                    realm.delete(realmPersonal.class);
+                    realm.delete(realmPersonalInfo.class);
+                    realm.delete(realmPersonalPuerta.class);
+                    realm.delete(realmESPersonal.class);
+                    realm.delete(realmNotificacion.class);
                     saberEstadoConsulta = true;
                 }
             });
@@ -471,17 +464,18 @@ public class sincronizacion extends Fragment {
                 realmESPersonal personal = new realmESPersonal();
                 personal.setNoEmpleado(resultsESPersonal.get(i).getNoEmpleado());
                 personal.setNoTarjeta(resultsESPersonal.get(i).getNoTarjeta());
-                personal.setPUEId(resultsESPersonal.get(i).getPUEId());
+                personal.setPUEClave(resultsESPersonal.get(i).getPUEClave());
                 personal.setFechaHoraEntrada(resultsESPersonal.get(i).getFechaHoraEntrada());
+                personal.setFaseIngreso(resultsESPersonal.get(i).getFaseIngreso());
                 aPersonal.add(personal);
             }
             String archivo = "";
             int i = 0;
             for (realmESPersonal persona : aPersonal){
                 if (i == aPersonal.size() - 1)
-                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEId() + "-" + persona.getFechaHoraEntrada();
+                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEClave() + "-" + persona.getFechaHoraEntrada() + "-" +persona.getFaseIngreso();
                 else
-                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEId() + "-" + persona.getFechaHoraEntrada() +"\n~";
+                    archivo += persona.getNoEmpleado()  + "-" + persona.getNoTarjeta() + "-" + persona.getPUEClave() + "-" + persona.getFechaHoraEntrada() + "-" +persona.getFaseIngreso() + "\n~";
                 i++;
             }
             return archivo;

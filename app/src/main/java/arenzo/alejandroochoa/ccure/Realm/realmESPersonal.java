@@ -12,7 +12,7 @@ public class realmESPersonal extends RealmObject {
 
     private String NoEmpleado;
     private String NoTarjeta;
-    private String PUEId;
+    private String PUEClave;
     private String FechaHoraEntrada;
 
     private String FaseIngreso;
@@ -38,12 +38,12 @@ public class realmESPersonal extends RealmObject {
         NoTarjeta = noTarjeta;
     }
 
-    public String getPUEId() {
-        return PUEId;
+    public String getPUEClave() {
+        return PUEClave;
     }
 
-    public void setPUEId(String PUEId) {
-        this.PUEId = PUEId;
+    public void setPUEClave(String PUEClave) {
+        this.PUEClave = PUEClave;
     }
 
     public String getFechaHoraEntrada() {

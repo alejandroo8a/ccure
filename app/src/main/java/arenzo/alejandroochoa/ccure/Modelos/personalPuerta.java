@@ -1,25 +1,19 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by AlejandroMissael on 20/06/2017.
  */
 
 public class personalPuerta {
 
-    private String ClavePuerta;
     private String NoEmpleado;
     private String NoTarjeta;
-    private String PUEId;
+    @SerializedName("Grupo")
+    private String GRUId;
 
     public personalPuerta() {
-    }
-
-    public String getClavePuerta() {
-        return ClavePuerta;
-    }
-
-    public void setClavePuerta(String clavePuerta) {
-        ClavePuerta = clavePuerta;
     }
 
     public String getNoEmpleado() {
@@ -38,11 +32,11 @@ public class personalPuerta {
         NoTarjeta = noTarjeta;
     }
 
-    public String getPUEId() {
-        return PUEId;
+    public String getGRUId() {
+        return GRUId;
     }
 
-    public void setPUEId(String PUEId) {
-        this.PUEId = PUEId;
+    public void setGRUId(String GRUId) {
+        this.GRUId = GRUId;
     }
 }

@@ -38,7 +38,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".Activities.configuracionUnica"></activity>
+        <activity android:name=".Activities.configuracionUnica"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

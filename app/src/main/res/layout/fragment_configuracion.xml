@@ -105,6 +105,7 @@
         android:ems="10"
         android:inputType="none"
         android:maxLength="70"
+        android:textColor="@color/ksw_md_solid_shadow"
         android:singleLine="true"
         android:text="/CCURE/"
         app:layout_constraintHorizontal_bias="1.0"

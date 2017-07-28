@@ -25,11 +25,14 @@ import io.realm.RealmResults;
 public class RealmController {
     private final static String TAG = "RealmController";
     private static RealmController instance;
-    private final Realm realm;
-    private int siguienteId = 0;
+    private static Realm realm;
     private Boolean saberEstadoConsulta = false;
 
     public RealmController(Application application) {
+        realm = Realm.getDefaultInstance();
+    }
+
+    public RealmController() {
         realm = Realm.getDefaultInstance();
     }
 
@@ -56,7 +59,6 @@ public class RealmController {
     }
 
     public static RealmController getInstance() {
-
         return instance;
     }
 
@@ -69,40 +71,13 @@ public class RealmController {
         realm.refresh();
     }
 
-     //OBTENER EL ULTIMO ID DE UNA TABLA Y GENERAR UNO NUEVO
-    public int obtenerIdDispositivo(){
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                Number currentIdNum = realm.where(realmDispositivo.class).maximumInt("DISId");
-                if(currentIdNum == null) {
-                    siguienteId = 1;
-                } else {
-                    siguienteId = currentIdNum.intValue() + 1;
-                }
-            }
-        });
-        return siguienteId;
-    }
-
-    public int obtenerIdPuerta(){
-        Number currentIdNum = realm.where(realmPuerta.class).maximumInt("PUEId");
-        if(currentIdNum == null) {
-            siguienteId = 1;
-        } else {
-            siguienteId = currentIdNum.intValue() + 1;
-        }
-        return siguienteId;
-    }
-
     //INSERCIONES
     public boolean insertarConfiguracion(final String descripcion, final String fase, final int AGRId, final String URLWebService, final String URLExportacion, final String MUsuarioId){
         saberEstadoConsulta = false;
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realmDispositivo dispositivo = realm.createObject(realmDispositivo.class);
-                dispositivo.setDISId(1);
+                realmDispositivo dispositivo = realm.createObject(realmDispositivo.class,1);
                 dispositivo.setDescripcion(descripcion);
                 dispositivo.setFase(fase);
                 dispositivo.setAGRId(AGRId);
@@ -116,7 +91,7 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEId,  final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada){
+    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEClave, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada){
         saberEstadoConsulta = false;
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -124,7 +99,7 @@ public class RealmController {
                 realmESPersonal personal = realm.createObject(realmESPersonal.class);
                 personal.setNoEmpleado(NoEmpleado);
                 personal.setNoTarjeta(NoTarjeta);
-                personal.setPUEId(PUEId);
+                personal.setPUEClave(PUEClave);
                 personal.setFechaHoraEntrada(obtenerFecha());
                 personal.setFaseIngreso(FaseIngreso);
                 personal.setFase(Fase);
@@ -191,7 +166,7 @@ public class RealmController {
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
-                    rPersonal.setMUsuarioId("1");
+                    rPersonal.setMUsuarioId("CONFIGURACION");
                 }
                 saberEstadoConsulta = true;
             }
@@ -249,8 +224,7 @@ public class RealmController {
                     realmPersonalPuerta rPersonal = realm.createObject(realmPersonalPuerta.class);
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
-                    rPersonal.setPUEId(persona.getPUEId());
-                    rPersonal.setClavePuerta(persona.getClavePuerta());
+                    rPersonal.setGRUId(persona.getGRUId());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId("CONFIGURACION");
@@ -270,8 +244,7 @@ public class RealmController {
                     realmPersonalPuerta rPersonal = realm.createObject(realmPersonalPuerta.class);
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
-                    rPersonal.setPUEId(persona.getPUEId());
-                    rPersonal.setClavePuerta(persona.getClavePuerta());
+                    rPersonal.setGRUId(persona.getGRUId());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId(idUsuario);
@@ -288,8 +261,7 @@ public class RealmController {
             @Override
             public void execute(Realm realm) {
                 for (agrupador agrupador : aAgrupador){
-                    realmAgrupador rAgrupador = realm.createObject(realmAgrupador.class);
-                    rAgrupador.setAGRId(agrupador.getAGRId());
+                    realmAgrupador rAgrupador = realm.createObject(realmAgrupador.class, agrupador.getAGRId());
                     rAgrupador.setDescripcion(agrupador.getDescripcion());
                     rAgrupador.setFase(agrupador.getFase());
                     rAgrupador.setMFechaHora(obtenerFecha());
@@ -310,6 +282,7 @@ public class RealmController {
                     realmPuerta rPuerta = realm.createObject(realmPuerta.class);
                     rPuerta.setPUEId(puerta.getPUEId());
                     rPuerta.setPUEClave(puerta.getPUEClave());
+                    rPuerta.setGRUID(puerta.getGRUID());
                     rPuerta.setDescripcion(puerta.getDescripcion());
                     rPuerta.setFase(puerta.getFase());
                     rPuerta.setGRUID(puerta.getGRUID());
@@ -331,6 +304,7 @@ public class RealmController {
                     realmPuerta rPuerta = realm.createObject(realmPuerta.class);
                     rPuerta.setPUEId(puerta.getPUEId());
                     rPuerta.setPUEClave(puerta.getPUEClave());
+                    rPuerta.setGRUID(puerta.getGRUID());
                     rPuerta.setDescripcion(puerta.getDescripcion());
                     rPuerta.setFase(puerta.getFase());
                     rPuerta.setGRUID(puerta.getGRUID());
@@ -352,6 +326,7 @@ public class RealmController {
                     realmAgrupadorPuerta rAgrupadorPuerta = realm.createObject(realmAgrupadorPuerta.class);
                     rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
                     rAgrupadorPuerta.setPUEId(agrupadorPuerta.getPUEId());
+                    rAgrupadorPuerta.setTipo(agrupadorPuerta.getTipo());
                     rAgrupadorPuerta.setFase(agrupadorPuerta.getFase());
                     rAgrupadorPuerta.setFechaHora(obtenerFecha());
                     rAgrupadorPuerta.setMUsuarioId("CONFIGURACION");
@@ -408,12 +383,20 @@ public class RealmController {
         return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }
 
-    public realmPersonalPuerta obtenerPersonalManual(String numeroEmpleado, String clavePuerta){
-        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("ClavePuerta", clavePuerta).findFirst();
+    public realmPersonalPuerta obtenerPersonalManual(String numeroEmpleado, String grupo){
+        return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("GRUId", grupo).findFirst();
+    }
+
+    public realmPersonalPuerta obtenerPersonalRfid(String noTarjeta, String grupo){
+        return realm.where(realmPersonalPuerta.class).equalTo("NoTarjeta",noTarjeta).equalTo("GRUId", grupo).findFirst();
     }
 
     public realmUsuario obtenerUsuario(String numeroEmpleado){
         return realm.where(realmUsuario.class).equalTo("NoEmpleado", numeroEmpleado).findFirst();
+    }
+
+    public realmUsuario obtenerUsuarioRfid(String noTarjeta){
+        return realm.where(realmUsuario.class).equalTo("NoTarjeta", noTarjeta).findFirst();
     }
 
     public realmPersonalInfo obtenerInfoPersonal(String numeroEmpleado){
@@ -425,8 +408,16 @@ public class RealmController {
         return agrupador.getAGRId();
     }
 
-    public RealmResults<realmPuerta> obtenerPuertas(int GRUId){
-        return realm.where(realmPuerta.class).equalTo("GRUID", String.valueOf(GRUId)).findAll();
+    public RealmResults<realmAgrupadorPuerta> obtenerAgrupadoresPuertas(int AGRID){
+        return realm.where(realmAgrupadorPuerta.class).equalTo("AGRId", AGRID).findAll();
+    }
+
+    public realmPuerta obtenerPuerta(int PUEId){
+        return realm.where(realmPuerta.class).equalTo("PUEId", PUEId).findFirst();
+    }
+
+    public RealmResults<realmPuerta> obtenerPuertas(int PUEId){
+        return realm.where(realmPuerta.class).equalTo("PUEId", PUEId).findAll();
     }
 
     public RealmResults<realmAgrupador> obtenerAgrupadores(){
@@ -437,6 +428,10 @@ public class RealmController {
         return realm.where(realmPersonalInfo.class).findAll();
     }
 
+    public realmPuerta obtenerPUEClave(int PUEId, String GRUID){
+        return realm.where(realmPuerta.class).equalTo("PUEId", PUEId).equalTo("GRUID", GRUID).findFirst();
+    }
+
     //ELIMINAR
 
     public boolean borrarTablasSincronizacion(){
@@ -444,15 +439,15 @@ public class RealmController {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.clear(realmPuerta.class);
-                realm.clear(realmPersonal.class);
-                realm.clear(realmPersonalInfo.class);
-                realm.clear(realmPersonalPuerta.class);
-                realm.clear(realmESPersonal.class);
-                realm.clear(realmNotificacion.class);
-                realm.clear(realmAgrupador.class);
-                realm.clear(realmAgrupadorPuerta.class);
-                realm.clear(realmUsuario.class);
+                realm.delete(realmPuerta.class);
+                realm.delete(realmPersonal.class);
+                realm.delete(realmPersonalInfo.class);
+                realm.delete(realmPersonalPuerta.class);
+                realm.delete(realmESPersonal.class);
+                realm.delete(realmNotificacion.class);
+                realm.delete(realmAgrupador.class);
+                realm.delete(realmAgrupadorPuerta.class);
+                realm.delete(realmUsuario.class);
                 saberEstadoConsulta = true;
             }
         });

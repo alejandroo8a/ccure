@@ -16,11 +16,13 @@ public class baseDatos extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
+        Realm.init(this);
+        RealmConfiguration configuration = new RealmConfiguration
+                .Builder()
                 .name(nombreBD)
-                .schemaVersion(0)
                 .deleteRealmIfMigrationNeeded()
                 .build();
-        Realm.setDefaultConfiguration(realmConfiguration);
+        Realm.setDefaultConfiguration(configuration);
     }
 }
+

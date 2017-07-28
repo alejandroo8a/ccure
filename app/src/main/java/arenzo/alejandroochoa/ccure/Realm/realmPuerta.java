@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class realmPuerta extends RealmObject{
 
-    @PrimaryKey
+
     private int PUEId;
 
     private String PUEClave;

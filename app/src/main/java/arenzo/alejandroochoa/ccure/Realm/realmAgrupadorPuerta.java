@@ -15,7 +15,7 @@ public class realmAgrupadorPuerta extends RealmObject {
     private int PUEId;
 
     private String Fase;
-    private int Tipo;
+    private String Tipo;
     private String FechaHora;
     private String MUsuarioId;
 
@@ -43,11 +43,11 @@ public class realmAgrupadorPuerta extends RealmObject {
         Fase = fase;
     }
 
-    public int getTipo() {
+    public String getTipo() {
         return Tipo;
     }
 
-    public void setTipo(int tipo) {
+    public void setTipo(String tipo) {
         Tipo = tipo;
     }
 
