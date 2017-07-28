@@ -6,18 +6,18 @@ package arenzo.alejandroochoa.ccure.Modelos;
 
 public class respuestaValidarEmpleado {
 
-    private String foto;
+    private String Foto;
     private String NoEmpleado;
     private String Nombre;
     private String Puesto;
     private String PUEClave;
 
     public String getFoto() {
-        return foto;
+        return Foto;
     }
 
     public void setFoto(String foto) {
-        this.foto = foto;
+        this.Foto = foto;
     }
 
     public String getNoEmpleado() {

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,36 +71,67 @@ public class helperRetrofit {
     private void configurarRealm(){
         realmController = new RealmController();
     }
-//TODO VERIFICAR ESTA FUNCION AL ENVIAR LOS DATOS
-    public void ValidarEmpleado(final String NoEmpleado, String NoTarjeta, ArrayList<String> aGRUID, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String idCaseta, final String numeroEmpleado, final String tipoChecada){
-        for (int i = 0 ; i < aGRUID.size() ; i++) {
-            Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, aGRUID.get(i));
-            validarCall.enqueue(new Callback<validarEmpleado>() {
-                @Override
-                public void onResponse(Call<validarEmpleado> call, Response<validarEmpleado> response) {
-                    if (!response.isSuccessful()) {
-                        return;
-                    }
-                    validarEmpleado resultado = response.body();
-                    Log.d(TAG, "onResponse: " + resultado);
-                    anillo.dismiss();
-                    if (resultado.getRespuesta().equals("PERMITIDO")) {
-                        new checadas().mostrarAlertaEmpleadoValidado(context, txtResultadoChecada, imgFondoAcceso, resultado, idCaseta, numeroEmpleado, tipoChecada);
-                    } else {
-                        imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
-                        txtResultadoChecada.setText("Acceso Denegado");
-                        checadas.vibrarCelular(context);
-                        new checadas().guardarResultadoChecadaNoEncontrado(NoEmpleado, context, idCaseta, numeroEmpleado, tipoChecada);
-                    }
+//TODO NECESITO EL PUE CLAVE PARA GUARDARLO
+    public void ValidarEmpleadoManual(final String NoEmpleado, String NoTarjeta, final String PUEId, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil) {
+        Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, PUEId);
+        validarCall.enqueue(new Callback<validarEmpleado>() {
+            @Override
+            public void onResponse(Call<validarEmpleado> call, Response<validarEmpleado> response) {
+                if (!response.isSuccessful()) {
+                    return;
                 }
+                validarEmpleado personal = response.body();
+                Log.d(TAG, "onResponse: " + personal);
+                anillo.dismiss();
+                if (personal.getRespuesta().equals("PERMITIDO")) {
+                    new checadas().mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, "", numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                } else {
+                    imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
+                    txtResultadoChecada.setText("Acceso Denegado");
+                    checadas.vibrarCelular(context);
+                    new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado, "", numeroEmpleado, tipoChecada);
+                }
+            }
 
-                @Override
-                public void onFailure(Call<validarEmpleado> call, Throwable t) {
-                    Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
-                    anillo.dismiss();
+            @Override
+            public void onFailure(Call<validarEmpleado> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
+                Toast.makeText(context, "Error en el servidor, intentelo de nuevo", Toast.LENGTH_SHORT).show();
+                anillo.dismiss();
+            }
+        });
+
+    }
+
+    public void ValidarEmpleadoRfid(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String idCaseta, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil) {
+        Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, puertaClave);
+        validarCall.enqueue(new Callback<validarEmpleado>() {
+            @Override
+            public void onResponse(Call<validarEmpleado> call, Response<validarEmpleado> response) {
+                if (!response.isSuccessful()) {
+                    return;
                 }
-            });
-        }
+                validarEmpleado resultado = response.body();
+                Log.d(TAG, "onResponse: " + resultado);
+                anillo.dismiss();
+                if (resultado.getRespuesta().equals("PERMITIDO")) {
+                    new checadas().mostrarAlertaEmpleadoValidadoRfid(context, txtResultadoChecada, imgFondoAcceso, resultado, "", numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                } else {
+                    imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
+                    txtResultadoChecada.setText("Acceso Denegado");
+                    checadas.vibrarCelular(context);
+                    new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,"", numeroEmpleado, tipoChecada);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<validarEmpleado> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
+                Toast.makeText(context, "Error en el servidor, intentelo de nuevo", Toast.LENGTH_SHORT).show();
+                anillo.dismiss();
+            }
+        });
+
     }
 
     public void ObtenerTarjetasPersonal(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
@@ -120,7 +152,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ObtenerTarjetasPersonal FALLO: "+t.getMessage());
-                anillo.dismiss();
+                ObtenerTarjetasPersonal(context, anillo, mostrarPrimerPantalla);
             }
         });
 
@@ -144,7 +176,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalPuerta FALLO: "+t.getMessage());
-                anillo.dismiss();
+                obtenerPersonalPuerta(context, anillo, mostrarPrimerPantalla);
             }
         });
     }
@@ -196,7 +228,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerUsuarios FALLO: "+t.getMessage());
-                anillo.dismiss();
+                obtenerUsuarios(context, anillo, mostrarPrimerPantalla);
             }
         });
     }
@@ -220,7 +252,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupador>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadores FALLO: "+t.getMessage());
-                anillo.dismiss();
+                actualizarAgrupadores(activity, anillo, spPuertasUnico);
             }
         });
     }
@@ -246,7 +278,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<puertas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarPuertas FALLO: "+t.getMessage());
-                anillo.dismiss();
+                actualizarPuertas(activity, anillo, spPuertasUnico, aAgrupadores);
             }
         });
     }
@@ -273,7 +305,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuerta FALLO: "+t.getMessage());
-                anillo.dismiss();
+                actualizarAgrupadorPuerta(context, anillo, mostrarPrimerPantalla);
             }
         });
     }
@@ -297,7 +329,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaInicio FALLO: "+t.getMessage());
-                anillo.dismiss();
+                actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores);
             }
         });
     }
@@ -423,7 +455,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<personalInfo>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA obtenerPersonalInfoSincronizacion FALLO: "+t.getMessage());
+                Log.e(TAG, "LA CONSULTA obtenerPersonalInfoSincronizacion FALLO: "+t.getCause().toString());
                 obtenerPersonalInfoSincronizacion(context, anillo);
             }
         });
