@@ -8,10 +8,10 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -23,14 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import arenzo.alejandroochoa.ccure.Fragments.configuracion;
-import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Helpers.vista;
+import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmUsuario;
@@ -42,6 +40,7 @@ public class main extends AppCompatActivity implements vista {
     final static int CODIGO_ESCRITURA = 100;
     private final static String TAG = "main";
     private SharedPreferences PREF_MAIN;
+    private Boolean hacerBusqueda = true;
 
     private Button btnOlvideTarjetaLogin;
     private EditText edtTarjeta;
@@ -174,7 +173,6 @@ public class main extends AppCompatActivity implements vista {
         edtTarjeta.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -184,20 +182,38 @@ public class main extends AppCompatActivity implements vista {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(edtTarjeta.length() > 0)
-                    if (existenDatos())
-                        buscarUsuario();
-                    else {
-                        edtTarjeta.setText("");
-                        mostrarDialogNoExistenDatos();
-                    }
+                if(hacerBusqueda && editable.length()>=2) {
+                    hacerBusqueda = false;
+                    esperarLectura();
+                }
             }
         });
     }
 
+    private void esperarLectura(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                definitBusquedaUsuario();
+                hacerBusqueda = true;
+            }
+        }, 500);
+
+    }
+
+    private void definitBusquedaUsuario(){
+        if (existenDatos())
+            buscarUsuario();
+        else {
+            edtTarjeta.setText("");
+            mostrarDialogNoExistenDatos();
+        }
+    }
+
     private void buscarUsuario(){
         RealmController.with(this);
-        realmUsuario personal = RealmController.getInstance().obtenerUsuarioRfid(edtTarjeta.getText().toString());
+        String noTarjeta = edtTarjeta.getText().toString().trim();
+        realmUsuario personal = RealmController.getInstance().obtenerUsuarioRfid(noTarjeta);
         edtTarjeta.setText("");
         if (personal != null){
             mostrarNucleo(personal);

@@ -1,6 +1,7 @@
 package arenzo.alejandroochoa.ccure.WebService;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,9 +35,11 @@ import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
+import arenzo.alejandroochoa.ccure.Realm.realmESPersonal;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,8 +76,8 @@ public class helperRetrofit {
         realmController = new RealmController();
     }
 //TODO NECESITO EL PUE CLAVE PARA GUARDARLO
-    public void ValidarEmpleadoManual(final String NoEmpleado, String NoTarjeta, final String PUEId, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil) {
-        Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, PUEId);
+    public void ValidarEmpleadoManual(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil) {
+        Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, puertaClave);
         validarCall.enqueue(new Callback<validarEmpleado>() {
             @Override
             public void onResponse(Call<validarEmpleado> call, Response<validarEmpleado> response) {
@@ -85,19 +88,24 @@ public class helperRetrofit {
                 Log.d(TAG, "onResponse: " + personal);
                 anillo.dismiss();
                 if (personal.getRespuesta().equals("PERMITIDO")) {
-                    new checadas().mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, "", numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                    new checadas().mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
                 } else {
                     imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
                     txtResultadoChecada.setText("Acceso Denegado");
                     checadas.vibrarCelular(context);
-                    new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado, "", numeroEmpleado, tipoChecada);
+                    if(personal.getEmpleado().getNombre().equals(""))
+                        new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada);
+                    else
+                        new checadas().guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+
                 }
             }
 
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
-                Toast.makeText(context, "Error en el servidor, intentelo de nuevo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoManual", Toast.LENGTH_SHORT).show();
+                new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada);
                 anillo.dismiss();
             }
         });
@@ -116,19 +124,23 @@ public class helperRetrofit {
                 Log.d(TAG, "onResponse: " + resultado);
                 anillo.dismiss();
                 if (resultado.getRespuesta().equals("PERMITIDO")) {
-                    new checadas().mostrarAlertaEmpleadoValidadoRfid(context, txtResultadoChecada, imgFondoAcceso, resultado, "", numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                    new checadas().guardarResultadoChecadaValidadaRfid(resultado, "P", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
                 } else {
                     imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
                     txtResultadoChecada.setText("Acceso Denegado");
                     checadas.vibrarCelular(context);
-                    new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,"", numeroEmpleado, tipoChecada);
+                    if(resultado.getEmpleado().getNombre().equals(""))
+                        new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
+                    else
+                        new checadas().guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
                 }
             }
 
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
-                Toast.makeText(context, "Error en el servidor, intentelo de nuevo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoRfid", Toast.LENGTH_SHORT).show();
+                new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,"", numeroEmpleado, tipoChecada);
                 anillo.dismiss();
             }
         });
@@ -153,6 +165,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ObtenerTarjetasPersonal FALLO: "+t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: ObtenerTarjetasPersonal", Toast.LENGTH_SHORT).show();
                 ObtenerTarjetasPersonal(context, anillo, mostrarPrimerPantalla);
             }
         });
@@ -177,6 +190,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalPuerta FALLO: "+t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalPuerta", Toast.LENGTH_SHORT).show();
                 obtenerPersonalPuerta(context, anillo, mostrarPrimerPantalla);
             }
         });
@@ -200,6 +214,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalInfo>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalInfo FALLO: "+t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalInfo", Toast.LENGTH_SHORT).show();
                 obtenerPersonalInfo(context,anillo, mostrarPrimerPantalla);
             }
         });
@@ -229,12 +244,13 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerUsuarios FALLO: "+t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerUsuarios", Toast.LENGTH_SHORT).show();
                 obtenerUsuarios(context, anillo, mostrarPrimerPantalla);
             }
         });
     }
 
-    public void actualizarAgrupadores(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico){
+    public void actualizarAgrupadores(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta){
         Call<List<agrupador>> puertasCall = helper.getAgrupadores();
         puertasCall.enqueue(new Callback<List<agrupador>>() {
             @Override
@@ -246,20 +262,21 @@ public class helperRetrofit {
                 Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADORES "+aAgrupadores.size());
                 Realm.getDefaultInstance();
                 if (realmController.insertarAgrupador(aAgrupadores)){
-                    actualizarPuertas(activity, anillo, spPuertasUnico, aAgrupadores);
+                    actualizarPuertas(activity, anillo, spPuertasUnico, aAgrupadores, alerta);
                 }
             }
 
             @Override
             public void onFailure(Call<List<agrupador>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadores FALLO: "+t.getMessage());
-                actualizarAgrupadores(activity, anillo, spPuertasUnico);
+                anillo.dismiss();
+                Toast.makeText(activity, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet", Toast.LENGTH_LONG).show();
             }
         });
     }
 
 
-    public void actualizarPuertas(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores){
+    public void actualizarPuertas(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores, final AlertDialog alerta){
         Call<List<puertas>> puertasCall = helper.getActualizarPuertas();
         puertasCall.enqueue(new Callback<List<puertas>>() {
             @Override
@@ -271,6 +288,7 @@ public class helperRetrofit {
                 Log.d(TAG, "OBTUVE ACTUALIZAR PUERTAS "+aPersonalPuerta.size());
                 Realm.getDefaultInstance();
                 if (realmController.insertarPuertas(aPersonalPuerta)){
+                    alerta.dismiss();
                     actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores);
                     anillo.dismiss();
                 }
@@ -279,34 +297,8 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<puertas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarPuertas FALLO: "+t.getMessage());
-                actualizarPuertas(activity, anillo, spPuertasUnico, aAgrupadores);
-            }
-        });
-    }
-
-    public void actualizarAgrupadorPuerta(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
-        Call<List<agrupadorPuerta>> puertasCall = helper.getAgrupadorPuerta();
-        puertasCall.enqueue(new Callback<List<agrupadorPuerta>>() {
-            @Override
-            public void onResponse(Call<List<agrupadorPuerta>> call, Response<List<agrupadorPuerta>> response) {
-                if (!response.isSuccessful()){
-                    return;
-                }
-                List<agrupadorPuerta> aAgrupadorPuerta = response.body();
-                Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADOR PUERTA "+aAgrupadorPuerta.size());
-                if (realmController.insertarAgrupadorPuerta(aAgrupadorPuerta)){
-                    anillo.dismiss();
-                    if (mostrarPrimerPantalla){
-                        Intent intent = new Intent(context, main.class);
-                        context.startActivity(intent);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuerta FALLO: "+t.getMessage());
-                actualizarAgrupadorPuerta(context, anillo, mostrarPrimerPantalla);
+                anillo.dismiss();
+                Toast.makeText(activity, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -330,12 +322,13 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaInicio FALLO: "+t.getMessage());
+                Toast.makeText(activity.getApplicationContext(),"No se pudo conectar con el servidor: actualizarAgrupadorPuertaInicio", Toast.LENGTH_SHORT).show();
                 actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores);
             }
         });
     }
 
-    public void actualizarChecadas(String NoEmpleado, String NoTarjeta, String PueClave, String fecha, final int totalPeticiones, final int numeroPeticion, final Context context, final ProgressDialog anillo, final String faseIngreso) {
+    public void actualizarChecadas(final String NoEmpleado, final String NoTarjeta, final String PueClave, String fecha, final int totalPeticiones, final int numeroPeticion, final Context context, final ProgressDialog anillo, final String faseIngreso, final RealmController realmController) {
         Call<List<respuestaChecadas>> checadasCall = helper.getActualizarChecadas(NoEmpleado, NoTarjeta, PueClave, fecha, faseIngreso);
         Log.d(TAG, "HICE LA PETICION ");
         checadasCall.enqueue(new Callback<List<respuestaChecadas>>() {
@@ -345,18 +338,43 @@ public class helperRetrofit {
                     Toast.makeText(context, "El servidor no tiene los parametros necesarios para sincronizar", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                realmController.actualizarChecadaEnviada(NoEmpleado, NoTarjeta, PueClave);
                 if (totalPeticiones == numeroPeticion){
-                    if (new sincronizacion().borrarTablasSincronizacion()){
-                        actualizarPuertasSincronizacion(context, anillo);
-                    }else
+                    RealmResults<realmESPersonal> aPersonal = realmController.obtenerRegistros();
+                    if (aPersonal.size() > 0)
                         new sincronizacion().resultadoDialog("Ocurrió un error al sincronizar los datos, intentelo de nuevo.", context);
+                    else {
+                        new sincronizacion().borrarTablasSincronizacion();
+                        actualizarPuertasSincronizacion(context, anillo);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<List<respuestaChecadas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarChecadas FALLO: " + t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarChecadas", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void actualizarChecadasReposo(final String NoEmpleado, final String NoTarjeta, final String PueClave, String fecha, final Context context, final String faseIngreso, final RealmController realmController) {
+        Call<List<respuestaChecadas>> checadasCall = helper.getActualizarChecadas(NoEmpleado, NoTarjeta, PueClave, fecha, faseIngreso);
+        Log.d(TAG, "HICE LA PETICION ");
+        checadasCall.enqueue(new Callback<List<respuestaChecadas>>() {
+            @Override
+            public void onResponse(Call<List<respuestaChecadas>> call, Response<List<respuestaChecadas>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(context, "El servidor no tiene los parametros necesarios para sincronizar", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                new checadas().eliminarChecadaPersonal(NoEmpleado, NoTarjeta, PueClave, realmController);
+            }
+
+            @Override
+            public void onFailure(Call<List<respuestaChecadas>> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA actualizarChecadas FALLO: " + t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarChecadasReposo", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -387,6 +405,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<puertas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarPuertasSincronizacion FALLO: "+t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarPuertasSincronizacion", Toast.LENGTH_SHORT).show();
                 actualizarPuertasSincronizacion(context, anillo);
             }
         });
@@ -410,6 +429,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalPuertaSincronizacion FALLO: "+t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalPuertaSincronizacion", Toast.LENGTH_SHORT).show();
                 obtenerPersonalPuertaSincronizacion(context, anillo);
             }
         });
@@ -433,6 +453,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ObtenerTarjetasPersonalSincronizacion FALLO: "+t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: ObtenerTarjetasPersonalSincronizacion", Toast.LENGTH_SHORT).show();
                 ObtenerTarjetasPersonalSincronizacion(context, anillo);
             }
         });
@@ -458,6 +479,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalInfo>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalInfoSincronizacion FALLO: "+t.getCause().toString());
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalInfoSincronizacion", Toast.LENGTH_SHORT).show();
                 obtenerPersonalInfoSincronizacion(context, anillo);
             }
         });

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
@@ -20,10 +21,17 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
+import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
+import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmAgrupador;
@@ -232,10 +240,14 @@ public class configuracionUnica extends AppCompatActivity {
         this.anillo = ProgressDialog.show(this, "Sincronizando", mensaje, true, false);
     }
 
-    private void obtenerAgrupadores(){
+    private void ocultarCargandoAnillo(){
+        this.anillo.dismiss();
+    }
+
+    private void obtenerAgrupadores(AlertDialog alert){
         mostrarCargandoAnillo("Obteniendo puertas...");
         helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        helperRetrofit.actualizarAgrupadores(this, anillo, spPuertasUnico);
+        helperRetrofit.actualizarAgrupadores(this, anillo, spPuertasUnico, alert);
     }
 
     private void mostrarDialogUrl(){
@@ -243,21 +255,39 @@ public class configuracionUnica extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_url, null);
         final EditText edtUrlDialog = view.findViewById(R.id.edtUrlDialog);
-
         builder.setTitle("Agregar URL")
                 .setView(view)
                 .setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ocultarTeclado();
-                        guardarURL(edtUrlDialog.getText().toString());
-                        URL = PREF_CONFIGURACION_UNICA.getString("URL","");
-                        edtWebServiceUnico.setText(edtUrlDialog.getText().toString());
-                        obtenerAgrupadores();
                     }
                 })
-                .setCancelable(false)
-        .show();
+                .setNeutralButton("Sincronizar por archivo", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .setCancelable(false);
+        final AlertDialog alert = builder.create();
+        alert.show();
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ocultarTeclado();
+                guardarURL(edtUrlDialog.getText().toString());
+                URL = PREF_CONFIGURACION_UNICA.getString("URL","");
+                edtWebServiceUnico.setText(edtUrlDialog.getText().toString());
+                obtenerAgrupadores(alert);
+            }
+        });
+        alert.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ocultarTeclado();
+                sincronizarArchivo(alert);
+            }
+        });
+
     }
 
     private void ocultarTeclado(){
@@ -265,5 +295,120 @@ public class configuracionUnica extends AppCompatActivity {
         inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
+    private void sincronizarArchivo(AlertDialog alerta){
+        String archivo = leerArchivo();
+        if(!archivo.equals("")) {
+            String[] archivoSeparado = archivo.split("~");
+            if (guardarPuertas(archivoSeparado[0]))
+                if (guardarPersonalPuerta(archivoSeparado[1]))
+                    if (guardarTarjetasPersonal(archivoSeparado[2]))
+                        if (guardarPersonalInfo(archivoSeparado[3])) {
+                            ocultarCargandoAnillo();
+                            alerta.dismiss();
+                            resultadoDialog("Éxito", "Terminó la sincronización por archivo, los datos se guardaron correctamente.");
+                            return;
+                        }
+            ocultarCargandoAnillo();
+            dialogErrorGuardadoDatosArchivo(alerta);
+        }
+
+    }
+
+    private String leerArchivo(){
+        File file = new File(Environment.getExternalStorageDirectory()+"/CCURE/baseDatos.txt");
+        StringBuilder archivo = new StringBuilder();
+        try{
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String linea;
+            while((linea = bufferedReader.readLine()) != null){
+                archivo.append(linea);
+                archivo.append('\n');
+            }
+        }catch (IOException ex){
+            Toast.makeText(getApplicationContext(), "No se puede leer el archivo. Asegurese de que exista.", Toast.LENGTH_SHORT).show();
+        }
+        return archivo.toString();
+    }
+
+    private boolean guardarPuertas(String oPuertas){
+        String[] aCantidadPuertas = oPuertas.split("\n");
+        List<puertas> aPuertas = new ArrayList<>();
+        for(int i = 0; i < aCantidadPuertas.length ; i++){
+            String[] aElementosPuerta = aCantidadPuertas[i].split("-");
+            puertas puerta = new puertas();
+            puerta.setPUEId(Integer.parseInt(aElementosPuerta[0]));
+            puerta.setPUEClave(aElementosPuerta[1]);
+            puerta.setDescripcion(aElementosPuerta[2]);
+            puerta.setFase(aElementosPuerta[3]);
+            puerta.setGRUID(aElementosPuerta[4]);
+            aPuertas.add(puerta);
+        }
+        return RealmController.getInstance().insertarPuertasArchivo(aPuertas, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+    }
+    private boolean guardarPersonalPuerta(String personal){
+        String[] aCantidadPersonalPuerta = personal.split("\n");
+        List<personalPuerta> aPersonalPuerta = new ArrayList<>();
+        for(int i = 0 ; i < aCantidadPersonalPuerta.length ; i++){
+            String[] elementosPersonalPuerta = aCantidadPersonalPuerta[i].split("-");
+            personalPuerta personalPuerta = new personalPuerta();
+            personalPuerta.setNoEmpleado(elementosPersonalPuerta[0]);
+            personalPuerta.setNoTarjeta(elementosPersonalPuerta[1]);
+            personalPuerta.setGRUId(elementosPersonalPuerta[2]);
+            aPersonalPuerta.add(personalPuerta);
+        }
+        return RealmController.getInstance().insertarPersonalPuertaArchivo(aPersonalPuerta, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+    }
+
+    private boolean guardarTarjetasPersonal(String tarjetas){
+        String[] aCantidadTarjetas = tarjetas.split("\n");
+        List<tarjetasPersonal> aTarjetasPersonal = new ArrayList<>();
+        for(int i = 0 ; i < aCantidadTarjetas.length ; i++){
+            String[] elementosTarjetas = aCantidadTarjetas[i].split("-");
+            tarjetasPersonal tarjetasPersonal = new tarjetasPersonal();
+            tarjetasPersonal.setNoEmpleado(elementosTarjetas[0]);
+            tarjetasPersonal.setNoTarjeta(elementosTarjetas[1]);
+            tarjetasPersonal.setNombre(elementosTarjetas[2]);
+            tarjetasPersonal.setEmpresa(elementosTarjetas[3]);
+            tarjetasPersonal.setTipo(elementosTarjetas[4]);
+            aTarjetasPersonal.add(tarjetasPersonal);
+        }
+        return RealmController.getInstance().insertarTarjetasPersonalArchivo(aTarjetasPersonal, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+    }
+
+    private boolean guardarPersonalInfo(String personal){
+        String[] aCantidadPersonal = personal.split("\n");
+        List<personalInfo> aPersonalInfo = new ArrayList<>();
+        for(int i = 0 ; i < aCantidadPersonal.length ; i++){
+            String[] elementosPersonal = aCantidadPersonal[i].split("-");
+            personalInfo personalInfo = new personalInfo();
+            personalInfo.setFoto(elementosPersonal[0]);
+            personalInfo.setNoEmpleado(elementosPersonal[1]);
+            personalInfo.setNombre(elementosPersonal[2]);
+            personalInfo.setPuesto(elementosPersonal[3]);
+            aPersonalInfo.add(personalInfo);
+        }
+        return RealmController.getInstance().insertarInfoPersonalArchivo(aPersonalInfo, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+    }
+
+    private void dialogErrorGuardadoDatosArchivo(final AlertDialog alerta){
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setTitle("ERROR")
+                .setMessage("Ocurrió un error al sincronizar el archivo, ¿desea volver a intentarlo?")
+                .setPositiveButton("Reintentar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        sincronizarArchivo(alerta);
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+    private void resultadoDialog(String titulo, String mensaje){
+        android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(this);
+        dialog.setTitle(titulo)
+                .setMessage(mensaje)
+                .setPositiveButton("Aceptar", null)
+                .show();
+    }
 
 }

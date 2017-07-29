@@ -358,19 +358,14 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean actualizarChecadasEnviadas(){
-        saberEstadoConsulta = false;
+    public void actualizarChecadaEnviada(final String noEmpleado, final String noTarjeta, final String PUEClave){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                RealmResults<realmESPersonal> results = RealmController.getInstance().obtenerRegistros();
-                for (realmESPersonal persona : results){
-                    persona.setFase("E");
-                }
-                saberEstadoConsulta = true;
+                realmESPersonal persona = realm.where(realmESPersonal.class).equalTo("NoEmpleado", noEmpleado).equalTo("NoTarjeta", noTarjeta).equalTo("PUEClave",PUEClave).findFirst();
+                persona.setFase("E");
             }
         });
-        return saberEstadoConsulta;
     }
 
     //SELECCIONAR
@@ -428,10 +423,6 @@ public class RealmController {
         return realm.where(realmPersonalInfo.class).findAll();
     }
 
-    public realmPuerta obtenerPUEClave(int PUEId, String GRUID){
-        return realm.where(realmPuerta.class).equalTo("PUEId", PUEId).equalTo("GRUID", GRUID).findFirst();
-    }
-
     //ELIMINAR
 
     public boolean borrarTablasSincronizacion(){
@@ -454,9 +445,19 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
+    public void eliminarRegistroPersonal(final String noEmpleado, final String noTarjeta, final String PUEClave){
+       realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realmESPersonal persona = realm.where(realmESPersonal.class).equalTo("NoEmpleado", noEmpleado).equalTo("NoTarjeta", noTarjeta).equalTo("PUEClave",PUEClave).findFirst();
+                persona.deleteFromRealm();
+            }
+        });
+    }
+
     private String obtenerFecha(){
         Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd,HH-mm-ss");
         return dateFormat.format(date);
     }
 
