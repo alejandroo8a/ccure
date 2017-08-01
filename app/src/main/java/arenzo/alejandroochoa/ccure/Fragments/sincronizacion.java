@@ -146,9 +146,10 @@ public class sincronizacion extends Fragment {
             public void execute(Realm realm) {
                 RealmResults<realmESPersonal> resultado = obtenerRegistrosRed();
                 if (resultado.size() > 0) {
+                    RealmController realmController = new RealmController();
                     for (int i = 0; i < resultado.size(); i++) {
                         realmESPersonal persona = resultado.get(i);
-                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), "2017-07-02", resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso());
+                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), persona.getFechaHoraEntrada(), resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso(), realmController);
                     }
                 }else
                     resultadoDialog("Actualmente todo está sincronizado.", getContext());
@@ -158,7 +159,7 @@ public class sincronizacion extends Fragment {
         anillo.dismiss();
     }
 
-    private RealmResults<realmESPersonal> obtenerRegistrosRed(){
+    public RealmResults<realmESPersonal> obtenerRegistrosRed(){
         return realmPrincipal.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }
 
@@ -236,21 +237,23 @@ public class sincronizacion extends Fragment {
 
     private void sincronizarArchivo(){
         String archivo = leerArchivo();
-        if(!existenDatos()) {
-            String[] archivoSeparado = archivo.split("~");
-            if (guardarPuertas(archivoSeparado[0]))
-                if (guardarPersonalPuerta(archivoSeparado[1]))
-                    if (guardarTarjetasPersonal(archivoSeparado[2]))
-                        if (guardarPersonalInfo(archivoSeparado[3])) {
-                            ocultarCargandoAnillo();
-                            resultadoDialog("Terminó la sincronización por archivo, los datos se guardaron correctamente.", getContext());
-                            return;
-                        }
-            ocultarCargandoAnillo();
-            dialogErrorGuardadoDatosArchivo();
-        }else {
-            ocultarCargandoAnillo();
-            resultadoDialogNegativo("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
+        if(!archivo.equals("")) {
+            if (!existenDatos()) {
+                String[] archivoSeparado = archivo.split("~");
+                if (guardarPuertas(archivoSeparado[0]))
+                    if (guardarPersonalPuerta(archivoSeparado[1]))
+                        if (guardarTarjetasPersonal(archivoSeparado[2]))
+                            if (guardarPersonalInfo(archivoSeparado[3])) {
+                                ocultarCargandoAnillo();
+                                resultadoDialog("Terminó la sincronización por archivo, los datos se guardaron correctamente.", getContext());
+                                return;
+                            }
+                ocultarCargandoAnillo();
+                dialogErrorGuardadoDatosArchivo();
+            } else {
+                ocultarCargandoAnillo();
+                resultadoDialogNegativo("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
+            }
         }
     }
 
@@ -270,7 +273,7 @@ public class sincronizacion extends Fragment {
                 archivo.append('\n');
             }
         }catch (IOException ex){
-            Toast.makeText(getContext(), "No se puede leer el archivo.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No se puede leer el archivo. Asegurese de que exista.", Toast.LENGTH_SHORT).show();
         }
         return archivo.toString();
     }

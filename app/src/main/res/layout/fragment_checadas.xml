@@ -234,18 +234,18 @@
         android:id="@+id/tbnTipoLectura"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
         android:background="@color/accent"
         android:checked="true"
         android:textColor="@color/ksw_md_solid_disable"
-        android:textOff="No. Empleado"
-        android:textOn="No. Tarjeta"
-        app:layout_constraintBottom_toTopOf="@+id/imgFondoGuardia"
+        android:textOff="Olvidó tarjeta"
+        android:textOn="Checar con tarjeta"
         app:layout_constraintHorizontal_bias="0.951"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/edtNoEmpleado" />
 
 
 </android.support.constraint.ConstraintLayout>
