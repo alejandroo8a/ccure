@@ -273,6 +273,7 @@ public class sincronizacion extends Fragment {
                 archivo.append('\n');
             }
         }catch (IOException ex){
+            ocultarCargandoAnillo();
             Toast.makeText(getContext(), "No se puede leer el archivo. Asegurese de que exista.", Toast.LENGTH_SHORT).show();
         }
         return archivo.toString();

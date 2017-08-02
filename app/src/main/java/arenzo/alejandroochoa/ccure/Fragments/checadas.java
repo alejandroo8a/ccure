@@ -175,6 +175,12 @@ public class checadas extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(informacionPantalla);
+    }
+
     public void configurarReceiberPantalla() {
         informacionPantalla = new BroadcastReceiver() { // init your Receiver
             @Override
