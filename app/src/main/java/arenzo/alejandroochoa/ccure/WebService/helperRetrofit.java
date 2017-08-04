@@ -96,7 +96,7 @@ public class helperRetrofit {
                     txtResultadoChecada.setText("Acceso Denegado");
                     checadas.vibrarCelular(context);
                     if(personal.getEmpleado().getNombre().equals(""))
-                        new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada);
+                        new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
                     else
                         new checadas().guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
 
@@ -107,7 +107,7 @@ public class helperRetrofit {
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoManual", Toast.LENGTH_SHORT).show();
-                new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada);
+                new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
                 anillo.dismiss();
             }
         });
@@ -132,9 +132,9 @@ public class helperRetrofit {
                     txtResultadoChecada.setText("Acceso Denegado");
                     checadas.vibrarCelular(context);
                     if(resultado.getEmpleado().getNombre().equals(""))
-                        new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
+                        new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
                     else
-                        new checadas().guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                        new checadas().guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
                 }
             }
 
@@ -142,7 +142,7 @@ public class helperRetrofit {
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoRfid", Toast.LENGTH_SHORT).show();
-                new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,"", numeroEmpleado, tipoChecada);
+                new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,"", numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
                 anillo.dismiss();
             }
         });

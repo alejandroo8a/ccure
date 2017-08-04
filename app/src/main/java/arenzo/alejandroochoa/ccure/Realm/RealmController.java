@@ -164,6 +164,8 @@ public class RealmController {
                     realmPersonal rPersonal = realm.createObject(realmPersonal.class);
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
+                    rPersonal.setNombre(persona.getNombre());
+                    rPersonal.setEmpresa(persona.getEmpresa());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId("CONFIGURACION");
@@ -382,8 +384,16 @@ public class RealmController {
         return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("GRUId", grupo).findFirst();
     }
 
+    public realmPersonal obtenerPersonalManual(String numeroEmpleado){
+        return realm.where(realmPersonal.class).equalTo("NoEmpleado",numeroEmpleado).findFirst();
+    }
+
     public realmPersonalPuerta obtenerPersonalRfid(String noTarjeta, String grupo){
         return realm.where(realmPersonalPuerta.class).equalTo("NoTarjeta",noTarjeta).equalTo("GRUId", grupo).findFirst();
+    }
+
+    public realmPersonal obtenerPersonalRfid(String noTarjeta){
+        return realm.where(realmPersonal.class).equalTo("NoTarjeta",noTarjeta).findFirst();
     }
 
     public realmUsuario obtenerUsuario(String numeroEmpleado){

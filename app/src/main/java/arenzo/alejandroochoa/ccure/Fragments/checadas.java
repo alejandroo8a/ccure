@@ -42,6 +42,7 @@ import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmESPersonal;
+import arenzo.alejandroochoa.ccure.Realm.realmPersonal;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
 import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
@@ -226,7 +227,6 @@ public class checadas extends Fragment {
                     validarEmpleadoManual();
                     mostrarDatosGuardia();
                 } else {
-                    mostrarDatosGuardia();
                     mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
                     vibrarCelular(getContext());
                     guardarResultadoChecadaDenegadoNoInternetManual(edtNoEmpleado.getText().toString());
@@ -256,7 +256,6 @@ public class checadas extends Fragment {
                 validarEmpleadoRfid(noTarjeta);
                 mostrarDatosGuardia();
             } else {
-                mostrarDatosGuardia();
                 mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
                 vibrarCelular(getContext());
                 guardarResultadoChecadaDenegadoNoInternetRfid(noTarjeta);
@@ -370,11 +369,21 @@ public class checadas extends Fragment {
     private void guardarResultadoChecadaDenegadoNoInternetManual(String noEmpleado){
         ocultarCargandoAnillo();
         realmController.insertarPersonalNuevo(noEmpleado, " ", puertaClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+        realmPersonal personal = realmController.obtenerPersonalManual(noEmpleado);
+        if(personal!=null)
+            mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personal.getNombre(), personal.getEmpresa(), " ");
+        else
+            mostrarPersonal(txtNombre,txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", " " );
     }
 //FUNCIONA
-    public void guardarResultadoChecadaNoEncontradoManual(String noEmpleado,  String PUEClave, String numeroEmpleado, String tipoChecada){
+    public void guardarResultadoChecadaNoEncontradoManual(String noEmpleado,  String PUEClave, String numeroEmpleado, String tipoChecada,  TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil){
         realmController = new RealmController();
         realmController.insertarPersonalNuevo(noEmpleado, " ", PUEClave, "D", "N", "",numeroEmpleado, tipoChecada);
+        realmPersonal personal = realmController.obtenerPersonalManual(noEmpleado);
+        if(personal!=null)
+            mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personal.getNombre(), personal.getEmpresa(), " ");
+        else
+            mostrarPersonal(txtNombre,txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", " " );
     }
     //RFID LECTURAS
     //FUNCIONA
@@ -393,11 +402,21 @@ public class checadas extends Fragment {
     private void guardarResultadoChecadaDenegadoNoInternetRfid(String noTarjeta){
         ocultarCargandoAnillo();
         realmController.insertarPersonalNuevo(" ", noTarjeta, puertaClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada);
+        realmPersonal personal = realmController.obtenerPersonalRfid(noTarjeta);
+        if(personal!=null)
+            mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personal.getNombre(), personal.getEmpresa(), " ");
+        else
+            mostrarPersonal(txtNombre,txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", " " );
     }
     //FUNCIONA
-    public void guardarResultadoChecadaNoEncontradoRfid(String NoTarjeta,  String PUEClave, String numeroEmpleado, String tipoChecada){
+    public void guardarResultadoChecadaNoEncontradoRfid(String NoTarjeta,  String PUEClave, String numeroEmpleado, String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil){
         realmController = new RealmController();
         realmController.insertarPersonalNuevo(" ", NoTarjeta, PUEClave, "D", "N", "",numeroEmpleado, tipoChecada);
+        realmPersonal personal = realmController.obtenerPersonalManual(NoTarjeta);
+        if(personal!=null)
+            mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personal.getNombre(), personal.getEmpresa(), " ");
+        else
+            mostrarPersonal(txtNombre,txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", " " );
     }
 
     private void decodificarBase64(String imagen){
