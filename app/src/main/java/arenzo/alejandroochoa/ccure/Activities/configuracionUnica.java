@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.Preference;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
@@ -117,7 +118,7 @@ public class configuracionUnica extends AppCompatActivity {
         });
     }
 
-    private void guardarDatos() {
+    public void guardarDatos() {
         if (edtNombreDispositivoUnico.length() > 0 && edtURLExportacionUnico.length() > 0 && edtWebServiceUnico.length() > 0) {
             realmDispositivo dispositivo = realmController.obtenerDispositivo();
             final int idAgrupador = realmController.obtenerIdAgrupador(spPuertasUnico.getSelectedItem().toString());
@@ -134,13 +135,14 @@ public class configuracionUnica extends AppCompatActivity {
                     realmPuerta puerta2 = realmController.obtenerPuerta(aAgrupadorPuertas.get(1).getPUEId());
                     guardarPuerta(puerta1, puerta2, idAgrupador);
                     RealmResults<realmPuerta> aPuertas = realmController.obtenerPuertas(aAgrupadorPuertas.get(0).getPUEId());
+                    guardarYaConfigurado();
                     iterarPuertas(aPuertas);
                 }
                 else {
                     crearDialogError("Error", "Sus datos no se guardaron, el agrupador que seleccionó no contiene puertas.");
                     return;
                 }
-                guardarYaExisteConfiguracionUrlNombrePuerta(edtWebServiceUnico.getText().toString(), spPuertasUnico.getSelectedItem().toString());
+                guardarYaExisteConfiguracionUrlNombrePuerta(edtWebServiceUnico.getText().toString(), spPuertasUnico.getSelectedItem().toString(), edtNombreDispositivoUnico.getText().toString());
                 obtenerTodosDatos();
             } else {
                 crearDialogError("Error", "Sus datos no se guardaron, intentelo de nuevo.");
@@ -150,8 +152,11 @@ public class configuracionUnica extends AppCompatActivity {
         }
     }
 
-
-
+    private void guardarYaConfigurado(){
+        SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
+        editor.putBoolean("YACONFIGURADO", true);
+        editor.commit();
+    }
 
     private void crearDialogError(String titulo,String mensaje){
         AlertDialog.Builder dialog =  new AlertDialog.Builder(this);
@@ -188,9 +193,10 @@ public class configuracionUnica extends AppCompatActivity {
         }
     }
 
-    private void guardarYaExisteConfiguracionUrlNombrePuerta(String url, String nombrePuerta){
+    private void guardarYaExisteConfiguracionUrlNombrePuerta(String url, String nombrePuerta, String nombreEquipo){
         SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
         editor.putBoolean("CONFIGURADO", true);
+        editor.putString("NOMBREEQUIPO", nombreEquipo);
         editor.putString("URL", url);
         editor.putString("NOMBREPUERTA", nombrePuerta);
         editor.commit();
@@ -247,7 +253,7 @@ public class configuracionUnica extends AppCompatActivity {
     private void obtenerAgrupadores(AlertDialog alert){
         mostrarCargandoAnillo("Obteniendo puertas...");
         helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        helperRetrofit.actualizarAgrupadores(this, anillo, spPuertasUnico, alert);
+        helperRetrofit.actualizarAgrupadores(this, anillo, spPuertasUnico, alert, PREF_CONFIGURACION_UNICA);
     }
 
     private void mostrarDialogUrl(){
@@ -255,9 +261,10 @@ public class configuracionUnica extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_url, null);
         final EditText edtUrlDialog = view.findViewById(R.id.edtUrlDialog);
+        String nombreBotonPositivo = configurarYaSincronizado(edtUrlDialog);
         builder.setTitle("Agregar URL")
                 .setView(view)
-                .setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
+                .setPositiveButton(nombreBotonPositivo, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }
@@ -298,6 +305,7 @@ public class configuracionUnica extends AppCompatActivity {
     private void sincronizarArchivo(AlertDialog alerta){
         String archivo = leerArchivo();
         if(!archivo.equals("")) {
+            mostrarCargandoAnillo("Sincronizando archivo...");
             String[] archivoSeparado = archivo.split("~");
             if (guardarPuertas(archivoSeparado[0]))
                 if (guardarPersonalPuerta(archivoSeparado[1]))
@@ -311,7 +319,6 @@ public class configuracionUnica extends AppCompatActivity {
             ocultarCargandoAnillo();
             dialogErrorGuardadoDatosArchivo(alerta);
         }
-
     }
 
     private String leerArchivo(){
@@ -325,7 +332,7 @@ public class configuracionUnica extends AppCompatActivity {
                 archivo.append('\n');
             }
         }catch (IOException ex){
-            Toast.makeText(getApplicationContext(), "No se puede leer el archivo. Asegurese de que exista.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No se puede leer el archivo. Asegurese de que exista.", Toast.LENGTH_SHORT).show();
         }
         return archivo.toString();
     }
@@ -407,8 +414,33 @@ public class configuracionUnica extends AppCompatActivity {
         android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(this);
         dialog.setTitle(titulo)
                 .setMessage(mensaje)
-                .setPositiveButton("Aceptar", null)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        saberYaSincronizado();
+                    }
+                })
                 .show();
+    }
+
+    private void saberYaSincronizado(){
+        if(PREF_CONFIGURACION_UNICA.getBoolean("YACONFIGURADO", false))
+            finish();
+        else{
+            Intent intent = new Intent(this, main.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private String configurarYaSincronizado(EditText edtUrlDialog){
+        if (PREF_CONFIGURACION_UNICA.getBoolean("YACONFIGURADO", false)) {
+            edtUrlDialog.setVisibility(View.GONE);
+            edtNombreDispositivoUnico.setText(PREF_CONFIGURACION_UNICA.getString("NOMBREEQUIPO","Configuracion"));
+            edtWebServiceUnico.setVisibility(View.INVISIBLE);
+            return "Sincronizar por red";
+        }
+        return "Agregar";
     }
 
 }

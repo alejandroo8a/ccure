@@ -12,6 +12,8 @@ public class realmPersonal extends RealmObject {
 
     private String NoEmpleado;
     private String NoTarjeta;
+    private String Nombre;
+    private String Empresa;
 
     private String Fase;
     private String MFechaHora;
@@ -55,5 +57,21 @@ public class realmPersonal extends RealmObject {
 
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
+    }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setNombre(String nombre) {
+        Nombre = nombre;
+    }
+
+    public String getEmpresa() {
+        return Empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        Empresa = empresa;
     }
 }

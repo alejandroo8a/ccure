@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import arenzo.alejandroochoa.ccure.Activities.configuracionUnica;
 import arenzo.alejandroochoa.ccure.Activities.main;
 import arenzo.alejandroochoa.ccure.Fragments.checadas;
 import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
@@ -94,7 +96,7 @@ public class helperRetrofit {
                     txtResultadoChecada.setText("Acceso Denegado");
                     checadas.vibrarCelular(context);
                     if(personal.getEmpleado().getNombre().equals(""))
-                        new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada);
+                        new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
                     else
                         new checadas().guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
 
@@ -105,7 +107,7 @@ public class helperRetrofit {
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoManual", Toast.LENGTH_SHORT).show();
-                new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada);
+                new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
                 anillo.dismiss();
             }
         });
@@ -130,9 +132,9 @@ public class helperRetrofit {
                     txtResultadoChecada.setText("Acceso Denegado");
                     checadas.vibrarCelular(context);
                     if(resultado.getEmpleado().getNombre().equals(""))
-                        new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
+                        new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
                     else
-                        new checadas().guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                        new checadas().guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
                 }
             }
 
@@ -140,7 +142,7 @@ public class helperRetrofit {
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoRfid", Toast.LENGTH_SHORT).show();
-                new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,"", numeroEmpleado, tipoChecada);
+                new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,"", numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
                 anillo.dismiss();
             }
         });
@@ -250,7 +252,7 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarAgrupadores(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta){
+    public void actualizarAgrupadores(final configuracionUnica activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA){
         Call<List<agrupador>> puertasCall = helper.getAgrupadores();
         puertasCall.enqueue(new Callback<List<agrupador>>() {
             @Override
@@ -262,7 +264,7 @@ public class helperRetrofit {
                 Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADORES "+aAgrupadores.size());
                 Realm.getDefaultInstance();
                 if (realmController.insertarAgrupador(aAgrupadores)){
-                    actualizarPuertas(activity, anillo, spPuertasUnico, aAgrupadores, alerta);
+                    actualizarPuertas(activity, anillo, spPuertasUnico, aAgrupadores, alerta, PREF_CONFIGURACION_UNICA);
                 }
             }
 
@@ -276,7 +278,7 @@ public class helperRetrofit {
     }
 
 
-    public void actualizarPuertas(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores, final AlertDialog alerta){
+    public void actualizarPuertas(final configuracionUnica activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA){
         Call<List<puertas>> puertasCall = helper.getActualizarPuertas();
         puertasCall.enqueue(new Callback<List<puertas>>() {
             @Override
@@ -289,8 +291,7 @@ public class helperRetrofit {
                 Realm.getDefaultInstance();
                 if (realmController.insertarPuertas(aPersonalPuerta)){
                     alerta.dismiss();
-                    actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores);
-                    anillo.dismiss();
+                    actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores, PREF_CONFIGURACION_UNICA);
                 }
             }
 
@@ -303,7 +304,7 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarAgrupadorPuertaInicio(final Activity activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores){
+    public void actualizarAgrupadorPuertaInicio(final configuracionUnica activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores, final SharedPreferences PREF_CONFIGURACION_UNICA){
         Call<List<agrupadorPuerta>> puertasCall = helper.getAgrupadorPuerta();
         puertasCall.enqueue(new Callback<List<agrupadorPuerta>>() {
             @Override
@@ -316,6 +317,8 @@ public class helperRetrofit {
                 if (realmController.insertarAgrupadorPuerta(aAgrupadorPuerta)){
                     llenarSpinnerAgrupador(activity.getApplicationContext(), aAgrupadores, spPuertasUnico);
                     anillo.dismiss();
+                    if (PREF_CONFIGURACION_UNICA.getBoolean("YACONFIGURADO", false))
+                        activity.guardarDatos();
                 }
             }
 
@@ -323,7 +326,7 @@ public class helperRetrofit {
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaInicio FALLO: "+t.getMessage());
                 Toast.makeText(activity.getApplicationContext(),"No se pudo conectar con el servidor: actualizarAgrupadorPuertaInicio", Toast.LENGTH_SHORT).show();
-                actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores);
+                actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores, PREF_CONFIGURACION_UNICA);
             }
         });
     }
