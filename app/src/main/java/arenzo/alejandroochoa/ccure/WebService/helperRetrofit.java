@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
@@ -78,7 +79,7 @@ public class helperRetrofit {
         realmController = new RealmController();
     }
 //TODO NECESITO EL PUE CLAVE PARA GUARDARLO
-    public void ValidarEmpleadoManual(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil) {
+    public void ValidarEmpleadoManual(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final View view) {
         Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, puertaClave);
         validarCall.enqueue(new Callback<validarEmpleado>() {
             @Override
@@ -90,15 +91,16 @@ public class helperRetrofit {
                 Log.d(TAG, "onResponse: " + personal);
                 anillo.dismiss();
                 if (personal.getRespuesta().equals("PERMITIDO")) {
-                    new checadas().mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                    new checadas().mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
                 } else {
                     imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
                     txtResultadoChecada.setText("Acceso Denegado");
+                    checadas.noEmpleado = "";
                     checadas.vibrarCelular(context);
                     if(personal.getEmpleado().getNombre().equals(""))
-                        new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
+                        new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil, view);
                     else
-                        new checadas().guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                        new checadas().guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
 
                 }
             }
@@ -106,8 +108,12 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
+                imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
+                txtResultadoChecada.setText("Acceso Denegado");
+                checadas.vibrarCelular(context);
+                checadas.noEmpleado = "";
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoManual", Toast.LENGTH_SHORT).show();
-                new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
+                new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil, view);
                 anillo.dismiss();
             }
         });
