@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,8 @@ public class main extends AppCompatActivity implements vista {
         cargarElementos();
         centrarTituloActionBar();
         eventosVista();
+        edtTarjeta.setInputType(InputType.TYPE_NULL);
+        edtTarjeta.requestFocus();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

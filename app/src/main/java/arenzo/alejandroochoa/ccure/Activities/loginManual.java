@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -31,10 +32,11 @@ public class loginManual extends AppCompatActivity implements vista {
 
 
     private EditText edtNumeroEmpleado;
-    private Button btnLoginManual;
+    private Button btnLoginManual, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar;;
     private SharedPreferences PREF_LOGIN_MANUAL;
 
     private String URL;
+    private String noEmpleado = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,18 @@ public class loginManual extends AppCompatActivity implements vista {
     private void cargarElementos(){
         edtNumeroEmpleado = (EditText) findViewById(R.id.edtNumeroEmpleado);
         btnLoginManual = (Button)findViewById(R.id.btnLoginManual);
+        btnCero = (Button) findViewById(R.id.btnCero);
+        btnUno = (Button) findViewById(R.id.btnUno);
+        btnDos = (Button) findViewById(R.id.btnDos);
+        btnTres = (Button) findViewById(R.id.btnTres);
+        btnCuatro = (Button) findViewById(R.id.btnCuatro);
+        btnCinco = (Button) findViewById(R.id.btnCinco);
+        btnSeis = (Button) findViewById(R.id.btnSeis);
+        btnSiete = (Button) findViewById(R.id.btnSiete);
+        btnOcho = (Button) findViewById(R.id.btnOcho);
+        btnNueve = (Button) findViewById(R.id.btnNueve);
+        btnBorrar = (Button) findViewById(R.id.btnBorrar);
+        edtNumeroEmpleado.setInputType(InputType.TYPE_NULL);
     }
 
     @Override
@@ -63,6 +77,87 @@ public class loginManual extends AppCompatActivity implements vista {
                     buscarUsuario();
                 else
                     mostrarDialogNoExistenDatos();
+            }
+        });
+
+
+        btnCero.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "0";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnUno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "1";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnDos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "2";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnTres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "3";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnCuatro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "4";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnCinco.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "5";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnSeis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "6";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnSiete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "7";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnOcho.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "8";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnNueve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "9";
+                edtNumeroEmpleado.setText(noEmpleado);
+            }
+        });
+        btnBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!noEmpleado.equals("")) {
+                    noEmpleado = noEmpleado.substring(0, noEmpleado.length() - 1);
+                    edtNumeroEmpleado.setText(noEmpleado);
+                }
             }
         });
     }

@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -59,7 +60,7 @@ public class checadas extends Fragment {
     private TextView txtCaseta, txtResultadoChecada, txtNombre, txtPuestoEmpresa, txtNombreAlerta, txtNoEmpleado;
     private SwitchButton sbTipoChecada;
     private ImageView imgFotoPerfil, imgFondoAcceso, imgPerfilAlerta, imgFondoGuardia;
-    private Button btnAceptarAlerta, btnCancelarAlerta, btnBuscarEmpleado;
+    private Button btnAceptarAlerta, btnCancelarAlerta, btnBuscarEmpleado, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar;
     private ToggleButton tbnTipoLectura;
     ProgressDialog anillo = null;
 
@@ -75,7 +76,8 @@ public class checadas extends Fragment {
     private Boolean hacerBusqueda = true;
     private ArrayList<String> aGRUIDs = new ArrayList<>();
 
-    private realmPersonalPuerta personal;
+    private String noEmpleado = "";
+
     RealmController realmController;
 
     BroadcastReceiver informacionPantalla;
@@ -105,6 +107,17 @@ public class checadas extends Fragment {
         imgFondoAcceso = view.findViewById(R.id.imgFondoAcceso);
         imgFondoGuardia = view.findViewById(R.id.imgFondoGuardia);
         btnBuscarEmpleado = view.findViewById(R.id.btnBuscarEmpleado);
+        btnCero = view.findViewById(R.id.btnCero);
+        btnUno = view.findViewById(R.id.btnUno);
+        btnDos = view.findViewById(R.id.btnDos);
+        btnTres = view.findViewById(R.id.btnTres);
+        btnCuatro = view.findViewById(R.id.btnCuatro);
+        btnCinco = view.findViewById(R.id.btnCinco);
+        btnSeis = view.findViewById(R.id.btnSeis);
+        btnSiete = view.findViewById(R.id.btnSiete);
+        btnOcho = view.findViewById(R.id.btnOcho);
+        btnNueve = view.findViewById(R.id.btnNueve);
+        btnBorrar = view.findViewById(R.id.btnBorrar);
         tbnTipoLectura = view.findViewById(R.id.tbnTipoLectura);
         return view;
     }
@@ -121,6 +134,7 @@ public class checadas extends Fragment {
         configurarChecadas();
         configurarReceiberPantalla();
         obtenerGRUIDs();
+        bloquearTeclado();
         realmController = new RealmController(getActivity().getApplication());
         btnBuscarEmpleado.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,12 +188,97 @@ public class checadas extends Fragment {
                 configurarModoLectura();
             }
         });
+
+        btnCero.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "0";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnUno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "1";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnDos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "2";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnTres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "3";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnCuatro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "4";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnCinco.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "5";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnSeis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "6";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnSiete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "7";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnOcho.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "8";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnNueve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noEmpleado += "9";
+                edtNoEmpleado.setText(noEmpleado);
+            }
+        });
+        btnBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!noEmpleado.equals("")) {
+                    noEmpleado = noEmpleado.substring(0, noEmpleado.length() - 1);
+                    edtNoEmpleado.setText(noEmpleado);
+                }
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(informacionPantalla);
+    }
+
+    private void bloquearTeclado(){
+        edtNoEmpleado.setInputType(InputType.TYPE_NULL);
+        edtNoTarjeta.setInputType(InputType.TYPE_NULL);
     }
 
     public void configurarReceiberPantalla() {
@@ -201,6 +300,8 @@ public class checadas extends Fragment {
             tbnTipoLectura.setTextOff("Checar con tarjeta");
             tbnTipoLectura.setChecked(false);
             txtNoEmpleado.setText("No. Empleado");
+            mostrarBotonesNumeracion();
+            edtNoEmpleado.requestFocus();
         }else{
             edtNoTarjeta.setVisibility(View.VISIBLE);
             edtNoEmpleado.setVisibility(View.GONE);
@@ -208,6 +309,8 @@ public class checadas extends Fragment {
             tbnTipoLectura.setTextOn("Olvidó tarjeta");
             tbnTipoLectura.setChecked(true);
             txtNoEmpleado.setText("No. Tarjeta");
+            ocultarBotonesNumeracion();
+            edtNoTarjeta.requestFocus();
         }
     }
 
@@ -584,6 +687,34 @@ public class checadas extends Fragment {
 
     public void eliminarChecadaPersonal(String noEmpleado, String noTarjeta, String PUEClave, final RealmController realmController){
         realmController.eliminarRegistroPersonal(noEmpleado, noTarjeta, PUEClave);
+    }
+
+    private void mostrarBotonesNumeracion(){
+        btnCero.setVisibility(View.VISIBLE);
+        btnUno.setVisibility(View.VISIBLE);
+        btnDos.setVisibility(View.VISIBLE);
+        btnTres.setVisibility(View.VISIBLE);
+        btnCuatro.setVisibility(View.VISIBLE);
+        btnCinco.setVisibility(View.VISIBLE);
+        btnSeis.setVisibility(View.VISIBLE);
+        btnSiete.setVisibility(View.VISIBLE);
+        btnOcho.setVisibility(View.VISIBLE);
+        btnNueve.setVisibility(View.VISIBLE);
+        btnBorrar.setVisibility(View.VISIBLE);
+    }
+
+    private void ocultarBotonesNumeracion(){
+        btnCero.setVisibility(View.GONE);
+        btnUno.setVisibility(View.GONE);
+        btnDos.setVisibility(View.GONE);
+        btnTres.setVisibility(View.GONE);
+        btnCuatro.setVisibility(View.GONE);
+        btnCinco.setVisibility(View.GONE);
+        btnSeis.setVisibility(View.GONE);
+        btnSiete.setVisibility(View.GONE);
+        btnOcho.setVisibility(View.GONE);
+        btnNueve.setVisibility(View.GONE);
+        btnBorrar.setVisibility(View.GONE);
     }
 
 
