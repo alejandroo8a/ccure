@@ -5,9 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -24,8 +26,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import arenzo.alejandroochoa.ccure.Helpers.vista;
@@ -45,6 +51,7 @@ public class main extends AppCompatActivity implements vista {
 
     private Button btnOlvideTarjetaLogin;
     private EditText edtTarjeta;
+    private ImageView imgPortadaMain;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -59,6 +66,7 @@ public class main extends AppCompatActivity implements vista {
         eventosVista();
         edtTarjeta.setInputType(InputType.TYPE_NULL);
         edtTarjeta.requestFocus();
+        cargarImagenDeMemoria();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -71,6 +79,7 @@ public class main extends AppCompatActivity implements vista {
     private void cargarElementos(){
         btnOlvideTarjetaLogin = (Button)findViewById(R.id.btnOlvideTarjetaLogin);
         edtTarjeta = (EditText) findViewById(R.id.edtTarjeta);
+        imgPortadaMain = (ImageView) findViewById(R.id.imgPortadaMain);
     }
 
     private void cargarLoginManual(){
@@ -285,6 +294,10 @@ public class main extends AppCompatActivity implements vista {
         Intent intent = new Intent(this, configuracionUnica.class);
         startActivity(intent);
         finish();
+    }
+
+    private void cargarImagenDeMemoria(){
+        Picasso.with(getApplicationContext()).load(new File(Environment.getExternalStorageDirectory()+"/CCURE/portada.jpg")).error(R.drawable.im_logo_penia).into(imgPortadaMain);
     }
 
 }

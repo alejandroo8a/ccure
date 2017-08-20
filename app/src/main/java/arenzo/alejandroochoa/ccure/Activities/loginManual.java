@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -15,8 +16,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import arenzo.alejandroochoa.ccure.R;
@@ -32,6 +37,7 @@ public class loginManual extends AppCompatActivity implements vista {
 
 
     private EditText edtNumeroEmpleado;
+    private ImageView imgPortadaManual;
     private Button btnLoginManual, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar;;
     private SharedPreferences PREF_LOGIN_MANUAL;
 
@@ -47,12 +53,14 @@ public class loginManual extends AppCompatActivity implements vista {
         centrarTituloActionBar();
         cargarElementos();
         eventosVista();
+        cargarImagenDeMemoria();
     }
 
 
     private void cargarElementos(){
         edtNumeroEmpleado = (EditText) findViewById(R.id.edtNumeroEmpleado);
         btnLoginManual = (Button)findViewById(R.id.btnLoginManual);
+        imgPortadaManual = (ImageView) findViewById(R.id.imgPortadaManual);
         btnCero = (Button) findViewById(R.id.btnCero);
         btnUno = (Button) findViewById(R.id.btnUno);
         btnDos = (Button) findViewById(R.id.btnDos);
@@ -244,5 +252,9 @@ public class loginManual extends AppCompatActivity implements vista {
     private void ocultarTeclado(){
         InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    private void cargarImagenDeMemoria(){
+        Picasso.with(getApplicationContext()).load(new File(Environment.getExternalStorageDirectory()+"/CCURE/portada.jpg")).error(R.drawable.im_logo_penia).into(imgPortadaManual);
     }
 }

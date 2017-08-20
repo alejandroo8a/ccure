@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -36,6 +37,7 @@ import android.widget.ToggleButton;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
@@ -59,7 +61,7 @@ public class checadas extends Fragment {
     private EditText edtNoEmpleado, edtNoTarjeta;
     private TextView txtCaseta, txtResultadoChecada, txtNombre, txtPuestoEmpresa, txtNombreAlerta, txtNoEmpleado;
     private SwitchButton sbTipoChecada;
-    private ImageView imgFotoPerfil, imgFondoAcceso, imgPerfilAlerta, imgFondoGuardia;
+    private ImageView imgFotoPerfil, imgFondoAcceso, imgPerfilAlerta, imgFondoGuardia, imgPortadaChecadas;
     private Button btnAceptarAlerta, btnCancelarAlerta, btnBuscarEmpleado, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar;
     private ToggleButton tbnTipoLectura;
     ProgressDialog anillo = null;
@@ -106,6 +108,7 @@ public class checadas extends Fragment {
         imgFotoPerfil = view.findViewById(R.id.imgFotoPerfil);
         imgFondoAcceso = view.findViewById(R.id.imgFondoAcceso);
         imgFondoGuardia = view.findViewById(R.id.imgFondoGuardia);
+        imgPortadaChecadas = view.findViewById(R.id.imgPortadaChecadas);
         btnBuscarEmpleado = view.findViewById(R.id.btnBuscarEmpleado);
         btnCero = view.findViewById(R.id.btnCero);
         btnUno = view.findViewById(R.id.btnUno);
@@ -135,6 +138,7 @@ public class checadas extends Fragment {
         configurarReceiberPantalla();
         obtenerGRUIDs();
         bloquearTeclado();
+        cargarImagenDeMemoria();
         realmController = new RealmController(getActivity().getApplication());
         btnBuscarEmpleado.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,6 +319,7 @@ public class checadas extends Fragment {
     }
 
     private void buscarPersonalManual(){
+        imgPortadaChecadas.setVisibility(View.GONE);
         if (!edtNoEmpleado.getText().toString().equals("0")) {
             ocultarTeclado();
             mostrarDatosGuardia();
@@ -340,6 +345,7 @@ public class checadas extends Fragment {
     }
 
     private void buscarPersonalRfid() {
+        imgPortadaChecadas.setVisibility(View.GONE);
         ocultarTeclado();
         mostrarCargandoAnillo();
         mostrarDatosGuardia();
@@ -770,5 +776,9 @@ public class checadas extends Fragment {
         btnNueve = view.findViewById(R.id.btnNueve);
         btnBorrar = view.findViewById(R.id.btnBorrar);
         tbnTipoLectura = view.findViewById(R.id.tbnTipoLectura);
+    }
+
+    private void cargarImagenDeMemoria(){
+        Picasso.with(getContext()).load(new File(Environment.getExternalStorageDirectory()+"/CCURE/portada.jpg")).error(R.drawable.im_logo_penia).into(imgPortadaChecadas);
     }
 }
