@@ -1,6 +1,7 @@
 package arenzo.alejandroochoa.ccure.Activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,7 +67,7 @@ public class main extends AppCompatActivity implements vista {
         cargarElementos();
         centrarTituloActionBar();
         eventosVista();
-        edtTarjeta.setInputType(InputType.TYPE_NULL);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         edtTarjeta.requestFocus();
         cargarImagenDeMemoria();
     }
@@ -198,6 +201,14 @@ public class main extends AppCompatActivity implements vista {
                     hacerBusqueda = false;
                     esperarLectura();
                 }
+            }
+        });
+
+        edtTarjeta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                im.hideSoftInputFromWindow(edtTarjeta.getWindowToken(), 0);
             }
         });
     }

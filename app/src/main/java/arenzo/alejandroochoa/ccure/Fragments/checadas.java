@@ -154,6 +154,8 @@ public class checadas extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
+                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                    edtNoTarjeta.requestFocus();
                     sbTipoChecada.setBackColorRes(R.color.entrada);
                     tipoChecada = "1";
                     nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
@@ -188,6 +190,13 @@ public class checadas extends Fragment {
                     hacerBusqueda = false;
                     esperarLectura();
                 }
+            }
+        });
+        edtNoTarjeta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager im = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                im.hideSoftInputFromWindow(edtNoTarjeta.getWindowToken(), 0);
             }
         });
         tbnTipoLectura.setOnClickListener(new View.OnClickListener() {
@@ -300,7 +309,6 @@ public class checadas extends Fragment {
 
     private void bloquearTeclado(){
         edtNoEmpleado.setInputType(InputType.TYPE_NULL);
-        edtNoTarjeta.setInputType(InputType.TYPE_NULL);
     }
 
     public void configurarReceiberPantalla() {
@@ -337,6 +345,8 @@ public class checadas extends Fragment {
             mostrarBotonesNumeracion();
             edtNoEmpleado.requestFocus();
         }else{
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            edtNoTarjeta.requestFocus();
             edtNoTarjeta.setVisibility(View.VISIBLE);
             edtNoEmpleado.setVisibility(View.GONE);
             btnBuscarEmpleado.setVisibility(View.GONE);
@@ -595,6 +605,8 @@ public class checadas extends Fragment {
         nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
         PUEId = PREF_CHECADAS.getInt("IDPUERTAENTRADA", 0);
         puertaClave = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        edtNoTarjeta.requestFocus();
     }
 
     private realmPersonalPuerta buscarPersonalLocalManual(String numeroEmpleado){
