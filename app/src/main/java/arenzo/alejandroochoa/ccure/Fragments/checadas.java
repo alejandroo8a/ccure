@@ -21,10 +21,10 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -48,9 +48,7 @@ import arenzo.alejandroochoa.ccure.Realm.realmESPersonal;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonal;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
-import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
 import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 
@@ -150,7 +148,7 @@ public class checadas extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    sbTipoChecada.setBackColorRes(R.color.accent);
+                    sbTipoChecada.setBackColorRes(R.color.entrada);
                     tipoChecada = "1";
                     nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
                     PUEId = PREF_CHECADAS.getInt("IDPUERTAENTRADA", 0);
@@ -272,6 +270,12 @@ public class checadas extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -560,7 +564,7 @@ public class checadas extends Fragment {
 
     private void activarTipoChecada(){
         sbTipoChecada.setChecked(true);
-        sbTipoChecada.setBackColorRes(R.color.accent);
+        sbTipoChecada.setBackColorRes(R.color.entrada);
         tipoChecada = "1";
         nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
         PUEId = PREF_CHECADAS.getInt("IDPUERTAENTRADA", 0);
