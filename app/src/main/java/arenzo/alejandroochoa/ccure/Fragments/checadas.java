@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -21,6 +23,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +41,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
@@ -59,7 +63,7 @@ public class checadas extends Fragment {
     private EditText edtNoEmpleado, edtNoTarjeta;
     private TextView txtCaseta, txtResultadoChecada, txtNombre, txtPuestoEmpresa, txtNombreAlerta, txtNoEmpleado;
     private SwitchButton sbTipoChecada;
-    private ImageView imgFotoPerfil, imgFondoAcceso, imgPerfilAlerta, imgFondoGuardia, imgPortadaChecadas;
+    private ImageView imgFotoPerfil, imgFondoAcceso, imgPerfilAlerta, imgFondoGuardia, imgPortadaChecadas, imgConexion;
     private Button btnAceptarAlerta, btnCancelarAlerta, btnBuscarEmpleado, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar;
     private ToggleButton tbnTipoLectura;
     ProgressDialog anillo = null;
@@ -80,7 +84,7 @@ public class checadas extends Fragment {
 
     RealmController realmController;
 
-    BroadcastReceiver informacionPantalla;
+    BroadcastReceiver informacionPantalla, estadoRed;
 
     public checadas() {
     }
@@ -106,6 +110,7 @@ public class checadas extends Fragment {
         imgFotoPerfil = view.findViewById(R.id.imgFotoPerfil);
         imgFondoAcceso = view.findViewById(R.id.imgFondoAcceso);
         imgFondoGuardia = view.findViewById(R.id.imgFondoGuardia);
+        imgConexion = view.findViewById(R.id.imgConexion);
         imgPortadaChecadas = view.findViewById(R.id.imgPortadaChecadas);
         btnBuscarEmpleado = view.findViewById(R.id.btnBuscarEmpleado);
         btnCero = view.findViewById(R.id.btnCero);
@@ -134,6 +139,7 @@ public class checadas extends Fragment {
         activarTipoChecada();
         configurarChecadas();
         configurarReceiberPantalla();
+        configurarReceiberRed();
         obtenerGRUIDs();
         bloquearTeclado();
         cargarImagenDeMemoria();
@@ -276,6 +282,14 @@ public class checadas extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getActivity().registerReceiver(estadoRed, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+        getActivity().registerReceiver(informacionPantalla, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(estadoRed);
     }
 
     @Override
@@ -296,8 +310,20 @@ public class checadas extends Fragment {
                 sincronizarRed();
             }
         };
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-        getContext().registerReceiver(informacionPantalla, filter);
+    }
+
+    public void configurarReceiberRed() {
+        estadoRed = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                conexion conexion = new conexion();
+                if(conexion.isAvaliable(getContext()) && conexion.isOnline()){
+                    imgConexion.setImageDrawable(getResources().getDrawable(R.drawable.cuadro_verde));
+                }else{
+                    imgConexion.setImageDrawable(getResources().getDrawable(R.drawable.cuadro_rojo));
+                }
+            }
+        };
     }
 
     private void configurarModoLectura(){

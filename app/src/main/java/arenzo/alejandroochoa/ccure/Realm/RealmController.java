@@ -3,6 +3,7 @@ package arenzo.alejandroochoa.ccure.Realm;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Fragment;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
