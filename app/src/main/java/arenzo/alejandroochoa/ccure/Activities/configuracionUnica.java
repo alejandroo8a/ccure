@@ -377,6 +377,7 @@ public class configuracionUnica extends AppCompatActivity {
             tarjetasPersonal.setNombre(elementosTarjetas[2]);
             tarjetasPersonal.setEmpresa(elementosTarjetas[3]);
             tarjetasPersonal.setTipo(elementosTarjetas[4]);
+            tarjetasPersonal.setFoto(elementosTarjetas[5]);
             aTarjetasPersonal.add(tarjetasPersonal);
         }
         return RealmController.getInstance().insertarTarjetasPersonalArchivo(aTarjetasPersonal, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
