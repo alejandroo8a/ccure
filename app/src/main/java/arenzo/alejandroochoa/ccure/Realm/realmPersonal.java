@@ -14,7 +14,7 @@ public class realmPersonal extends RealmObject {
     private String NoTarjeta;
     private String Nombre;
     private String Empresa;
-
+    private String Foto;
     private String Fase;
     private String MFechaHora;
     private String MUsuarioId;
@@ -73,5 +73,13 @@ public class realmPersonal extends RealmObject {
 
     public void setEmpresa(String empresa) {
         Empresa = empresa;
+    }
+
+    public String getFoto() {
+        return Foto;
+    }
+
+    public void setFoto(String foto) {
+        Foto = foto;
     }
 }

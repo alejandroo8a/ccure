@@ -78,8 +78,8 @@ public class helperRetrofit {
     private void configurarRealm(){
         realmController = new RealmController();
     }
-//TODO NECESITO EL PUE CLAVE PARA GUARDARLO
-    public void ValidarEmpleadoManual(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final View view) {
+
+    public void ValidarEmpleadoManual(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final View view, final checadas checadas) {
         Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, puertaClave);
         validarCall.enqueue(new Callback<validarEmpleado>() {
             @Override
@@ -88,39 +88,32 @@ public class helperRetrofit {
                     return;
                 }
                 validarEmpleado personal = response.body();
-                Log.d(TAG, "onResponse: " + personal);
                 anillo.dismiss();
                 if (personal.getRespuesta().equals("PERMITIDO")) {
-                    new checadas().mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
+                    checadas.mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
                 } else {
                     imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
                     txtResultadoChecada.setText("Acceso Denegado");
                     checadas.noEmpleado = "";
                     checadas.vibrarCelular(context);
                     if(personal.getEmpleado().getNombre().equals(""))
-                        new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil, view);
+                        checadas.buscarEnValidacionesYaValidadoManual(NoEmpleado, puertaClave, numeroEmpleado, tipoChecada, view);
                     else
-                        new checadas().guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
+                        checadas.guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
 
                 }
             }
 
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
-                imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
-                txtResultadoChecada.setText("Acceso Denegado");
-                checadas.vibrarCelular(context);
-                checadas.noEmpleado = "";
+                checadas.buscarEnValidacionesYaValidadoManual(NoEmpleado, puertaClave, numeroEmpleado, tipoChecada, view);
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoManual", Toast.LENGTH_SHORT).show();
-                new checadas().guardarResultadoChecadaNoEncontradoManual(NoEmpleado,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil, view);
-                anillo.dismiss();
             }
         });
 
     }
 
-    public void ValidarEmpleadoRfid(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String idCaseta, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil) {
+    public void ValidarEmpleadoRfid(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String idCaseta, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final checadas checadas) {
         Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, puertaClave);
         validarCall.enqueue(new Callback<validarEmpleado>() {
             @Override
@@ -132,15 +125,16 @@ public class helperRetrofit {
                 Log.d(TAG, "onResponse: " + resultado);
                 anillo.dismiss();
                 if (resultado.getRespuesta().equals("PERMITIDO")) {
-                    new checadas().guardarResultadoChecadaValidadaRfid(resultado, "P", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                    checadas.guardarResultadoChecadaValidadaRfid(resultado, "P", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
                 } else {
-                    imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
-                    txtResultadoChecada.setText("Acceso Denegado");
-                    checadas.vibrarCelular(context);
                     if(resultado.getEmpleado().getNombre().equals(""))
-                        new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada, txtNombre,  txtPuestoEmpresa, imgFotoPerfil);
-                    else
-                        new checadas().guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                        checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
+                    else {
+                        imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
+                        txtResultadoChecada.setText("Acceso Denegado");
+                        checadas.vibrarCelular(context);
+                        checadas.guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
+                    }
                 }
             }
 

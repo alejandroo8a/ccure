@@ -92,8 +92,9 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEClave, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada){
+    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEClave, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada, final String foto, final String nombre, final String puesto){
         saberEstadoConsulta = false;
+        insertarPersonalValidado(NoEmpleado, NoTarjeta, PUEClave, Fase, Fase, Observaciones, MUsuarioId, TipoEntrada, foto, nombre, puesto);
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -112,6 +113,28 @@ public class RealmController {
             }
         });
         return saberEstadoConsulta;
+    }
+
+    private void insertarPersonalValidado(final String NoEmpleado, final String NoTarjeta, final String PUEClave, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada, final String foto, final String nombre, final String puesto){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realmValidaciones personal = realm.createObject(realmValidaciones.class);
+                personal.setNoEmpleado(NoEmpleado);
+                personal.setNoTarjeta(NoTarjeta);
+                personal.setPUEClave(PUEClave);
+                personal.setFoto(foto);
+                personal.setNombre(nombre);
+                personal.setPuesto(puesto);
+                personal.setFechaHoraEntrada(obtenerFecha());
+                personal.setFaseIngreso(FaseIngreso);
+                personal.setFase(Fase);
+                personal.setObservaciones(Observaciones);
+                personal.setMFechaHora(obtenerFecha());
+                personal.setMUsuarioId(MUsuarioId);
+                personal.setTipoEntrada(TipoEntrada);
+            }
+        });
     }
 
     public boolean insertarInfoPersonal(final List<personalInfo> aPersonalInfo){
@@ -389,6 +412,18 @@ public class RealmController {
         return realm.where(realmPersonal.class).equalTo("NoEmpleado",numeroEmpleado).findFirst();
     }
 
+    public realmPersonalInfo obtenerPersonalInfoManual(String numeroEmpleado){
+        return realm.where(realmPersonalInfo.class).equalTo("NoEmpleado",numeroEmpleado).findFirst();
+    }
+
+    public realmValidaciones obtenerPersonalManualValidado(String numeroEmpleado, String pueClave){
+        return realm.where(realmValidaciones.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("PUEClave", pueClave).findFirst();
+    }
+
+    public realmValidaciones obtenerPersonalRfidValidado(String noTarjeta, String pueClave){
+        return realm.where(realmValidaciones.class).equalTo("NoTarjeta",noTarjeta).equalTo("PUEClave", pueClave).equalTo("FaseIngreso","P").findFirst();
+    }
+
     public realmPersonalPuerta obtenerPersonalRfid(String noTarjeta, String grupo){
         return realm.where(realmPersonalPuerta.class).equalTo("NoTarjeta",noTarjeta).equalTo("GRUId", grupo).findFirst();
     }
@@ -407,6 +442,10 @@ public class RealmController {
 
     public realmPersonalInfo obtenerInfoPersonal(String numeroEmpleado){
         return realm.where(realmPersonalInfo.class).equalTo("NoEmpleado", numeroEmpleado).findFirst();
+    }
+
+    public realmPersonal obtenerInfoPersonalRfid(String noTarjeta){
+        return realm.where(realmPersonal.class).equalTo("NoTarjeta", noTarjeta).findFirst();
     }
 
     public int obtenerIdAgrupador(String descripcion){
