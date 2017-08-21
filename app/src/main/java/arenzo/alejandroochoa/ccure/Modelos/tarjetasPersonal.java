@@ -11,6 +11,7 @@ public class tarjetasPersonal {
     private String Nombre;
     private String Empresa;
     private String Tipo;
+    private String Foto;
 
     public String getNoEmpleado() {
         return NoEmpleado;
@@ -50,5 +51,13 @@ public class tarjetasPersonal {
 
     public void setTipo(String tipo) {
         Tipo = tipo;
+    }
+
+    public String getFoto() {
+        return Foto;
+    }
+
+    public void setFoto(String foto) {
+        Foto = foto;
     }
 }

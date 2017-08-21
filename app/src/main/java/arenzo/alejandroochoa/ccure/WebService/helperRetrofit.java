@@ -96,7 +96,7 @@ public class helperRetrofit {
                     txtResultadoChecada.setText("Acceso Denegado");
                     checadas.noEmpleado = "";
                     checadas.vibrarCelular(context);
-                    if(personal.getEmpleado().getNombre().equals(""))
+                    if(personal.getEmpleado() == null|| personal.getEmpleado().getNombre().equals(""))
                         checadas.buscarEnValidacionesYaValidadoManual(NoEmpleado, puertaClave, numeroEmpleado, tipoChecada, view);
                     else
                         checadas.guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
@@ -127,7 +127,7 @@ public class helperRetrofit {
                 if (resultado.getRespuesta().equals("PERMITIDO")) {
                     checadas.guardarResultadoChecadaValidadaRfid(resultado, "P", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
                 } else {
-                    if(resultado.getEmpleado().getNombre().equals(""))
+                    if(resultado.getEmpleado() == null || resultado.getEmpleado().getNombre().equals(""))
                         checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
                     else {
                         imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
@@ -140,7 +140,6 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoRfid", Toast.LENGTH_SHORT).show();
                 checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
                 anillo.dismiss();

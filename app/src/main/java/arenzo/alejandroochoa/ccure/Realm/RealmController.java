@@ -116,6 +116,8 @@ public class RealmController {
     }
 
     private void insertarPersonalValidado(final String NoEmpleado, final String NoTarjeta, final String PUEClave, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada, final String foto, final String nombre, final String puesto){
+        eliminarPersonalValidadoNoEmpleado(NoEmpleado);
+        eliminarPersonalValidadoNoTarjeta(NoTarjeta);
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -211,6 +213,7 @@ public class RealmController {
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
                     rPersonal.setFase("A");
+                    rPersonal.setFoto(persona.getFoto());
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId(idUsuario);
                 }
@@ -409,10 +412,6 @@ public class RealmController {
         return realm.where(realmPersonalPuerta.class).equalTo("NoEmpleado",numeroEmpleado).equalTo("GRUId", grupo).findFirst();
     }
 
-    public realmPersonal obtenerPersonalManual(String numeroEmpleado){
-        return realm.where(realmPersonal.class).equalTo("NoEmpleado",numeroEmpleado).findFirst();
-    }
-
     public realmPersonalInfo obtenerPersonalInfoManual(String numeroEmpleado){
         return realm.where(realmPersonalInfo.class).equalTo("NoEmpleado",numeroEmpleado).findFirst();
     }
@@ -505,6 +504,29 @@ public class RealmController {
             }
         });
     }
+
+    private void eliminarPersonalValidadoNoEmpleado(final String noEmpleado){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realmValidaciones validado = realm.where(realmValidaciones.class).equalTo("NoEmpleado", noEmpleado).findFirst();
+                if(validado != null)
+                    validado.deleteFromRealm();
+            }
+        });
+    }
+
+    private void eliminarPersonalValidadoNoTarjeta(final String noTarjeta){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realmValidaciones validado = realm.where(realmValidaciones.class).equalTo("NoTarjeta", noTarjeta).findFirst();
+                if(validado != null)
+                    validado.deleteFromRealm();
+            }
+        });
+    }
+
 
     private String obtenerFecha(){
         Date date = new Date();
