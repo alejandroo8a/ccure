@@ -189,6 +189,7 @@ public class RealmController {
                     rPersonal.setNoEmpleado(persona.getNoEmpleado());
                     rPersonal.setNoTarjeta(persona.getNoTarjeta());
                     rPersonal.setNombre(persona.getNombre());
+                    rPersonal.setFoto(persona.getFoto());
                     rPersonal.setEmpresa(persona.getEmpresa());
                     rPersonal.setFase("A");
                     rPersonal.setMFechaHora(obtenerFecha());

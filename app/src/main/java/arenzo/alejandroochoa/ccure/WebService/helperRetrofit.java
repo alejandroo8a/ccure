@@ -142,7 +142,7 @@ public class helperRetrofit {
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ValidarEmpleado FALLO: " + t.getMessage());
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoRfid", Toast.LENGTH_SHORT).show();
-                new checadas().guardarResultadoChecadaNoEncontradoRfid(NoTarjeta,"", numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+                checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
                 anillo.dismiss();
             }
         });

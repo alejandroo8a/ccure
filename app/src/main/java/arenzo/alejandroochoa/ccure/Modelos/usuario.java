@@ -10,6 +10,7 @@ public class usuario {
     private String NoTarjeta;
     private String Nombre;
     private String Empresa;
+    private String foto;
     private String Tipo;
     private String Fase;
     private String MFechaHora;
@@ -77,5 +78,13 @@ public class usuario {
 
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 }
