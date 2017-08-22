@@ -388,11 +388,11 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public void actualizarChecadaEnviada(final String noEmpleado, final String noTarjeta, final String PUEClave){
+    public void actualizarChecadaEnviada(final String fecha){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realmESPersonal persona = realm.where(realmESPersonal.class).equalTo("NoEmpleado", noEmpleado).equalTo("NoTarjeta", noTarjeta).equalTo("PUEClave",PUEClave).findFirst();
+                realmESPersonal persona = realm.where(realmESPersonal.class).equalTo("FechaHoraEntrada", fecha).findFirst();
                 persona.setFase("E");
             }
         });
@@ -493,6 +493,23 @@ public class RealmController {
                 realm.delete(realmAgrupador.class);
                 realm.delete(realmAgrupadorPuerta.class);
                 realm.delete(realmUsuario.class);
+                saberEstadoConsulta = true;
+            }
+        });
+        return saberEstadoConsulta;
+    }
+
+    public boolean borrarTablasSincronizacionRed(){
+        saberEstadoConsulta = false;
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.delete(realmPuerta.class);
+                realm.delete(realmPersonal.class);
+                realm.delete(realmPersonalInfo.class);
+                realm.delete(realmPersonalPuerta.class);
+                realm.delete(realmESPersonal.class);
+                realm.delete(realmNotificacion.class);
                 saberEstadoConsulta = true;
             }
         });

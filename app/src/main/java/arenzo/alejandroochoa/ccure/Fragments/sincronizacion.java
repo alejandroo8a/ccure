@@ -54,9 +54,8 @@ public class sincronizacion extends Fragment {
     private RadioButton rdRed, rdArchivo, rdLeerArchivo;
     private Button btnSincronizar;
     ProgressDialog anillo = null;
-    Realm realmPrincipal;
+    RealmController realmPrincipal;
     String URL = "";
-    boolean saberEstadoConsulta;
 
     private SharedPreferences PREF_SINCRONIZACION;
 
@@ -87,7 +86,7 @@ public class sincronizacion extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         eventosVista();
-        realmPrincipal = Realm.getDefaultInstance();
+        realmPrincipal = new RealmController(getActivity().getApplication());
     }
 
     private  void eventosVista(){
@@ -105,7 +104,6 @@ public class sincronizacion extends Fragment {
             mostrarCargandoAnillo();
             if (tipo == 1) {
                 //Archivo
-                RealmController.with(getActivity());
                 segundoPlanoArchivo sincronizar = new segundoPlanoArchivo();
                 sincronizar.execute(new String[]{});
             } else if (tipo == 2){
@@ -141,45 +139,17 @@ public class sincronizacion extends Fragment {
 
     private void sincronizarRed(){
         final helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        realmPrincipal.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmResults<realmESPersonal> resultado = obtenerRegistrosRed();
-                if (resultado.size() > 0) {
-                    RealmController realmController = new RealmController();
-                    for (int i = 0; i < resultado.size(); i++) {
-                        realmESPersonal persona = resultado.get(i);
-                        helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), persona.getFechaHoraEntrada(), resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso(), realmController);
-                    }
-                }else
-                    resultadoDialog("Actualmente todo está sincronizado.", getContext());
+        RealmResults<realmESPersonal> resultado = realmPrincipal.obtenerRegistros();
+        if (resultado.size() > 0) {
+            for (int i = 0; i < resultado.size(); i++) {
+                realmESPersonal persona = resultado.get(i);
+                helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), persona.getFechaHoraEntrada(), resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso(), realmPrincipal);
             }
-        });
+        }else {
+            resultadoDialog("Actualmente todo está sincronizado.", getContext());
+            anillo.dismiss();
+        }
 
-        anillo.dismiss();
-    }
-
-    public RealmResults<realmESPersonal> obtenerRegistrosRed(){
-        return realmPrincipal.where(realmESPersonal.class).equalTo("Fase","N").findAll();
-    }
-
-    public boolean borrarTablasSincronizacion(){
-        saberEstadoConsulta = false;
-        Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.delete(realmPuerta.class);
-                realm.delete(realmPersonal.class);
-                realm.delete(realmPersonalInfo.class);
-                realm.delete(realmPersonalPuerta.class);
-                realm.delete(realmESPersonal.class);
-                realm.delete(realmNotificacion.class);
-                saberEstadoConsulta = true;
-            }
-        });
-
-        return saberEstadoConsulta;
     }
 
     private void avisoNoRed(){

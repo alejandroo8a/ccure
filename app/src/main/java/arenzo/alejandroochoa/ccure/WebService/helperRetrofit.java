@@ -330,9 +330,8 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarChecadas(final String NoEmpleado, final String NoTarjeta, final String PueClave, String fecha, final int totalPeticiones, final int numeroPeticion, final Context context, final ProgressDialog anillo, final String faseIngreso, final RealmController realmController) {
+    public void actualizarChecadas(final String NoEmpleado, final String NoTarjeta, final String PueClave, final String fecha, final int totalPeticiones, final int numeroPeticion, final Context context, final ProgressDialog anillo, final String faseIngreso, final RealmController realmController) {
         Call<List<respuestaChecadas>> checadasCall = helper.getActualizarChecadas(NoEmpleado, NoTarjeta, PueClave, fecha, faseIngreso);
-        Log.d(TAG, "HICE LA PETICION ");
         checadasCall.enqueue(new Callback<List<respuestaChecadas>>() {
             @Override
             public void onResponse(Call<List<respuestaChecadas>> call, Response<List<respuestaChecadas>> response) {
@@ -340,13 +339,14 @@ public class helperRetrofit {
                     Toast.makeText(context, "El servidor no tiene los parametros necesarios para sincronizar", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                realmController.actualizarChecadaEnviada(NoEmpleado, NoTarjeta, PueClave);
+                realmController.actualizarChecadaEnviada(fecha);
                 if (totalPeticiones == numeroPeticion){
                     RealmResults<realmESPersonal> aPersonal = realmController.obtenerRegistros();
-                    if (aPersonal.size() > 0)
-                        new sincronizacion().resultadoDialog("Ocurrió un error al sincronizar los datos, intentelo de nuevo.", context);
-                    else {
-                        new sincronizacion().borrarTablasSincronizacion();
+                    if (aPersonal.size() > 0) {
+                        anillo.dismiss();
+                        new sincronizacion().resultadoDialog("No se sincronizaron todos los datos, intentelo de nuevo.", context);
+                    }else {
+                        realmController.borrarTablasSincronizacionRed();
                         actualizarPuertasSincronizacion(context, anillo);
                     }
                 }
@@ -354,7 +354,6 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<respuestaChecadas>> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA actualizarChecadas FALLO: " + t.getMessage());
                 Toast.makeText(context,"No se pudo conectar con el servidor: actualizarChecadas", Toast.LENGTH_SHORT).show();
             }
         });
@@ -399,6 +398,7 @@ public class helperRetrofit {
                     return;
                 }
                 List<puertas> aPuertas = response.body();
+                Log.d(TAG, "OBTUVE PUERTAS "+ aPuertas.size());
                 if (realmController.insertarPuertas(aPuertas)){
                     obtenerPersonalPuertaSincronizacion(context, anillo);
                 }
