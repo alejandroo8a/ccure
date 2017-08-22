@@ -432,6 +432,10 @@ public class RealmController {
         return realm.where(realmPersonal.class).equalTo("NoTarjeta",noTarjeta).findFirst();
     }
 
+    public realmPersonalInfo obtenerPersonalInfoRfid(String noEmpleado){
+        return realm.where(realmPersonalInfo.class).equalTo("NoEmpleado",noEmpleado).findFirst();
+    }
+
     public realmUsuario obtenerUsuario(String numeroEmpleado){
         return realm.where(realmUsuario.class).equalTo("NoEmpleado", numeroEmpleado).findFirst();
     }
