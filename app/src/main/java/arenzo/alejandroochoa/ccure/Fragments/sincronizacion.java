@@ -146,7 +146,7 @@ public class sincronizacion extends Fragment {
                 helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), persona.getFechaHoraEntrada(), resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso(), realmPrincipal);
             }
         }else {
-            resultadoDialog("Actualmente todo está sincronizado.", getContext());
+            resultadoDialog("ATENCIÓN", "Actualmente todo está sincronizado.", getContext());
             anillo.dismiss();
         }
 
@@ -189,9 +189,9 @@ public class sincronizacion extends Fragment {
         this.anillo.dismiss();
     }
 
-    public void resultadoDialog(String mensaje, Context context){
+    public void resultadoDialog(String titulo, String mensaje, Context context){
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle("ÉXITO")
+        dialog.setTitle(titulo)
                 .setMessage(mensaje)
                 .setPositiveButton("Aceptar", null)
                 .show();
@@ -215,7 +215,7 @@ public class sincronizacion extends Fragment {
                         if (guardarTarjetasPersonal(archivoSeparado[2]))
                             if (guardarPersonalInfo(archivoSeparado[3])) {
                                 ocultarCargandoAnillo();
-                                resultadoDialog("Terminó la sincronización por archivo, los datos se guardaron correctamente.", getContext());
+                                resultadoDialog("ÉXITO","Terminó la sincronización por archivo, los datos se guardaron correctamente.", getContext());
                                 return;
                             }
                 ocultarCargandoAnillo();

@@ -339,12 +339,16 @@ public class helperRetrofit {
                     Toast.makeText(context, "El servidor no tiene los parametros necesarios para sincronizar", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                realmController.actualizarChecadaEnviada(fecha);
+                List<respuestaChecadas> resultadoChecada = response.body();
+                if(resultadoChecada.size() > 0) {
+                    if (!resultadoChecada.get(0).getType().equals("F"))
+                        realmController.actualizarChecadaEnviada(fecha);
+                }
                 if (totalPeticiones == numeroPeticion){
                     RealmResults<realmESPersonal> aPersonal = realmController.obtenerRegistros();
                     if (aPersonal.size() > 0) {
                         anillo.dismiss();
-                        new sincronizacion().resultadoDialog("No se sincronizaron todos los datos, intentelo de nuevo.", context);
+                        new sincronizacion().resultadoDialog("ERROR","No se sincronizaron todos los datos, inténtelo de nuevo y verifique que los parámetros en el servidor estén correctamente configurados.", context);
                     }else {
                         realmController.borrarTablasSincronizacionRed();
                         actualizarPuertasSincronizacion(context, anillo);
@@ -355,11 +359,14 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<respuestaChecadas>> call, Throwable t) {
                 Toast.makeText(context,"No se pudo conectar con el servidor: actualizarChecadas", Toast.LENGTH_SHORT).show();
+                if (totalPeticiones == numeroPeticion){
+                    anillo.dismiss();
+                }
             }
         });
     }
 
-    public void actualizarChecadasReposo(final String NoEmpleado, final String NoTarjeta, final String PueClave, String fecha, final Context context, final String faseIngreso, final RealmController realmController) {
+    public void actualizarChecadasReposo(final String NoEmpleado, final String NoTarjeta, final String PueClave, final String fecha, final Context context, final String faseIngreso, final RealmController realmController) {
         Call<List<respuestaChecadas>> checadasCall = helper.getActualizarChecadas(NoEmpleado, NoTarjeta, PueClave, fecha, faseIngreso);
         Log.d(TAG, "HICE LA PETICION ");
         checadasCall.enqueue(new Callback<List<respuestaChecadas>>() {
@@ -369,7 +376,11 @@ public class helperRetrofit {
                     Toast.makeText(context, "El servidor no tiene los parametros necesarios para sincronizar", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new checadas().eliminarChecadaPersonal(NoEmpleado, NoTarjeta, PueClave, realmController);
+                List<respuestaChecadas> resultadoChecada = response.body();
+                if(resultadoChecada.size() > 0) {
+                    if (!resultadoChecada.get(0).getType().equals("F"))
+                        new checadas().eliminarChecadaPersonal(fecha, realmController);
+                }
             }
 
             @Override
@@ -474,7 +485,7 @@ public class helperRetrofit {
                 Log.d(TAG, "OBTUVE EL PERSONAL INFO "+aPersonalInfo.size());
                 if (realmController.insertarInfoPersonal(aPersonalInfo)){
                     anillo.dismiss();
-                    new sincronizacion().resultadoDialog("El proceso ha finalizado correctamente. El dispositivo quedó actualizado con la información.", context);
+                    new sincronizacion().resultadoDialog("ÉXITO", "El proceso ha finalizado correctamente. El dispositivo quedó actualizado con la información.", context);
                 }
             }
 

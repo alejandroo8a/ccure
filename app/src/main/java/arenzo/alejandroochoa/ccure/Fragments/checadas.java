@@ -843,8 +843,8 @@ public class checadas extends Fragment {
         }
     }
 
-    public void eliminarChecadaPersonal(String noEmpleado, String noTarjeta, String PUEClave, final RealmController realmController){
-        realmController.eliminarRegistroPersonal(noEmpleado, noTarjeta, PUEClave);
+    public void eliminarChecadaPersonal(String fecha, final RealmController realmController){
+        realmController.eliminarRegistroPersonal(fecha);
     }
 
     private void mostrarBotonesNumeracion(){

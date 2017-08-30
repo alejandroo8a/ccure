@@ -21,7 +21,7 @@ public class conexion {
 
     public boolean isOnline(){
         try{
-            Process p = Runtime.getRuntime().exec("ping -c 1 www.google.com");
+            Process p = Runtime.getRuntime().exec("ping -c 1 192.168.1.1");
             int val = p.waitFor();
             boolean online = (val==0);
             return online;

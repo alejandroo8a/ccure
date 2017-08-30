@@ -516,11 +516,11 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public void eliminarRegistroPersonal(final String noEmpleado, final String noTarjeta, final String PUEClave){
+    public void eliminarRegistroPersonal(final String fecha){
        realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realmESPersonal persona = realm.where(realmESPersonal.class).equalTo("NoEmpleado", noEmpleado).equalTo("NoTarjeta", noTarjeta).equalTo("PUEClave",PUEClave).findFirst();
+                realmESPersonal persona = realm.where(realmESPersonal.class).equalTo("FechaHoraEntrada", fecha).findFirst();
                 persona.deleteFromRealm();
             }
         });
