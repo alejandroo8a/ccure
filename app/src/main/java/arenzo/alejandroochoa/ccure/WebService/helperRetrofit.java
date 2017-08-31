@@ -26,6 +26,7 @@ import java.util.Map;
 import arenzo.alejandroochoa.ccure.Activities.configuracionUnica;
 import arenzo.alejandroochoa.ccure.Activities.main;
 import arenzo.alejandroochoa.ccure.Fragments.checadas;
+import arenzo.alejandroochoa.ccure.Fragments.configuracion;
 import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
@@ -351,7 +352,7 @@ public class helperRetrofit {
                         new sincronizacion().resultadoDialog("ERROR","No se sincronizaron todos los datos, inténtelo de nuevo y verifique que los parámetros en el servidor estén correctamente configurados.", context);
                     }else {
                         realmController.borrarTablasSincronizacionRed();
-                        actualizarPuertasSincronizacion(context, anillo);
+                        actualizarAgrupadoresSincronizacion(context, anillo);
                     }
                 }
             }
@@ -398,6 +399,55 @@ public class helperRetrofit {
         }
         ArrayAdapter adapter = new ArrayAdapter(context, R.layout.item_spinner, aAgrupadoresDescripcion);
         spPuertasUnico.setAdapter(adapter);
+    }
+
+    public void actualizarAgrupadoresSincronizacion(final Context context, final ProgressDialog anillo){
+        Call<List<agrupador>> puertasCall = helper.getAgrupadores();
+        puertasCall.enqueue(new Callback<List<agrupador>>() {
+            @Override
+            public void onResponse(Call<List<agrupador>> call, Response<List<agrupador>> response) {
+                if (!response.isSuccessful()){
+                    return;
+                }
+                List<agrupador> aAgrupadores = response.body();
+                Realm.getDefaultInstance();
+                if (realmController.insertarAgrupador(aAgrupadores)){
+                    actualizarAgrupadorPuertaSincronizacion(context, anillo);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<agrupador>> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA actualizarAgrupadores FALLO: "+t.getMessage());
+                anillo.dismiss();
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarAgrupadoresSincronizacion", Toast.LENGTH_SHORT).show();
+                actualizarPuertasSincronizacion(context, anillo);
+            }
+        });
+    }
+
+    public void actualizarAgrupadorPuertaSincronizacion(final Context context, final ProgressDialog anillo){
+        Call<List<agrupadorPuerta>> puertasCall = helper.getAgrupadorPuerta();
+        puertasCall.enqueue(new Callback<List<agrupadorPuerta>>() {
+            @Override
+            public void onResponse(Call<List<agrupadorPuerta>> call, Response<List<agrupadorPuerta>> response) {
+                if (!response.isSuccessful()){
+                    return;
+                }
+                List<agrupadorPuerta> aAgrupadorPuerta = response.body();
+                Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADOR PUERTA INICIO "+aAgrupadorPuerta.size());
+                if (realmController.insertarAgrupadorPuerta(aAgrupadorPuerta)){
+                    actualizarPuertasSincronizacion(context, anillo);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaSincronizacion FALLO: "+t.getMessage());
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarAgrupadorPuertaSincronizacion", Toast.LENGTH_SHORT).show();
+                actualizarAgrupadorPuertaSincronizacion(context, anillo);
+            }
+        });
     }
 
     public void actualizarPuertasSincronizacion(final Context context, final ProgressDialog anillo){
@@ -494,6 +544,78 @@ public class helperRetrofit {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalInfoSincronizacion FALLO: "+t.getCause().toString());
                 Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalInfoSincronizacion", Toast.LENGTH_SHORT).show();
                 obtenerPersonalInfoSincronizacion(context, anillo);
+            }
+        });
+    }
+
+    public void actualizarPuertasConfiguracion(final configuracion configuracion, final ProgressDialog anillo){
+        Call<List<puertas>> puertasCall = helper.getActualizarPuertas();
+        puertasCall.enqueue(new Callback<List<puertas>>() {
+            @Override
+            public void onResponse(Call<List<puertas>> call, Response<List<puertas>> response) {
+                if (!response.isSuccessful()){
+                    return;
+                }
+                List<puertas> aPuertas = response.body();
+                if (realmController.insertarPuertas(aPuertas)){
+                    actualizarAgrupadoresConfiguracion(configuracion, anillo);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<puertas>> call, Throwable t) {
+                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarPuertasConfiguracion", Toast.LENGTH_SHORT).show();
+                anillo.dismiss();
+            }
+        });
+    }
+
+    public void actualizarAgrupadoresConfiguracion(final configuracion configuracion, final ProgressDialog anillo){
+        Call<List<agrupador>> puertasCall = helper.getAgrupadores();
+        puertasCall.enqueue(new Callback<List<agrupador>>() {
+            @Override
+            public void onResponse(Call<List<agrupador>> call, Response<List<agrupador>> response) {
+                if (!response.isSuccessful()){
+                    return;
+                }
+                List<agrupador> aAgrupadores = response.body();
+                Realm.getDefaultInstance();
+                if (realmController.insertarAgrupador(aAgrupadores)){
+                    actualizarAgrupadorPuertaConfiguracion(configuracion, anillo);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<agrupador>> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA actualizarAgrupadores FALLO: "+t.getMessage());
+                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarAgrupadoresConfiguracion", Toast.LENGTH_SHORT).show();
+                anillo.dismiss();
+            }
+        });
+    }
+
+    public void actualizarAgrupadorPuertaConfiguracion(final configuracion configuracion, final ProgressDialog anillo){
+        Call<List<agrupadorPuerta>> puertasCall = helper.getAgrupadorPuerta();
+        puertasCall.enqueue(new Callback<List<agrupadorPuerta>>() {
+            @Override
+            public void onResponse(Call<List<agrupadorPuerta>> call, Response<List<agrupadorPuerta>> response) {
+                if (!response.isSuccessful()){
+                    return;
+                }
+                List<agrupadorPuerta> aAgrupadorPuerta = response.body();
+                Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADOR PUERTA INICIO "+aAgrupadorPuerta.size());
+                if (realmController.insertarAgrupadorPuerta(aAgrupadorPuerta)){
+                    configuracion.cargarDatosVistaSincronizacion();
+                    Toast.makeText(configuracion.getContext(), "Actualización de puertas satisfactoria.", Toast.LENGTH_SHORT).show();
+                    anillo.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaSincronizacion FALLO: "+t.getMessage());
+                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarAgrupadorPuertaConfiguracion", Toast.LENGTH_SHORT).show();
+                anillo.dismiss();
             }
         });
     }

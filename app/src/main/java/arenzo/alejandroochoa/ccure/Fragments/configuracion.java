@@ -2,6 +2,7 @@ package arenzo.alejandroochoa.ccure.Fragments;
 
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import arenzo.alejandroochoa.ccure.Realm.realmAgrupador;
 import arenzo.alejandroochoa.ccure.Realm.realmAgrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Realm.realmDispositivo;
 import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
+import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
 import io.realm.RealmResults;
 
 public class configuracion extends Fragment {
@@ -34,9 +36,10 @@ public class configuracion extends Fragment {
     private final static String TAG = "configuracion";
     private arenzo.alejandroochoa.ccure.Helpers.datosConfiguracion datosConfiguracion;
 
+    ProgressDialog anillo = null;
     private EditText edtNombreDispositivo, edtWebService, edtURLExportacion;
     private Spinner spPuertas;
-    private Button btnGuardarConfiguracion;
+    private Button btnGuardarConfiguracion, btnActualizarPuertasC;
     private SharedPreferences PREF_CONFIGURACION;
     RealmController realmController;
 
@@ -60,6 +63,7 @@ public class configuracion extends Fragment {
         edtURLExportacion = (EditText) view.findViewById(R.id.edtURLExportacionUnico);
         spPuertas = (Spinner) view.findViewById(R.id.spPuertasUnico);
         btnGuardarConfiguracion = (Button) view.findViewById(R.id.btnGuardarConfiguracion);
+        btnActualizarPuertasC = (Button) view.findViewById(R.id.btnActualizarPuertasC );
         PREF_CONFIGURACION = getContext().getSharedPreferences("CCURE", getContext().MODE_PRIVATE);
         return view;
     }
@@ -78,9 +82,15 @@ public class configuracion extends Fragment {
                 guardarDatos();
             }
         });
+        btnActualizarPuertasC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sincronizarNuevasPuertas();
+            }
+        });
     }
 
-    private void cargarDatosVista() {
+    public void cargarDatosVista() {
         realmController = new RealmController(getActivity().getApplication());
         realmDispositivo dispositivo = realmController.obtenerDispositivo();
         if (dispositivo != null) {
@@ -89,6 +99,17 @@ public class configuracion extends Fragment {
             edtURLExportacion.setText(dispositivo.getURLExportacion());
         }
         llenarSpinnerAgrupador();
+    }
+
+    public void cargarDatosVistaSincronizacion() {
+        realmController = new RealmController(getActivity().getApplication());
+        realmDispositivo dispositivo = realmController.obtenerDispositivo();
+        if (dispositivo != null) {
+            edtNombreDispositivo.setText(dispositivo.getDescripcion().toString());
+            edtWebService.setText(dispositivo.getURLWebService().toString());
+            edtURLExportacion.setText(dispositivo.getURLExportacion());
+        }
+        llenarSpinnerAgrupadorSincronizado();
     }
 
     private void guardarDatos() {
@@ -110,13 +131,14 @@ public class configuracion extends Fragment {
                     RealmResults<realmPuerta> aPuertas = realmController.obtenerPuertas(aAgrupadorPuertas.get(0).getPUEId());
                     iterarPuertas(aPuertas);
                 } else {
-                    crearDialog("Error", "Sus datos no se guardaron, el agrupador que seleccionó no contiene puertas.");
+                    crearDialog("ERROR", "Sus datos no se guardaron, el agrupador que seleccionó no contiene puertas.");
                     return;
                 }
                 guardarURL(edtURLExportacion.getText().toString());
                 guardarYaExisteConfiguracionUrlNombrePuerta(edtWebService.getText().toString(), spPuertas.getSelectedItem().toString());
+                crearDialog("ÉXITO", "Sus datos se guardaron correctamente.");
             } else {
-                crearDialog("Error", "Sus datos no se guardaron, intentelo de nuevo.");
+                crearDialog("ERROR", "Sus datos no se guardaron, intentelo de nuevo.");
             }
         } else {
             Toast.makeText(getContext(), "Complete todos los campos para guardar", Toast.LENGTH_SHORT).show();
@@ -186,6 +208,16 @@ public class configuracion extends Fragment {
         spPuertas.setSelection(posicionPuertaSeleccionada);
     }
 
+    private void llenarSpinnerAgrupadorSincronizado() {
+        List<realmAgrupador> aAgrupadores = realmController.obtenerAgrupadores();
+        ArrayList<String> aAgrupadoresDescripcion = new ArrayList<>();
+        for (realmAgrupador agrupador : aAgrupadores) {
+            aAgrupadoresDescripcion.add(agrupador.getDescripcion());
+        }
+        ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.item_spinner, aAgrupadoresDescripcion);
+        spPuertas.setAdapter(adapter);
+    }
+
     private int obtenerPosicionAgrupadorSeleccionado(List<realmAgrupador> aAgrupadores) {
         int idAgrupador = PREF_CONFIGURACION.getInt("IDAGRUPADOR", 0);
         for (int i = 0; i < aAgrupadores.size(); i++) {
@@ -196,4 +228,14 @@ public class configuracion extends Fragment {
         return 0;
     }
 
+    private void sincronizarNuevasPuertas(){
+        mostrarCargandoAnillo("Obteniendo puertas...");
+        realmController.borrarTablasSincronizacionPuertas();
+        helperRetrofit helper = new helperRetrofit(PREF_CONFIGURACION.getString("URL",""));
+        helper.actualizarPuertasConfiguracion(this, anillo);
+    }
+
+    private void mostrarCargandoAnillo(String mensaje){
+        this.anillo = ProgressDialog.show(getContext(), "Sincronizando", mensaje, true, false);
+    }
 }

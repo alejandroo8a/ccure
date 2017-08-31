@@ -516,6 +516,17 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
+    public void borrarTablasSincronizacionPuertas(){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.delete(realmPuerta.class);
+                realm.delete(realmAgrupador.class);
+                realm.delete(realmAgrupadorPuerta.class);
+            }
+        });
+    }
+
     public void eliminarRegistroPersonal(final String fecha){
        realm.executeTransaction(new Realm.Transaction() {
             @Override
