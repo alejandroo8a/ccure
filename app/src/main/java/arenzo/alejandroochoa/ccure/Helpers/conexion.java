@@ -21,11 +21,12 @@ public class conexion {
     }
 
     public boolean isOnline(final ProgressDialog anillo){
-        try{
+        try{//192.168.200.105
             Process p = Runtime.getRuntime().exec("ping -c 1 192.168.200.105");
             int val = p.waitFor();
             boolean online = (val==0);
-            anillo.dismiss();
+            if (anillo!= null)
+                anillo.dismiss();
             return online;
         } catch (IOException e) {
             e.printStackTrace();
