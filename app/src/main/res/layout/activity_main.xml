@@ -81,10 +81,10 @@
         app:srcCompat="@drawable/im_logo_penia"
         app:layout_constraintHorizontal_bias="0.0"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView2" />
+        app:layout_constraintBottom_toTopOf="@+id/txtVersion" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/txtVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

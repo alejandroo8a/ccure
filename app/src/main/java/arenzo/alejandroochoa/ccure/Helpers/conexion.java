@@ -1,5 +1,6 @@
 package arenzo.alejandroochoa.ccure.Helpers;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,11 +20,12 @@ public class conexion {
         return (info != null &&info.isConnected());
     }
 
-    public boolean isOnline(){
+    public boolean isOnline(final ProgressDialog anillo){
         try{
-            Process p = Runtime.getRuntime().exec("ping -c 1 192.168.1.1");
+            Process p = Runtime.getRuntime().exec("ping -c 1 192.168.200.105");
             int val = p.waitFor();
             boolean online = (val==0);
+            anillo.dismiss();
             return online;
         } catch (IOException e) {
             e.printStackTrace();

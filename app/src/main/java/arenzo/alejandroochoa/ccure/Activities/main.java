@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -55,6 +57,7 @@ public class main extends AppCompatActivity implements vista {
     private Button btnOlvideTarjetaLogin;
     private EditText edtTarjeta;
     private ImageView imgPortadaMain;
+    private TextView txtVersion;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -83,6 +86,17 @@ public class main extends AppCompatActivity implements vista {
         btnOlvideTarjetaLogin = (Button)findViewById(R.id.btnOlvideTarjetaLogin);
         edtTarjeta = (EditText) findViewById(R.id.edtTarjeta);
         imgPortadaMain = (ImageView) findViewById(R.id.imgPortadaMain);
+        txtVersion = (TextView) findViewById(R.id.txtVersion);
+        agregarNumeroVersion();
+    }
+
+    private void agregarNumeroVersion(){
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            txtVersion.setText(pInfo.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void cargarLoginManual(){

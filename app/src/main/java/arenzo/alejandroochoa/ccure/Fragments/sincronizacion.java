@@ -109,8 +109,9 @@ public class sincronizacion extends Fragment {
             } else if (tipo == 2){
                 conexion conexion = new conexion();
                 if (conexion.isAvaliable(getContext())) {
-                    if (conexion.isOnline()) {
+                    if (conexion.isOnline(anillo)) {
                         //Red
+                        mostrarCargandoAnillo();
                         sincronizarRed();
                     } else
                         avisoNoConexion();
@@ -248,7 +249,7 @@ public class sincronizacion extends Fragment {
         }
         return archivo.toString();
     }
-//TODO VERIFICAR BASES DE DATOS
+
     private boolean guardarPuertas(String oPuertas){
         String[] aCantidadPuertas = oPuertas.split("\n");
         List<puertas> aPuertas = new ArrayList<>();

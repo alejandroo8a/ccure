@@ -329,7 +329,7 @@ public class checadas extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 conexion conexion = new conexion();
-                if(conexion.isAvaliable(getContext()) && conexion.isOnline()){
+                if(conexion.isAvaliable(getContext()) && conexion.isOnline(anillo)){
                     imgConexion.setImageDrawable(getResources().getDrawable(R.drawable.cuadro_verde));
                 }else{
                     imgConexion.setImageDrawable(getResources().getDrawable(R.drawable.cuadro_rojo));

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import arenzo.alejandroochoa.ccure.Helpers.conexion;
 import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
 import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
@@ -143,7 +144,15 @@ public class configuracionUnica extends AppCompatActivity {
                     return;
                 }
                 guardarYaExisteConfiguracionUrlNombrePuerta(edtWebServiceUnico.getText().toString(), spPuertasUnico.getSelectedItem().toString(), edtNombreDispositivoUnico.getText().toString());
-                obtenerTodosDatos();
+                mostrarCargandoAnillo("Comprobando conexión a internet");
+                conexion conexion = new conexion();
+                if (conexion.isAvaliable(getApplicationContext())) {
+                    if (conexion.isOnline(anillo)) {
+                        obtenerTodosDatos();
+                    } else
+                        Toast.makeText(configuracionUnica.this, "No cuenta con conexión con el servidor", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(configuracionUnica.this, "Activa el WI-FI o los datos móviles para comenzar", Toast.LENGTH_SHORT).show();
             } else {
                 crearDialogError("Error", "Sus datos no se guardaron, intentelo de nuevo.");
             }
@@ -284,7 +293,15 @@ public class configuracionUnica extends AppCompatActivity {
                 guardarURL(edtUrlDialog.getText().toString());
                 URL = PREF_CONFIGURACION_UNICA.getString("URL","");
                 edtWebServiceUnico.setText(edtUrlDialog.getText().toString());
-                obtenerAgrupadores(alert);
+                conexion conexion = new conexion();
+                mostrarCargandoAnillo("Comprobando conexión a internet");
+                if (conexion.isAvaliable(getApplicationContext())) {
+                    if (conexion.isOnline(anillo)) {
+                        obtenerAgrupadores(alert);
+                    } else
+                        Toast.makeText(configuracionUnica.this, "No cuenta con conexión con el servidor", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(configuracionUnica.this, "Activa el WI-FI o los datos móviles para comenzar", Toast.LENGTH_SHORT).show();
             }
         });
         alert.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {

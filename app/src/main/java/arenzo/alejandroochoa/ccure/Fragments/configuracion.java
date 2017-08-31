@@ -21,6 +21,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import arenzo.alejandroochoa.ccure.Activities.configuracionUnica;
+import arenzo.alejandroochoa.ccure.Helpers.conexion;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
@@ -85,7 +87,15 @@ public class configuracion extends Fragment {
         btnActualizarPuertasC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sincronizarNuevasPuertas();
+                conexion conexion = new conexion();
+                mostrarCargandoAnillo("Comprobando conexión a internet");
+                if (conexion.isAvaliable(getContext())) {
+                    if (conexion.isOnline(anillo)) {
+                        sincronizarNuevasPuertas();
+                    } else
+                        Toast.makeText(getContext(), "No cuenta con conexión con el servidor", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getContext(), "Activa el WI-FI o los datos móviles para sincronizar", Toast.LENGTH_SHORT).show();
             }
         });
     }
