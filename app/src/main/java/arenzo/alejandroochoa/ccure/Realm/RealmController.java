@@ -52,7 +52,6 @@ public class RealmController {
     }
 
     public static RealmController with(Application application) {
-
         if (instance == null) {
             instance = new RealmController(application);
         }
@@ -160,8 +159,7 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarInfoPersonalArchivo(final List<personalInfo> aPersonalInfo, final String idUsuario){
-        saberEstadoConsulta = false;
+    public boolean insertarInfoPersonalArchivo(Realm realm, final List<personalInfo> aPersonalInfo, final String idUsuario){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -175,10 +173,9 @@ public class RealmController {
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId(idUsuario);
                 }
-                saberEstadoConsulta = true;
             }
         });
-        return saberEstadoConsulta;
+        return true;
     }
 
     public boolean insertarTarjetasPersonal(final List<usuario> aTarjetasPersonal){
@@ -203,8 +200,7 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarTarjetasPersonalArchivo(final List<tarjetasPersonal> aTarjetasPersonal, final String idUsuario){
-        saberEstadoConsulta = false;
+    public boolean insertarTarjetasPersonalArchivo(Realm realm, final List<tarjetasPersonal> aTarjetasPersonal, final String idUsuario){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -217,10 +213,9 @@ public class RealmController {
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId(idUsuario);
                 }
-                saberEstadoConsulta = true;
             }
         });
-        return saberEstadoConsulta;
+        return true;
     }
 
     public boolean insertarUsuarios(final List<usuario> aUsuario){
@@ -265,8 +260,7 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarPersonalPuertaArchivo(final List<personalPuerta> aPersonalPuerta, final String idUsuario){
-        saberEstadoConsulta = false;
+    public boolean insertarPersonalPuertaArchivo(Realm realm, final List<personalPuerta> aPersonalPuerta, final String idUsuario){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -279,10 +273,9 @@ public class RealmController {
                     rPersonal.setMFechaHora(obtenerFecha());
                     rPersonal.setMUsuarioId(idUsuario);
                 }
-                saberEstadoConsulta = true;
             }
         });
-        return saberEstadoConsulta;
+        return true;
     }
 
     public boolean insertarAgrupador(final List<agrupador> aAgrupador){
@@ -301,6 +294,22 @@ public class RealmController {
             }
         });
         return saberEstadoConsulta;
+    }
+
+    public boolean insertarAgrupadorArchivo(Realm realm, final List<agrupador> aAgrupador, final String idUsuario){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (agrupador agrupador : aAgrupador){
+                    realmAgrupador rAgrupador = realm.createObject(realmAgrupador.class, agrupador.getAGRId());
+                    rAgrupador.setDescripcion(agrupador.getDescripcion());
+                    rAgrupador.setFase(agrupador.getFase());
+                    rAgrupador.setMFechaHora(obtenerFecha());
+                    rAgrupador.setMUsuarioId(idUsuario);
+                }
+            }
+        });
+        return true;
     }
 
     public boolean insertarPuertas(final List<puertas> aPersonalPuerta){
@@ -325,8 +334,7 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarPuertasArchivo(final List<puertas> aPersonalPuerta, final String idUsuario){
-        saberEstadoConsulta = false;
+    public boolean insertarPuertasArchivo(Realm realm, final List<puertas> aPersonalPuerta, final String idUsuario){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -341,10 +349,9 @@ public class RealmController {
                     rPuerta.setMFechaHora(obtenerFecha());
                     rPuerta.setMUsuarioId(idUsuario);
                 }
-                saberEstadoConsulta = true;
             }
         });
-        return saberEstadoConsulta;
+        return true;
     }
 
     public boolean insertarAgrupadorPuerta(final List<agrupadorPuerta> aPersonalPuerta){
@@ -365,6 +372,24 @@ public class RealmController {
             }
         });
         return saberEstadoConsulta;
+    }
+
+    public boolean insertarAgrupadorPuertaArchivo(Realm realm, final List<agrupadorPuerta> aPersonalPuerta, final String idUsuario){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (agrupadorPuerta agrupadorPuerta : aPersonalPuerta){
+                    realmAgrupadorPuerta rAgrupadorPuerta = realm.createObject(realmAgrupadorPuerta.class);
+                    rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
+                    rAgrupadorPuerta.setPUEId(agrupadorPuerta.getPUEId());
+                    rAgrupadorPuerta.setTipo(agrupadorPuerta.getTipo());
+                    rAgrupadorPuerta.setFase(agrupadorPuerta.getFase());
+                    rAgrupadorPuerta.setFechaHora(obtenerFecha());
+                    rAgrupadorPuerta.setMUsuarioId(idUsuario);
+                }
+            }
+        });
+        return true;
     }
 
     //ACTUALIZACIONES
@@ -405,6 +430,10 @@ public class RealmController {
     }
 
     public RealmResults<realmESPersonal> obtenerRegistros(){
+        return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
+    }
+
+    public RealmResults<realmESPersonal> obtenerRegistrosArchivo(Realm realm){
         return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }
 
@@ -497,6 +526,24 @@ public class RealmController {
             }
         });
         return saberEstadoConsulta;
+    }
+
+    public boolean borrarTablasSincronizacionArchivo(Realm realm){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.delete(realmPuerta.class);
+                realm.delete(realmPersonal.class);
+                realm.delete(realmPersonalInfo.class);
+                realm.delete(realmPersonalPuerta.class);
+                realm.delete(realmESPersonal.class);
+                realm.delete(realmNotificacion.class);
+                realm.delete(realmAgrupador.class);
+                realm.delete(realmAgrupadorPuerta.class);
+                realm.delete(realmUsuario.class);
+            }
+        });
+        return true;
     }
 
     public boolean borrarTablasSincronizacionRed(){

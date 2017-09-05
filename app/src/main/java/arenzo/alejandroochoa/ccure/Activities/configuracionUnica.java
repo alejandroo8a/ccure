@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.Preference;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +30,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
+import arenzo.alejandroochoa.ccure.Modelos.agrupador;
+import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
 import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
@@ -59,7 +63,7 @@ public class configuracionUnica extends AppCompatActivity {
     private Button btnGuardarConfiguracionUnico;
     ProgressDialog anillo = null;
     private SharedPreferences PREF_CONFIGURACION_UNICA;
-    private String URL;
+    public String URL, mensaje;
     RealmController realmController;
 
 
@@ -72,11 +76,11 @@ public class configuracionUnica extends AppCompatActivity {
         edtURLExportacionUnico = (EditText)findViewById(R.id.edtURLExportacionUnico);
         spPuertasUnico = (Spinner)findViewById(R.id.spPuertasUnico);
         btnGuardarConfiguracionUnico = (Button)findViewById(R.id.btnGuardarConfiguracionUnico);
+        PREF_CONFIGURACION_UNICA = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
         eventosVista();
         borrarDatos();
         cargarDatosVista();
         centrarTituloActionBar();
-        PREF_CONFIGURACION_UNICA = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
         mostrarDialogUrl();
     }
 
@@ -113,7 +117,6 @@ public class configuracionUnica extends AppCompatActivity {
                 realm.delete(realmNotificacion.class);
                 realm.delete(realmAgrupador.class);
                 realm.delete(realmAgrupadorPuerta.class);
-                realm.delete(realmDispositivo.class);
                 realm.delete(realmUsuario.class);
             }
         });
@@ -128,6 +131,9 @@ public class configuracionUnica extends AppCompatActivity {
             if (dispositivo == null) {
                 saberEstadoInsercion = realmController.insertarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             } else {
+                edtNombreDispositivoUnico.setText(dispositivo.getDescripcion().toString());
+                edtWebServiceUnico.setText(dispositivo.getURLWebService().toString());
+                edtURLExportacionUnico.setText(dispositivo.getURLExportacion());
                 saberEstadoInsercion = realmController.actualizarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             }
             if (saberEstadoInsercion) {
@@ -290,7 +296,8 @@ public class configuracionUnica extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ocultarTeclado();
-                guardarURL(edtUrlDialog.getText().toString());
+                if(!PREF_CONFIGURACION_UNICA.getBoolean("YACONFIGURADO", false))
+                    guardarURL(edtUrlDialog.getText().toString());
                 URL = PREF_CONFIGURACION_UNICA.getString("URL","");
                 edtWebServiceUnico.setText(edtUrlDialog.getText().toString());
                 conexion conexion = new conexion();
@@ -308,7 +315,9 @@ public class configuracionUnica extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ocultarTeclado();
-                sincronizarArchivo(alert);
+                mostrarCargandoAnillo("Sincronizando archivo...");
+                segundoPlanoArchivoLectura sincronizar = new segundoPlanoArchivoLectura();
+                sincronizar.execute(new String[]{});
             }
         });
 
@@ -319,119 +328,228 @@ public class configuracionUnica extends AppCompatActivity {
         inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    private void sincronizarArchivo(AlertDialog alerta){
-        String archivo = leerArchivo();
-        if(!archivo.equals("")) {
-            mostrarCargandoAnillo("Sincronizando archivo...");
-            String[] archivoSeparado = archivo.split("~");
-            if (guardarPuertas(archivoSeparado[0]))
-                if (guardarPersonalPuerta(archivoSeparado[1]))
-                    if (guardarTarjetasPersonal(archivoSeparado[2]))
-                        if (guardarPersonalInfo(archivoSeparado[3])) {
-                            ocultarCargandoAnillo();
-                            alerta.dismiss();
-                            resultadoDialog("Éxito", "Terminó la sincronización por archivo, los datos se guardaron correctamente.");
-                            return;
-                        }
+    public void resultadoDialogNegativo(String mensaje){
+        android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(this);
+        dialog.setTitle("ATENCIÓN")
+                .setMessage(mensaje)
+                .setPositiveButton("Aceptar", null)
+                .show();
+    }
+
+    private class segundoPlanoArchivoLectura extends AsyncTask<String, Void, String> {
+        Realm realm;
+        @Override
+        protected String doInBackground(String... urls) {
+            realm = Realm.getDefaultInstance();
+            String archivo = leerArchivo();
+            if (!archivo.equals("")) {
+                if (!existenDatos(realm)) {
+                    String[] archivoSeparado = archivo.split("~");
+                    if (RealmController.getInstance().borrarTablasSincronizacionArchivo(realm))
+                        if (guardarAgrupadores(realm, archivoSeparado[0]))
+                            if (guardarAgrupadorPuerta(realm, archivoSeparado[1]))
+                                if (guardarPuertas(realm, archivoSeparado[2]))
+                                    if (guardarPersonalPuerta(realm, archivoSeparado[3]))
+                                        if (guardarTarjetasPersonal(realm, archivoSeparado[4]))
+                                            if (guardarPersonalInfo(realm, archivoSeparado[5]))
+                                                return "true";
+                    return "false";
+                } else {
+                    return "hayDatos";
+                }
+            } else
+                return "vacio";
+        }
+        @Override
+        protected void onPostExecute(String result) {
             ocultarCargandoAnillo();
-            dialogErrorGuardadoDatosArchivo(alerta);
+            if (result.equals("vacio"))
+                resultadoDialogNegativo("No se puede leer el archivo. Asegurese de que exista.");
+            else if (result.equals("false"))
+                dialogErrorGuardadoDatosArchivo();
+            else if (result.equals("hayDatos"))
+                resultadoDialogNegativo("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
+            else
+                resultadoDialog("ÉXITO", "Terminó la sincronización por archivo, los datos se guardaron correctamente.");
         }
-    }
 
-    private String leerArchivo(){
-        File file = new File(Environment.getExternalStorageDirectory()+"/CCURE/baseDatos.txt");
-        StringBuilder archivo = new StringBuilder();
-        try{
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            String linea;
-            while((linea = bufferedReader.readLine()) != null){
-                archivo.append(linea);
-                archivo.append('\n');
+
+        private boolean existenDatos(Realm realm){
+            RealmResults<realmESPersonal> aESPersonal = RealmController.getInstance().obtenerRegistrosArchivo(realm);
+            return aESPersonal.size() > 0;
+        }
+
+        private String leerArchivo(){
+            File file = new File(Environment.getExternalStorageDirectory()+"/CCURE/baseDatos.txt");
+            StringBuilder archivo = new StringBuilder();
+            try{
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                String linea;
+                while((linea = bufferedReader.readLine()) != null){
+                    archivo.append(linea);
+                    archivo.append('\n');
+                }
+            }catch (IOException ex){
             }
-        }catch (IOException ex){
-            Toast.makeText(this, "No se puede leer el archivo. Asegurese de que exista.", Toast.LENGTH_SHORT).show();
+            return archivo.toString();
         }
-        return archivo.toString();
+
+        private boolean guardarAgrupadores(Realm realm, String oAgrupadores){
+            String[] aCantidadAgrupadores = oAgrupadores.split("\n");
+            int contador = 0;
+            List<agrupador> aAgrupadores = new ArrayList<>();
+            try {
+                for (int i = 0; i < aCantidadAgrupadores.length; i++) {
+                    String[] aElementosAgrupador = aCantidadAgrupadores[i].split("-");
+                    contador = i;
+                    agrupador agrupador = new agrupador();
+                    agrupador.setAGRId(Integer.parseInt(aElementosAgrupador[0]));
+                    agrupador.setDescripcion(aElementosAgrupador[1]);
+                    agrupador.setFase(aElementosAgrupador[2]);
+                    aAgrupadores.add(agrupador);
+                }
+                return RealmController.getInstance().insertarAgrupadorArchivo(realm, aAgrupadores, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                mensaje = "La tabla de Agrupadores no está bien creada. Error en el registro " + contador + ", no tiene el formato correcto.";
+            }
+            return false;
+        }
+
+        private boolean guardarAgrupadorPuerta(Realm realm, String oAgrupadoresPuerta){
+            String[] aCantidadAgrupadoresPuerta = oAgrupadoresPuerta.split("\n");
+            int contador = 0;
+            List<agrupadorPuerta> aAgrupadoresPuerta = new ArrayList<>();
+            try {
+                for (int i = 0; i < aCantidadAgrupadoresPuerta.length; i++) {
+                    contador = i;
+                    String[] aElementosAgrupadorPuerta = aCantidadAgrupadoresPuerta[i].split("-");
+                    agrupadorPuerta agrupadorPuerta = new agrupadorPuerta();
+                    agrupadorPuerta.setAGRId(Integer.parseInt(aElementosAgrupadorPuerta[0]));
+                    agrupadorPuerta.setPUEId(Integer.parseInt(aElementosAgrupadorPuerta[1]));
+                    agrupadorPuerta.setFase(aElementosAgrupadorPuerta[2]);
+                    agrupadorPuerta.setTipo(aElementosAgrupadorPuerta[3]);
+                    aAgrupadoresPuerta.add(agrupadorPuerta);
+                }
+                return RealmController.getInstance().insertarAgrupadorPuertaArchivo(realm, aAgrupadoresPuerta, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                mensaje = "La tabla de AgrupadoresPuerta no está bien creada. Error en el registro " + contador + ", no tiene el formato correcto.";
+            }
+            return false;
+        }
+
+        private boolean guardarPuertas(Realm realm, String oPuertas){
+            String[] aCantidadPuertas = oPuertas.split("\n");
+            int contador = 0;
+            List<puertas> aPuertas = new ArrayList<>();
+            try {
+                for (int i = 0; i < aCantidadPuertas.length; i++) {
+                    contador = i;
+                    String[] aElementosPuerta = aCantidadPuertas[i].split("-");
+                    puertas puerta = new puertas();
+                    puerta.setPUEId(Integer.parseInt(aElementosPuerta[0]));
+                    puerta.setPUEClave(aElementosPuerta[1]);
+                    puerta.setDescripcion(aElementosPuerta[2]);
+                    puerta.setFase(aElementosPuerta[3]);
+                    puerta.setGRUID(aElementosPuerta[4]);
+                    aPuertas.add(puerta);
+                }
+                return RealmController.getInstance().insertarPuertasArchivo(realm, aPuertas, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                mensaje = "La tabla de Puertas no está bien creada. Error en el registro " + contador + ", no tiene el formato correcto.";
+            }
+            return false;
+        }
+        private boolean guardarPersonalPuerta(Realm realm, String personal){
+            String[] aCantidadPersonalPuerta = personal.split("\n");
+            int contador = 0;
+            List<personalPuerta> aPersonalPuerta = new ArrayList<>();
+            try {
+                for (int i = 0; i < aCantidadPersonalPuerta.length; i++) {
+                    contador = i;
+                    String[] elementosPersonalPuerta = aCantidadPersonalPuerta[i].split("-");
+                    personalPuerta personalPuerta = new personalPuerta();
+                    personalPuerta.setNoEmpleado(elementosPersonalPuerta[0]);
+                    personalPuerta.setNoTarjeta(elementosPersonalPuerta[1]);
+                    personalPuerta.setGRUId(elementosPersonalPuerta[2]);
+                    aPersonalPuerta.add(personalPuerta);
+                }
+                return RealmController.getInstance().insertarPersonalPuertaArchivo(realm, aPersonalPuerta, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                mensaje = "La tabla de PersonalPuerta no está bien creada. Error en el registro " + contador + ", no tiene el formato correcto.";
+            }
+            return false;
+        }
+
+        private boolean guardarTarjetasPersonal(Realm realm, String tarjetas){
+            String[] aCantidadTarjetas = tarjetas.split("\n");
+            int contador = 0;
+            List<tarjetasPersonal> aTarjetasPersonal = new ArrayList<>();
+            try {
+                for (int i = 0; i < aCantidadTarjetas.length; i++) {
+                    contador = i;
+                    String[] elementosTarjetas = aCantidadTarjetas[i].split("-");
+                    tarjetasPersonal tarjetasPersonal = new tarjetasPersonal();
+                    tarjetasPersonal.setNoEmpleado(elementosTarjetas[0]);
+                    tarjetasPersonal.setNoTarjeta(elementosTarjetas[1]);
+                    tarjetasPersonal.setNombre(elementosTarjetas[2]);
+                    tarjetasPersonal.setEmpresa(elementosTarjetas[3]);
+                    tarjetasPersonal.setTipo(elementosTarjetas[4]);
+                    tarjetasPersonal.setFoto(elementosTarjetas[5]);
+                    aTarjetasPersonal.add(tarjetasPersonal);
+                }
+                return RealmController.getInstance().insertarTarjetasPersonalArchivo(realm, aTarjetasPersonal, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+            }catch(ArrayIndexOutOfBoundsException ex){
+                mensaje = "La tabla de TarjetasPersonal no está bien creada. Error en el registro "+ contador + ", no tiene el formato correcto.";
+            }
+            return false;
+        }
+
+        private boolean guardarPersonalInfo(Realm realm, String personal){
+            String[] aCantidadPersonal = personal.split("\n");
+            int contador = 0;
+            List<personalInfo> aPersonalInfo = new ArrayList<>();
+            try {
+                for (int i = 0; i < aCantidadPersonal.length; i++) {
+                    contador = i;
+                    String[] elementosPersonal = aCantidadPersonal[i].split("-");
+                    personalInfo personalInfo = new personalInfo();
+                    personalInfo.setFoto(elementosPersonal[0]);
+                    personalInfo.setNoEmpleado(elementosPersonal[1]);
+                    personalInfo.setNombre(elementosPersonal[2]);
+                    personalInfo.setPuesto(elementosPersonal[3]);
+                    aPersonalInfo.add(personalInfo);
+                }
+                return RealmController.getInstance().insertarInfoPersonalArchivo(realm, aPersonalInfo, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                mensaje = "La tabla de PersonalInfo no está bien creada. Error en el registro " + contador + ", no tiene el formato correcto.";
+            }
+            return false;
+        }
+
+
     }
 
-    private boolean guardarPuertas(String oPuertas){
-        String[] aCantidadPuertas = oPuertas.split("\n");
-        List<puertas> aPuertas = new ArrayList<>();
-        for(int i = 0; i < aCantidadPuertas.length ; i++){
-            String[] aElementosPuerta = aCantidadPuertas[i].split("-");
-            puertas puerta = new puertas();
-            puerta.setPUEId(Integer.parseInt(aElementosPuerta[0]));
-            puerta.setPUEClave(aElementosPuerta[1]);
-            puerta.setDescripcion(aElementosPuerta[2]);
-            puerta.setFase(aElementosPuerta[3]);
-            puerta.setGRUID(aElementosPuerta[4]);
-            aPuertas.add(puerta);
-        }
-        return RealmController.getInstance().insertarPuertasArchivo(aPuertas, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
-    }
-    private boolean guardarPersonalPuerta(String personal){
-        String[] aCantidadPersonalPuerta = personal.split("\n");
-        List<personalPuerta> aPersonalPuerta = new ArrayList<>();
-        for(int i = 0 ; i < aCantidadPersonalPuerta.length ; i++){
-            String[] elementosPersonalPuerta = aCantidadPersonalPuerta[i].split("-");
-            personalPuerta personalPuerta = new personalPuerta();
-            personalPuerta.setNoEmpleado(elementosPersonalPuerta[0]);
-            personalPuerta.setNoTarjeta(elementosPersonalPuerta[1]);
-            personalPuerta.setGRUId(elementosPersonalPuerta[2]);
-            aPersonalPuerta.add(personalPuerta);
-        }
-        return RealmController.getInstance().insertarPersonalPuertaArchivo(aPersonalPuerta, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
-    }
-
-    private boolean guardarTarjetasPersonal(String tarjetas){
-        String[] aCantidadTarjetas = tarjetas.split("\n");
-        List<tarjetasPersonal> aTarjetasPersonal = new ArrayList<>();
-        for(int i = 0 ; i < aCantidadTarjetas.length ; i++){
-            String[] elementosTarjetas = aCantidadTarjetas[i].split("-");
-            tarjetasPersonal tarjetasPersonal = new tarjetasPersonal();
-            tarjetasPersonal.setNoEmpleado(elementosTarjetas[0]);
-            tarjetasPersonal.setNoTarjeta(elementosTarjetas[1]);
-            tarjetasPersonal.setNombre(elementosTarjetas[2]);
-            tarjetasPersonal.setEmpresa(elementosTarjetas[3]);
-            tarjetasPersonal.setTipo(elementosTarjetas[4]);
-            tarjetasPersonal.setFoto(elementosTarjetas[5]);
-            aTarjetasPersonal.add(tarjetasPersonal);
-        }
-        return RealmController.getInstance().insertarTarjetasPersonalArchivo(aTarjetasPersonal, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
-    }
-
-    private boolean guardarPersonalInfo(String personal){
-        String[] aCantidadPersonal = personal.split("\n");
-        List<personalInfo> aPersonalInfo = new ArrayList<>();
-        for(int i = 0 ; i < aCantidadPersonal.length ; i++){
-            String[] elementosPersonal = aCantidadPersonal[i].split("-");
-            personalInfo personalInfo = new personalInfo();
-            personalInfo.setFoto(elementosPersonal[0]);
-            personalInfo.setNoEmpleado(elementosPersonal[1]);
-            personalInfo.setNombre(elementosPersonal[2]);
-            personalInfo.setPuesto(elementosPersonal[3]);
-            aPersonalInfo.add(personalInfo);
-        }
-        return RealmController.getInstance().insertarInfoPersonalArchivo(aPersonalInfo, PREF_CONFIGURACION_UNICA.getString("NUMERO_EMPLEADO", "CONFIGURACION"));
-    }
-
-    private void dialogErrorGuardadoDatosArchivo(final AlertDialog alerta){
+    private void dialogErrorGuardadoDatosArchivo(){
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
         builder.setTitle("ERROR")
-                .setMessage("Ocurrió un error al sincronizar el archivo, ¿desea volver a intentarlo?")
+                .setMessage(mensaje)
                 .setPositiveButton("Reintentar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        sincronizarArchivo(alerta);
+                        mostrarCargandoAnillo("Sincronizando archivo...");
+                        segundoPlanoArchivoLectura sincronizar = new segundoPlanoArchivoLectura();
+                        sincronizar.execute(new String[]{});
                     }
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
+
     private void resultadoDialog(String titulo, String mensaje){
         android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(this);
         dialog.setTitle(titulo)
                 .setMessage(mensaje)
+                .setCancelable(false)
                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

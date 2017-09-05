@@ -23,6 +23,7 @@ public class baseDatos extends Application{
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(configuration);
+        RealmController.with(this);
     }
 }
 
