@@ -94,7 +94,7 @@ public class helperRetrofit {
                     checadas.mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
                 } else {
                     imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
-                    txtResultadoChecada.setText("Acceso Denegado");
+                    txtResultadoChecada.setText("Acceso denegado");
                     checadas.noEmpleado = "";
                     checadas.vibrarCelular(context);
                     if(personal.getEmpleado() == null|| personal.getEmpleado().getNombre().equals(""))
@@ -132,7 +132,7 @@ public class helperRetrofit {
                         checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
                     else {
                         imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
-                        txtResultadoChecada.setText("Acceso Denegado");
+                        txtResultadoChecada.setText("Acceso denegado");
                         checadas.vibrarCelular(context);
                         checadas.guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
                     }

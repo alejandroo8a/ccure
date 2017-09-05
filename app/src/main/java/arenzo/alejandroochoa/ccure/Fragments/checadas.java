@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -82,6 +83,8 @@ public class checadas extends Fragment {
     private int totalGRUId;
     private Boolean hacerBusqueda = true;
     private ArrayList<String> aGRUIDs = new ArrayList<>();
+    private MediaPlayer sonidoPermitido = null;
+    private MediaPlayer sonidoDenegado = null;
 
     static public String noEmpleado = "";
 
@@ -128,6 +131,8 @@ public class checadas extends Fragment {
         btnNueve = view.findViewById(R.id.btnNueve);
         btnBorrar = view.findViewById(R.id.btnBorrar);
         tbnTipoLectura = view.findViewById(R.id.tbnTipoLectura);
+        sonidoPermitido = new MediaPlayer().create(getContext(), R.raw.permitido);
+        sonidoDenegado = new MediaPlayer().create(getContext(), R.raw.denegado);
         return view;
     }
 
@@ -549,6 +554,7 @@ public class checadas extends Fragment {
              mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalValidado.getNombre(), personalValidado.getPuesto(), personalValidado.getFoto());
         }
         limpiarEditTextNoEmpleado();
+        sonidoPermitido.start();
     }
 
     private void guardarResultadoChecadaDenegadoManual(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal, final String PUEClave, final realmValidaciones personalValidado){
@@ -559,6 +565,7 @@ public class checadas extends Fragment {
             realmController.insertarPersonalNuevo(personalValidado.getNoEmpleado(), personalValidado.getNoTarjeta(), PUEClave, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personalValidado.getFoto(), personalValidado.getNombre(), personalValidado.getPuesto());
             mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalValidado.getNombre(), personalValidado.getPuesto(), personalValidado.getFoto());
         }
+        sonidoDenegado.start();
     }
 
     public void guardarResultadoChecadaValidadaManual(final validarEmpleado empleado, final String faseIngreso, final String PUEClave, final String numeroEmpleado, final String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil, View view){
@@ -566,8 +573,10 @@ public class checadas extends Fragment {
         realmController.insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), " ",PUEClave, faseIngreso, "N", "",numeroEmpleado, tipoChecada, empleado.getEmpleado().getFoto(), empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto());
         mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto(), empleado.getEmpleado().getFoto());
         if (faseIngreso.equals("P")){
+            sonidoPermitido.start();
             limpiarEditTextNoEmpleado(view);
-        }
+        }else
+            sonidoDenegado.start();
     }
 
     private void guardarResultadoChecadaDenegadoNoInternetManual(String noEmpleado, realmPersonalInfo detallesPersonal){
@@ -586,6 +595,7 @@ public class checadas extends Fragment {
             }
         }
         limpiarEditTextNoEmpleado();
+        sonidoDenegado.start();
     }
 
     public void guardarResultadoChecadaNoEncontradoManual(String noEmpleado,  String PUEClave, String numeroEmpleado, String tipoChecada, View view){
@@ -599,6 +609,7 @@ public class checadas extends Fragment {
             mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
         }
         limpiarEditTextNoEmpleado(view);
+        sonidoDenegado.start();
     }
 
     //*****RFID LECTURAS******
@@ -622,12 +633,17 @@ public class checadas extends Fragment {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalValidado.getNombre(), personalValidado.getPuesto(), personalValidado.getFoto());
             }
         }
+        sonidoPermitido.start();
     }
 
     public void guardarResultadoChecadaValidadaRfid(final validarEmpleado empleado, final String faseIngreso, final String PUEClave, final String numeroEmpleado, final String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil, String noTarjeta){
         realmController = new RealmController();
         realmController.insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), noTarjeta, PUEClave, faseIngreso, "N", "",numeroEmpleado, tipoChecada, empleado.getEmpleado().getFoto(), empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto());
         mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto(), empleado.getEmpleado().getFoto());
+        if(faseIngreso.equals("P"))
+            sonidoPermitido.start();
+        else
+            sonidoDenegado.start();
     }
 
     private void guardarResultadoChecadaDenegadoNoInternetRfid(String noTarjeta){
@@ -651,6 +667,7 @@ public class checadas extends Fragment {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
             }
         }
+        sonidoDenegado.start();
     }
 
     public void guardarResultadoChecadaNoEncontradoRfid(String NoTarjeta,  String PUEClave, String numeroEmpleado, String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil){
@@ -674,6 +691,7 @@ public class checadas extends Fragment {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
             }
         }
+        sonidoDenegado.start();
     }
 
     private void decodificarBase64(String imagen){
@@ -762,7 +780,7 @@ public class checadas extends Fragment {
     }
 
     private void mostrarDenegado(TextView txtResultadoChecada, ImageView imgFondoAcceso){
-        txtResultadoChecada.setText("Acceso Denegado");
+        txtResultadoChecada.setText("Acceso denegado");
         imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
     }
 
