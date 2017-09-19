@@ -7,10 +7,6 @@ import android.net.NetworkInfo;
 
 import java.io.IOException;
 
-/**
- * Created by AlejandroMissael on 09/03/2017.
- */
-
 public class conexion {
 
 
@@ -28,9 +24,7 @@ public class conexion {
             if (anillo!= null)
                 anillo.dismiss();
             return online;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return false;
