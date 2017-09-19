@@ -2,10 +2,6 @@ package arenzo.alejandroochoa.ccure.Realm;
 
 import io.realm.RealmObject;
 
-/**
- * Created by AlejandroMissael on 20/08/2017.
- */
-
 public class realmValidaciones extends RealmObject{
 
     private String NoEmpleado;
@@ -38,24 +34,12 @@ public class realmValidaciones extends RealmObject{
         NoTarjeta = noTarjeta;
     }
 
-    public String getPUEClave() {
-        return PUEClave;
-    }
-
     public void setPUEClave(String PUEClave) {
         this.PUEClave = PUEClave;
     }
 
-    public String getFechaHoraEntrada() {
-        return FechaHoraEntrada;
-    }
-
     public void setFechaHoraEntrada(String fechaHoraEntrada) {
         FechaHoraEntrada = fechaHoraEntrada;
-    }
-
-    public String getFaseIngreso() {
-        return FaseIngreso;
     }
 
     public void setFaseIngreso(String faseIngreso) {
@@ -70,16 +54,8 @@ public class realmValidaciones extends RealmObject{
         Fase = fase;
     }
 
-    public String getTipoEntrada() {
-        return TipoEntrada;
-    }
-
     public void setTipoEntrada(String tipoEntrada) {
         TipoEntrada = tipoEntrada;
-    }
-
-    public String getObservaciones() {
-        return Observaciones;
     }
 
     public void setObservaciones(String observaciones) {

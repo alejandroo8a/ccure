@@ -3,7 +3,6 @@ package arenzo.alejandroochoa.ccure.Realm;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Fragment;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,10 +17,6 @@ import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
 import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import io.realm.Realm;
 import io.realm.RealmResults;
-
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
 
 public class RealmController {
     private final static String TAG = "RealmController";
@@ -51,7 +46,7 @@ public class RealmController {
         return instance;
     }
 
-    public static RealmController with(Application application) {
+    static RealmController with(Application application) {
         if (instance == null) {
             instance = new RealmController(application);
         }

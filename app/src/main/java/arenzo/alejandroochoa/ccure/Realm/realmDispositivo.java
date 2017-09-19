@@ -3,10 +3,6 @@ package arenzo.alejandroochoa.ccure.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
-
 public class realmDispositivo extends RealmObject {
 
     @PrimaryKey
@@ -20,19 +16,11 @@ public class realmDispositivo extends RealmObject {
     private String MFechaHora;
     private String MUsuarioId;
 
-    public int getDISId() {
-        return DISId;
-    }
-
-    public void setDISId(int DISId) {
-        this.DISId = DISId;
-    }
-
     public String getDescripcion() {
         return Descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
+    void setDescripcion(String descripcion) {
         Descripcion = descripcion;
     }
 
@@ -42,10 +30,6 @@ public class realmDispositivo extends RealmObject {
 
     public void setFase(String fase) {
         Fase = fase;
-    }
-
-    public int getAGRId() {
-        return AGRId;
     }
 
     public void setAGRId(int AGRId) {

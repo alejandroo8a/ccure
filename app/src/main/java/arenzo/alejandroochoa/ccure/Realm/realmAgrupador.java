@@ -3,10 +3,6 @@ package arenzo.alejandroochoa.ccure.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
-
 public class realmAgrupador extends RealmObject {
 
     @PrimaryKey
@@ -21,15 +17,11 @@ public class realmAgrupador extends RealmObject {
         return AGRId;
     }
 
-    public void setAGRId(int AGRId) {
-        this.AGRId = AGRId;
-    }
-
     public String getDescripcion() {
         return Descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
+    void setDescripcion(String descripcion) {
         Descripcion = descripcion;
     }
 

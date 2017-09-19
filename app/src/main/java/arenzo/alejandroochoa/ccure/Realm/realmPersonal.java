@@ -1,14 +1,8 @@
 package arenzo.alejandroochoa.ccure.Realm;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
 
 public class realmPersonal extends RealmObject {
-
 
     private String NoEmpleado;
     private String NoTarjeta;

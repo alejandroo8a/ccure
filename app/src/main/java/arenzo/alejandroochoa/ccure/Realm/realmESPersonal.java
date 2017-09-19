@@ -70,10 +70,6 @@ public class realmESPersonal extends RealmObject {
         Fase = fase;
     }
 
-    public String getObservaciones() {
-        return Observaciones;
-    }
-
     public void setObservaciones(String observaciones) {
         Observaciones = observaciones;
     }
@@ -92,10 +88,6 @@ public class realmESPersonal extends RealmObject {
 
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
-    }
-
-    public String getTipoEntrada() {
-        return TipoEntrada;
     }
 
     public void setTipoEntrada(String tipoEntrada) {

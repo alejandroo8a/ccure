@@ -3,10 +3,6 @@ package arenzo.alejandroochoa.ccure.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
-
 public class realmAgrupadorPuerta extends RealmObject {
 
 
@@ -19,11 +15,7 @@ public class realmAgrupadorPuerta extends RealmObject {
     private String FechaHora;
     private String MUsuarioId;
 
-    public int getAGRId() {
-        return AGRId;
-    }
-
-    public void setAGRId(int AGRId) {
+    void setAGRId(int AGRId) {
         this.AGRId = AGRId;
     }
 
@@ -49,10 +41,6 @@ public class realmAgrupadorPuerta extends RealmObject {
 
     public void setTipo(String tipo) {
         Tipo = tipo;
-    }
-
-    public String getFechaHora() {
-        return FechaHora;
     }
 
     public void setFechaHora(String fechaHora) {
