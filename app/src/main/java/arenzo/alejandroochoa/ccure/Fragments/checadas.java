@@ -756,7 +756,7 @@ public class checadas extends Fragment {
 
     private void validarEmpleadoRfid(String noTarjeta){
         helperRetrofit helper = new helperRetrofit(URL);
-        helper.ValidarEmpleadoRfid("empty", noTarjeta,puertaClave, getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada, String.valueOf(PUEId), numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, this);
+        helper.ValidarEmpleadoRfid("empty", noTarjeta,puertaClave, getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, this);
         edtNoTarjeta.setText("");
     }
 

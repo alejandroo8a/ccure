@@ -8,7 +8,6 @@ import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
 import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.Modelos.respuestaChecadas;
-import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
 import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import retrofit2.Call;
@@ -16,13 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
 
-/**
- * Created by AlejandroMissael on 08/05/2017.
- */
-
 public interface retrofit{
-
-    //public static String URL = "http://192.168.1.10/CCUREMOVIL/ServiceMethods.svc/";
 
     @GET("ValidarEmpleadoJSON/{noEmpleado}/{noTarjeta}/{clavePuerta}")
     Call<validarEmpleado> getValidarEmpleado(@Path("noEmpleado") String noEmpleado,

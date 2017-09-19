@@ -1,6 +1,5 @@
 package arenzo.alejandroochoa.ccure.WebService;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,17 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import arenzo.alejandroochoa.ccure.Activities.configuracionUnica;
 import arenzo.alejandroochoa.ccure.Activities.main;
@@ -34,14 +28,11 @@ import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
 import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.Modelos.respuestaChecadas;
-import arenzo.alejandroochoa.ccure.Modelos.tarjetasPersonal;
 import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmESPersonal;
-import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
-import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import retrofit2.Call;
@@ -50,15 +41,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by AlejandroMissael on 09/05/2017.
- */
 
 public class helperRetrofit {
 
     private final static String TAG = "helperRetrofit";
 
-    private Retrofit adapterRetrofit;
     private retrofit helper;
     private RealmController realmController;
 
@@ -69,7 +56,7 @@ public class helperRetrofit {
     }
 
     private void configurarAdapterRetrofit(String url){
-        adapterRetrofit = new Retrofit.Builder()
+        Retrofit adapterRetrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -114,7 +101,7 @@ public class helperRetrofit {
 
     }
 
-    public void ValidarEmpleadoRfid(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String idCaseta, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final checadas checadas) {
+    public void ValidarEmpleadoRfid(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final checadas checadas) {
         Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, puertaClave);
         validarCall.enqueue(new Callback<validarEmpleado>() {
             @Override
@@ -127,15 +114,13 @@ public class helperRetrofit {
                 anillo.dismiss();
                 if (resultado.getRespuesta().equals("PERMITIDO")) {
                     checadas.guardarResultadoChecadaValidadaRfid(resultado, "P", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
-                } else {
-                    if(resultado.getEmpleado() == null || resultado.getEmpleado().getNombre().equals(""))
-                        checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
-                    else {
-                        imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
-                        txtResultadoChecada.setText("Acceso denegado");
-                        checadas.vibrarCelular(context);
-                        checadas.guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
-                    }
+                } else if (resultado.getEmpleado() == null || resultado.getEmpleado().getNombre().equals(""))
+                    checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta, puertaClave, numeroEmpleado, tipoChecada);
+                else {
+                    imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
+                    txtResultadoChecada.setText("Acceso denegado");
+                    checadas.vibrarCelular(context);
+                    checadas.guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
                 }
             }
 
@@ -149,7 +134,7 @@ public class helperRetrofit {
 
     }
 
-    public void ObtenerTarjetasPersonal(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
+    private void ObtenerTarjetasPersonal(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
         Call<List<usuario>> tarjetasCall = helper.getTarjetasPersonal("O");
         tarjetasCall.enqueue(new Callback<List<usuario>>() {
             @Override
@@ -174,7 +159,7 @@ public class helperRetrofit {
 
     }
 
-    public void obtenerPersonalPuerta(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
+    private void obtenerPersonalPuerta(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
         Call<List<personalPuerta>> personalCall = helper.getPersonalPuerta();
         personalCall.enqueue(new Callback<List<personalPuerta>>() {
             @Override
@@ -222,7 +207,7 @@ public class helperRetrofit {
         });
     }
 
-    public void obtenerUsuarios(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
+    private void obtenerUsuarios(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
         Call<List<usuario>> usuariosCall = helper.getUsuario("G");
         usuariosCall.enqueue(new Callback<List<usuario>>() {
             @Override
@@ -278,7 +263,7 @@ public class helperRetrofit {
     }
 
 
-    public void actualizarPuertas(final configuracionUnica activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA){
+    private void actualizarPuertas(final configuracionUnica activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA){
         Call<List<puertas>> puertasCall = helper.getActualizarPuertas();
         puertasCall.enqueue(new Callback<List<puertas>>() {
             @Override
@@ -304,7 +289,7 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarAgrupadorPuertaInicio(final configuracionUnica activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores, final SharedPreferences PREF_CONFIGURACION_UNICA){
+    private void actualizarAgrupadorPuertaInicio(final configuracionUnica activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final List<agrupador> aAgrupadores, final SharedPreferences PREF_CONFIGURACION_UNICA){
         Call<List<agrupadorPuerta>> puertasCall = helper.getAgrupadorPuerta();
         puertasCall.enqueue(new Callback<List<agrupadorPuerta>>() {
             @Override
@@ -397,11 +382,11 @@ public class helperRetrofit {
         for (agrupador agrupador : aAgrupadores){
             aAgrupadoresDescripcion.add(agrupador.getDescripcion());
         }
-        ArrayAdapter adapter = new ArrayAdapter(context, R.layout.item_spinner, aAgrupadoresDescripcion);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.item_spinner, aAgrupadoresDescripcion);
         spPuertasUnico.setAdapter(adapter);
     }
 
-    public void actualizarAgrupadoresSincronizacion(final Context context, final ProgressDialog anillo){
+    private void actualizarAgrupadoresSincronizacion(final Context context, final ProgressDialog anillo){
         Call<List<agrupador>> puertasCall = helper.getAgrupadores();
         puertasCall.enqueue(new Callback<List<agrupador>>() {
             @Override
@@ -426,7 +411,7 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarAgrupadorPuertaSincronizacion(final Context context, final ProgressDialog anillo){
+    private void actualizarAgrupadorPuertaSincronizacion(final Context context, final ProgressDialog anillo){
         Call<List<agrupadorPuerta>> puertasCall = helper.getAgrupadorPuerta();
         puertasCall.enqueue(new Callback<List<agrupadorPuerta>>() {
             @Override
@@ -450,7 +435,7 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarPuertasSincronizacion(final Context context, final ProgressDialog anillo){
+    private void actualizarPuertasSincronizacion(final Context context, final ProgressDialog anillo){
         Call<List<puertas>> puertasCall = helper.getActualizarPuertas();
         puertasCall.enqueue(new Callback<List<puertas>>() {
             @Override
@@ -474,7 +459,7 @@ public class helperRetrofit {
         });
     }
 
-    public void obtenerPersonalPuertaSincronizacion(final Context context, final ProgressDialog anillo){
+    private void obtenerPersonalPuertaSincronizacion(final Context context, final ProgressDialog anillo){
         Call<List<personalPuerta>> personalCall = helper.getPersonalPuerta();
         personalCall.enqueue(new Callback<List<personalPuerta>>() {
             @Override
@@ -498,7 +483,7 @@ public class helperRetrofit {
         });
     }
 
-    public void ObtenerTarjetasPersonalSincronizacion(final Context context, final ProgressDialog anillo){
+    private void ObtenerTarjetasPersonalSincronizacion(final Context context, final ProgressDialog anillo){
         Call<List<usuario>> tarjetasCall = helper.getTarjetasPersonal("O");
         tarjetasCall.enqueue(new Callback<List<usuario>>() {
             @Override
@@ -523,7 +508,7 @@ public class helperRetrofit {
 
     }
 
-    public void obtenerPersonalInfoSincronizacion(final Context context, final ProgressDialog anillo){
+    private void obtenerPersonalInfoSincronizacion(final Context context, final ProgressDialog anillo){
         Call<List<personalInfo>> personalCall = helper.getPersonalInfo();
         personalCall.enqueue(new Callback<List<personalInfo>>() {
             @Override
@@ -570,7 +555,7 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarAgrupadoresConfiguracion(final configuracion configuracion, final ProgressDialog anillo){
+    private void actualizarAgrupadoresConfiguracion(final configuracion configuracion, final ProgressDialog anillo){
         Call<List<agrupador>> puertasCall = helper.getAgrupadores();
         puertasCall.enqueue(new Callback<List<agrupador>>() {
             @Override
@@ -594,7 +579,7 @@ public class helperRetrofit {
         });
     }
 
-    public void actualizarAgrupadorPuertaConfiguracion(final configuracion configuracion, final ProgressDialog anillo){
+    private void actualizarAgrupadorPuertaConfiguracion(final configuracion configuracion, final ProgressDialog anillo){
         Call<List<agrupadorPuerta>> puertasCall = helper.getAgrupadorPuerta();
         puertasCall.enqueue(new Callback<List<agrupadorPuerta>>() {
             @Override
