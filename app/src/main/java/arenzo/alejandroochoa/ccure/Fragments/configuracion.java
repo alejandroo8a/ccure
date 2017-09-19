@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import arenzo.alejandroochoa.ccure.Activities.configuracionUnica;
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
-import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmAgrupador;
@@ -36,7 +33,6 @@ import io.realm.RealmResults;
 public class configuracion extends Fragment {
 
     private final static String TAG = "configuracion";
-    private arenzo.alejandroochoa.ccure.Helpers.datosConfiguracion datosConfiguracion;
 
     ProgressDialog anillo = null;
     private EditText edtNombreDispositivo, edtWebService, edtURLExportacion;
@@ -60,13 +56,13 @@ public class configuracion extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_configuracion, container, false);
-        edtNombreDispositivo = (EditText) view.findViewById(R.id.edtNombreDispositivoUnico);
-        edtWebService = (EditText) view.findViewById(R.id.edtWebServiceUnico);
-        edtURLExportacion = (EditText) view.findViewById(R.id.edtURLExportacionUnico);
-        spPuertas = (Spinner) view.findViewById(R.id.spPuertasUnico);
-        btnGuardarConfiguracion = (Button) view.findViewById(R.id.btnGuardarConfiguracion);
-        btnActualizarPuertasC = (Button) view.findViewById(R.id.btnActualizarPuertasC );
-        PREF_CONFIGURACION = getContext().getSharedPreferences("CCURE", getContext().MODE_PRIVATE);
+        edtNombreDispositivo = view.findViewById(R.id.edtNombreDispositivoUnico);
+        edtWebService = view.findViewById(R.id.edtWebServiceUnico);
+        edtURLExportacion = view.findViewById(R.id.edtURLExportacionUnico);
+        spPuertas = view.findViewById(R.id.spPuertasUnico);
+        btnGuardarConfiguracion = view.findViewById(R.id.btnGuardarConfiguracion);
+        btnActualizarPuertasC = view.findViewById(R.id.btnActualizarPuertasC );
+        PREF_CONFIGURACION = getContext().getSharedPreferences("CCURE", Context.MODE_PRIVATE);
         return view;
     }
 
@@ -104,8 +100,8 @@ public class configuracion extends Fragment {
         realmController = new RealmController(getActivity().getApplication());
         realmDispositivo dispositivo = realmController.obtenerDispositivo();
         if (dispositivo != null) {
-            edtNombreDispositivo.setText(dispositivo.getDescripcion().toString());
-            edtWebService.setText(dispositivo.getURLWebService().toString());
+            edtNombreDispositivo.setText(dispositivo.getDescripcion());
+            edtWebService.setText(dispositivo.getURLWebService());
             edtURLExportacion.setText(dispositivo.getURLExportacion());
         }
         llenarSpinnerAgrupador();
@@ -115,8 +111,8 @@ public class configuracion extends Fragment {
         realmController = new RealmController(getActivity().getApplication());
         realmDispositivo dispositivo = realmController.obtenerDispositivo();
         if (dispositivo != null) {
-            edtNombreDispositivo.setText(dispositivo.getDescripcion().toString());
-            edtWebService.setText(dispositivo.getURLWebService().toString());
+            edtNombreDispositivo.setText(dispositivo.getDescripcion());
+            edtWebService.setText(dispositivo.getURLWebService());
             edtURLExportacion.setText(dispositivo.getURLExportacion());
         }
         llenarSpinnerAgrupadorSincronizado();
@@ -166,7 +162,7 @@ public class configuracion extends Fragment {
     private void guardarURL(String url) {
         SharedPreferences.Editor editor = PREF_CONFIGURACION.edit();
         editor.putString("URL", url);
-        editor.commit();
+        editor.apply();
     }
 
     private void guardarYaExisteConfiguracionUrlNombrePuerta(String url, String nombrePuerta) {
@@ -174,7 +170,7 @@ public class configuracion extends Fragment {
         editor.putBoolean("CONFIGURADO", true);
         editor.putString("URL", url);
         editor.putString("NOMBREPUERTA", nombrePuerta);
-        editor.commit();
+        editor.apply();
     }
 
     private void guardarPuerta(realmPuerta puerta1, realmPuerta puerta2, int idAgrupador) {
@@ -188,7 +184,7 @@ public class configuracion extends Fragment {
         editor.putString("GRUIDENTRADA", puerta1.getGRUID());
         editor.putString("GRUIDSALIDA", puerta2.getGRUID());
         editor.putInt("IDAGRUPADOR", idAgrupador);
-        editor.commit();
+        editor.apply();
     }
 
     private void iterarPuertas(RealmResults<realmPuerta> aPuertas) {
@@ -202,7 +198,7 @@ public class configuracion extends Fragment {
         SharedPreferences.Editor editor = PREF_CONFIGURACION.edit();
         editor.putString("GRUIDACTUAL" + total, puerta.getGRUID());
         editor.putInt("TOTALGRUID", total);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -213,7 +209,7 @@ public class configuracion extends Fragment {
         for (realmAgrupador agrupador : aAgrupadores) {
             aAgrupadoresDescripcion.add(agrupador.getDescripcion());
         }
-        ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.item_spinner, aAgrupadoresDescripcion);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner, aAgrupadoresDescripcion);
         spPuertas.setAdapter(adapter);
         spPuertas.setSelection(posicionPuertaSeleccionada);
     }
@@ -224,7 +220,7 @@ public class configuracion extends Fragment {
         for (realmAgrupador agrupador : aAgrupadores) {
             aAgrupadoresDescripcion.add(agrupador.getDescripcion());
         }
-        ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.item_spinner, aAgrupadoresDescripcion);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_spinner, aAgrupadoresDescripcion);
         spPuertas.setAdapter(adapter);
     }
 

@@ -11,8 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -24,7 +22,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,11 +39,9 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
-import arenzo.alejandroochoa.ccure.Modelos.respuestaValidarEmpleado;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
@@ -92,9 +87,6 @@ public class checadas extends Fragment {
 
     BroadcastReceiver informacionPantalla, estadoRed;
 
-    public checadas() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +95,6 @@ public class checadas extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_checadas, container, false);
         edtNoEmpleado = view.findViewById(R.id.edtNoEmpleado);
         edtNoTarjeta = view.findViewById(R.id.edtNoTarjeta);
@@ -131,8 +122,8 @@ public class checadas extends Fragment {
         btnNueve = view.findViewById(R.id.btnNueve);
         btnBorrar = view.findViewById(R.id.btnBorrar);
         tbnTipoLectura = view.findViewById(R.id.tbnTipoLectura);
-        sonidoPermitido = new MediaPlayer().create(getContext(), R.raw.permitido);
-        sonidoDenegado = new MediaPlayer().create(getContext(), R.raw.denegado);
+        sonidoPermitido = MediaPlayer.create(getContext(), R.raw.permitido);
+        sonidoDenegado = MediaPlayer.create(getContext(), R.raw.denegado);
         return view;
     }
 
@@ -140,7 +131,7 @@ public class checadas extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ocultarDatosGuardia();
-        PREF_CHECADAS = getContext().getSharedPreferences("CCURE", getContext().MODE_PRIVATE);
+        PREF_CHECADAS = getContext().getSharedPreferences("CCURE", Context.MODE_PRIVATE);
         URL = PREF_CHECADAS.getString("URL", "");
         totalGRUId = PREF_CHECADAS.getInt("TOTALGRUID", 0);
         numeroEmpleado = PREF_CHECADAS.getString("NUMERO_EMPLEADO","0");
@@ -752,7 +743,10 @@ public class checadas extends Fragment {
 
     private void ocultarTeclado(){
         InputMethodManager inputManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        View focusedView = getActivity().getCurrentFocus();
+        if (focusedView != null) {
+            inputManager.hideSoftInputFromWindow(focusedView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     private void validarEmpleadoManual(){

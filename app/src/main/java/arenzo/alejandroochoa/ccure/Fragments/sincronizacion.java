@@ -82,7 +82,7 @@ public class sincronizacion extends Fragment {
         rdArchivo = view.findViewById(R.id.rdArchivo);
         rdLeerArchivo = view.findViewById(R.id.rdLeerArchivo);
         btnSincronizar = view.findViewById(R.id.btnSincronizar);
-        PREF_SINCRONIZACION = getContext().getSharedPreferences("CCURE", getContext().MODE_PRIVATE);
+        PREF_SINCRONIZACION = getContext().getSharedPreferences("CCURE", Context.MODE_PRIVATE);
         URL = PREF_SINCRONIZACION.getString("URL", "");
         return view;
     }
@@ -110,7 +110,7 @@ public class sincronizacion extends Fragment {
             if (tipo == 1) {
                 //Archivo
                 segundoPlanoArchivo sincronizar = new segundoPlanoArchivo();
-                sincronizar.execute(new String[]{});
+                sincronizar.execute();
             } else if (tipo == 2){
                 conexion conexion = new conexion();
                 if (conexion.isAvaliable(getContext())) {
@@ -124,7 +124,7 @@ public class sincronizacion extends Fragment {
                     avisoNoRed();
             }else{
                 segundoPlanoArchivoLectura sincronizar = new segundoPlanoArchivoLectura();
-                sincronizar.execute(new String[]{});
+                sincronizar.execute();
             }
         }else{
             Toast.makeText(getContext(), "Seleccione un método de sincronización  ", Toast.LENGTH_SHORT).show();
@@ -239,14 +239,19 @@ public class sincronizacion extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             ocultarCargandoAnillo();
-            if (result.equals("vacio"))
-                resultadoDialogNegativo("El archivo de sincronización no contiene datos");
-            else if (result.equals("false"))
-                dialogErrorGuardadoDatosArchivo();
-            else if (result.equals("hayDatos"))
-                resultadoDialogNegativo("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
-            else
-                resultadoDialog("ÉXITO", "Terminó la sincronización por archivo, los datos se guardaron correctamente.", getContext());
+            switch (result) {
+                case "vacio":
+                    resultadoDialogNegativo("El archivo de sincronización no contiene datos");
+                    break;
+                case "false":
+                    dialogErrorGuardadoDatosArchivo();
+                    break;
+                case "hayDatos":
+                    resultadoDialogNegativo("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
+                    break;
+                default:
+                    resultadoDialog("ÉXITO", "Terminó la sincronización por archivo, los datos se guardaron correctamente.", getContext());
+            }
         }
 
 
@@ -265,7 +270,7 @@ public class sincronizacion extends Fragment {
                     archivo.append(linea);
                     archivo.append('\n');
                 }
-            }catch (IOException ex){
+            }catch (IOException ignored){
             }
             return archivo.toString();
         }
@@ -410,7 +415,7 @@ public class sincronizacion extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             segundoPlanoArchivoLectura sincronizar = new segundoPlanoArchivoLectura();
-                            sincronizar.execute(new String[]{});
+                            sincronizar.execute();
                         }
                     })
                     .setNegativeButton("Cancelar", null)
@@ -445,12 +450,16 @@ public class sincronizacion extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             ocultarCargandoAnillo();
-            if (result.equals("true"))
-                resultadoDialog("ÉXITO", "El archivo de sincronización se creó correctamente.");
-            else if(result.equals("actualizado"))
-                resultadoDialog("ATENCIÓN","Actualmente todo está sincronizado.");
-            else
-                resultadoDialog("ATENCIÓN","No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
+            switch (result) {
+                case "true":
+                    resultadoDialog("ÉXITO", "El archivo de sincronización se creó correctamente.");
+                    break;
+                case "actualizado":
+                    resultadoDialog("ATENCIÓN", "Actualmente todo está sincronizado.");
+                    break;
+                default:
+                    resultadoDialog("ATENCIÓN", "No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
+            }
         }
 
         private boolean actualizarChecadasEnviadas(){
@@ -521,10 +530,7 @@ public class sincronizacion extends Fragment {
                 Toast.makeText(getContext(), "El equipo no es compatible para almacenar los datos de las checadas. Utilice un equipo compatible.", Toast.LENGTH_LONG).show();
             if (!directorio.exists())
                 creado = directorio.mkdirs();
-            if (creado)
-                return true;
-            else
-                return false;
+            return creado;
         }
 
         private String crearContenidoArchivo(RealmResults<realmESPersonal> resultsESPersonal){
