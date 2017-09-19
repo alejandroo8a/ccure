@@ -1,9 +1,5 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
-/**
- * Created by AlejandroMissael on 27/06/2017.
- */
-
 public class agrupadorPuerta {
 
     private int AGRId;
@@ -43,14 +39,6 @@ public class agrupadorPuerta {
 
     public void setTipo(String tipo) {
         Tipo = tipo;
-    }
-
-    public String getFechaHora() {
-        return FechaHora;
-    }
-
-    public void setFechaHora(String fechaHora) {
-        FechaHora = fechaHora;
     }
 
     public String getMUsuarioId() {

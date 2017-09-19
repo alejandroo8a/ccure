@@ -1,9 +1,5 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
-/**
- * Created by AlejandroMissael on 29/06/2017.
- */
-
 public class usuario {
 
     private String NoEmpleado;
@@ -42,10 +38,6 @@ public class usuario {
 
     public String getEmpresa() {
         return Empresa;
-    }
-
-    public void setEmpresa(String empresa) {
-        Empresa = empresa;
     }
 
     public String getTipo() {

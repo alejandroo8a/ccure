@@ -2,10 +2,6 @@ package arenzo.alejandroochoa.ccure.Modelos;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by AlejandroMissael on 20/06/2017.
- */
-
 public class personalPuerta {
 
     private String NoEmpleado;

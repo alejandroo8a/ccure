@@ -1,9 +1,5 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
-/**
- * Created by AlejandroMissael on 09/05/2017.
- */
-
 public class puertas {
 
     private int PUEId;
