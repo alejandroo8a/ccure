@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,7 +34,6 @@ import arenzo.alejandroochoa.ccure.Fragments.checadas;
 import arenzo.alejandroochoa.ccure.Fragments.configuracion;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
-import retrofit2.Retrofit;
 
 public class nucleo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -52,7 +52,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         cargarElementos();
         centrarTituloActionBar();
         habilitarItemsNavigation();
-        PREF_NUCLEO = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
+        PREF_NUCLEO = getSharedPreferences("CCURE", MODE_PRIVATE);
         configurarInformacionNavigationDrawer();
     }
 
@@ -94,7 +94,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
 
     private void habilitarItemsNavigation(){
         Menu menuNav = nav_view.getMenu();
-        MenuItem item = null;
+        MenuItem item;
         switch (this.tipoUsuario){
             case "G":
                 item = menuNav.findItem(R.id.configuración);
@@ -111,7 +111,6 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
                 item.setEnabled(false);
                 item = menuNav.findItem(R.id.sincronizar);
                 item.setEnabled(false);
-                return;
         }
     }
 
@@ -129,7 +128,6 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
                 return;
             case "A":
                 tx.replace(R.id.main_content, new configuracion());
-                return;
         }
     }
 
@@ -167,7 +165,7 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         Fragment fragment = null;
         switch (id){

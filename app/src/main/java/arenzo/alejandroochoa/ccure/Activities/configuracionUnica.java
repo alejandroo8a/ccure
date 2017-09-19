@@ -7,13 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.preference.Preference;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
@@ -51,7 +48,6 @@ import arenzo.alejandroochoa.ccure.Realm.realmPersonalPuerta;
 import arenzo.alejandroochoa.ccure.Realm.realmPuerta;
 import arenzo.alejandroochoa.ccure.Realm.realmUsuario;
 import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
-import arenzo.alejandroochoa.ccure.WebService.retrofit;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -76,7 +72,7 @@ public class configuracionUnica extends AppCompatActivity {
         edtURLExportacionUnico = (EditText)findViewById(R.id.edtURLExportacionUnico);
         spPuertasUnico = (Spinner)findViewById(R.id.spPuertasUnico);
         btnGuardarConfiguracionUnico = (Button)findViewById(R.id.btnGuardarConfiguracionUnico);
-        PREF_CONFIGURACION_UNICA = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
+        PREF_CONFIGURACION_UNICA = getSharedPreferences("CCURE", MODE_PRIVATE);
         eventosVista();
         borrarDatos();
         cargarDatosVista();
@@ -98,8 +94,8 @@ public class configuracionUnica extends AppCompatActivity {
         realmController = new RealmController(getApplication());
         realmDispositivo dispositivo = realmController.obtenerDispositivo();
         if (dispositivo != null){
-            edtNombreDispositivoUnico.setText(dispositivo.getDescripcion().toString());
-            edtWebServiceUnico.setText(dispositivo.getURLWebService().toString());
+            edtNombreDispositivoUnico.setText(dispositivo.getDescripcion());
+            edtWebServiceUnico.setText(dispositivo.getURLWebService());
             edtURLExportacionUnico.setText(dispositivo.getURLExportacion());
         }
     }
@@ -131,8 +127,8 @@ public class configuracionUnica extends AppCompatActivity {
             if (dispositivo == null) {
                 saberEstadoInsercion = realmController.insertarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             } else {
-                edtNombreDispositivoUnico.setText(dispositivo.getDescripcion().toString());
-                edtWebServiceUnico.setText(dispositivo.getURLWebService().toString());
+                edtNombreDispositivoUnico.setText(dispositivo.getDescripcion());
+                edtWebServiceUnico.setText(dispositivo.getURLWebService());
                 edtURLExportacionUnico.setText(dispositivo.getURLExportacion());
                 saberEstadoInsercion = realmController.actualizarConfiguracion(edtNombreDispositivoUnico.getText().toString(), "A", idAgrupador, edtWebServiceUnico.getText().toString(), edtURLExportacionUnico.getText().toString(), "CONFIGURACION");
             }
@@ -170,7 +166,7 @@ public class configuracionUnica extends AppCompatActivity {
     private void guardarYaConfigurado(){
         SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
         editor.putBoolean("YACONFIGURADO", true);
-        editor.commit();
+        editor.apply();
     }
 
     private void crearDialogError(String titulo,String mensaje){
@@ -214,13 +210,13 @@ public class configuracionUnica extends AppCompatActivity {
         editor.putString("NOMBREEQUIPO", nombreEquipo);
         editor.putString("URL", url);
         editor.putString("NOMBREPUERTA", nombrePuerta);
-        editor.commit();
+        editor.apply();
     }
 
     private void guardarURL(String url){
         SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
         editor.putString("URL", url);
-        editor.commit();
+        editor.apply();
     }
 
     private void guardarPuerta(realmPuerta puerta1, realmPuerta puerta2, int idAgrupador){
@@ -234,7 +230,7 @@ public class configuracionUnica extends AppCompatActivity {
         editor.putString("GRUIDENTRADA", puerta1.getGRUID());
         editor.putString("GRUIDSALIDA", puerta2.getGRUID());
         editor.putInt("IDAGRUPADOR", idAgrupador);
-        editor.commit();
+        editor.apply();
     }
 
     private void iterarPuertas(RealmResults<realmPuerta> aPuertas){
@@ -248,7 +244,7 @@ public class configuracionUnica extends AppCompatActivity {
         SharedPreferences.Editor editor = PREF_CONFIGURACION_UNICA.edit();
         editor.putString("GRUIDACTUAL"+total, puerta.getGRUID());
         editor.putInt("TOTALGRUID", total);
-        editor.commit();
+        editor.apply();
     }
 
     private void obtenerTodosDatos(){
@@ -317,7 +313,7 @@ public class configuracionUnica extends AppCompatActivity {
                 ocultarTeclado();
                 mostrarCargandoAnillo("Sincronizando archivo...");
                 segundoPlanoArchivoLectura sincronizar = new segundoPlanoArchivoLectura();
-                sincronizar.execute(new String[]{});
+                sincronizar.execute();
             }
         });
 
@@ -325,7 +321,10 @@ public class configuracionUnica extends AppCompatActivity {
 
     private void ocultarTeclado(){
         InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        View focusedView = this.getCurrentFocus();
+        if (focusedView != null) {
+            inputManager.hideSoftInputFromWindow(focusedView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     public void resultadoDialogNegativo(String mensaje){
@@ -363,14 +362,20 @@ public class configuracionUnica extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             ocultarCargandoAnillo();
-            if (result.equals("vacio"))
-                resultadoDialogNegativo("No se puede leer el archivo. Asegurese de que exista.");
-            else if (result.equals("false"))
-                dialogErrorGuardadoDatosArchivo();
-            else if (result.equals("hayDatos"))
-                resultadoDialogNegativo("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
-            else
-                resultadoDialog("ÉXITO", "Terminó la sincronización por archivo, los datos se guardaron correctamente.");
+            switch (result) {
+                case "vacio":
+                    resultadoDialogNegativo("No se puede leer el archivo. Asegurese de que exista.");
+                    break;
+                case "false":
+                    dialogErrorGuardadoDatosArchivo();
+                    break;
+                case "hayDatos":
+                    resultadoDialogNegativo("No es posible actualizar la base de datos. Es necesario exportar todo antes de actualizar.");
+                    break;
+                default:
+                    resultadoDialog("ÉXITO", "Terminó la sincronización por archivo, los datos se guardaron correctamente.");
+                    break;
+            }
         }
 
 
@@ -389,7 +394,7 @@ public class configuracionUnica extends AppCompatActivity {
                     archivo.append(linea);
                     archivo.append('\n');
                 }
-            }catch (IOException ex){
+            }catch (IOException ignored){
             }
             return archivo.toString();
         }
@@ -538,7 +543,7 @@ public class configuracionUnica extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mostrarCargandoAnillo("Sincronizando archivo...");
                         segundoPlanoArchivoLectura sincronizar = new segundoPlanoArchivoLectura();
-                        sincronizar.execute(new String[]{});
+                        sincronizar.execute();
                     }
                 })
                 .setNegativeButton("Cancelar", null)

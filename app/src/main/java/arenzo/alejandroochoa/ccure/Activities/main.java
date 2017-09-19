@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,13 +14,11 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -65,7 +62,7 @@ public class main extends AppCompatActivity implements vista {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        PREF_MAIN = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
+        PREF_MAIN = getSharedPreferences("CCURE", MODE_PRIVATE);
         comprobarConfiguracion();
         cargarElementos();
         centrarTituloActionBar();
@@ -134,11 +131,7 @@ public class main extends AppCompatActivity implements vista {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void comprobarPermisos(){
-        if (checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            //Se comprueba que fue aceptado
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                return;
-        }else{
+        if (!checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
             if(!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
                 //No se le ha preguntado aun
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, CODIGO_ESCRITURA);
@@ -146,7 +139,17 @@ public class main extends AppCompatActivity implements vista {
                 //Ha denegado
                 alertaPermisos();
             }
-        }
+            //Se comprueba que fue aceptado
+            //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        }/*else{
+            if(!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                //No se le ha preguntado aun
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, CODIGO_ESCRITURA);
+            }else{
+                //Ha denegado
+                alertaPermisos();
+            }
+        }*/
     }
 
     @Override
@@ -155,13 +158,13 @@ public class main extends AppCompatActivity implements vista {
             String permission = permissions[0];
             int result = grantResults[0];
             if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                if (result == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (result != PackageManager.PERMISSION_GRANTED)
+                    alertaPermisos();
+                    /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         // Se comprueba que fue aceptado
-                        return;
                     }
                 }else
-                    alertaPermisos();
+                    alertaPermisos();*/
             }
         }else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -280,7 +283,7 @@ public class main extends AppCompatActivity implements vista {
         editor.putString("NUMERO_EMPLEADO", personal.getNoEmpleado());
         editor.putString("FOTO", personalInfo.getFoto());
         editor.putString("EMPRESA", personal.getEmpresa());
-        editor.commit();
+        editor.apply();
 
     }
 

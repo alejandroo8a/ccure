@@ -38,18 +38,15 @@ public class loginManual extends AppCompatActivity implements vista {
 
     private EditText edtNumeroEmpleado;
     private ImageView imgPortadaManual;
-    private Button btnLoginManual, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar;;
+    private Button btnLoginManual, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar, btnCerrar;
     private SharedPreferences PREF_LOGIN_MANUAL;
-
-    private String URL;
     private String noEmpleado = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_manual);
-        PREF_LOGIN_MANUAL = getSharedPreferences("CCURE", getApplicationContext().MODE_PRIVATE);
-        URL = PREF_LOGIN_MANUAL.getString("URL", "");
+        PREF_LOGIN_MANUAL = getSharedPreferences("CCURE", MODE_PRIVATE);
         centrarTituloActionBar();
         cargarElementos();
         eventosVista();
@@ -72,6 +69,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnOcho = (Button) findViewById(R.id.btnOcho);
         btnNueve = (Button) findViewById(R.id.btnNueve);
         btnBorrar = (Button) findViewById(R.id.btnBorrar);
+        btnCerrar = (Button) findViewById(R.id.btnCerrar);
         edtNumeroEmpleado.setInputType(InputType.TYPE_NULL);
     }
 
@@ -168,6 +166,12 @@ public class loginManual extends AppCompatActivity implements vista {
                 }
             }
         });
+        btnCerrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cerrarActivity();
+            }
+        });
     }
 
     private void centrarTituloActionBar() {
@@ -228,7 +232,7 @@ public class loginManual extends AppCompatActivity implements vista {
         editor.putString("NUMERO_EMPLEADO", personal.getNoEmpleado());
         editor.putString("FOTO", personalInfo.getFoto());
         editor.putString("EMPRESA", personal.getEmpresa());
-        editor.commit();
+        editor.apply();
 
     }
 
@@ -251,10 +255,17 @@ public class loginManual extends AppCompatActivity implements vista {
 
     private void ocultarTeclado(){
         InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        View focusedView = this.getCurrentFocus();
+        if (focusedView != null) {
+            inputManager.hideSoftInputFromWindow(focusedView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     private void cargarImagenDeMemoria(){
         Picasso.with(getApplicationContext()).load(new File(Environment.getExternalStorageDirectory()+"/CCURE/portada.jpg")).error(R.drawable.im_logo_penia).into(imgPortadaManual);
+    }
+
+    private void cerrarActivity(){
+        this.finish();
     }
 }

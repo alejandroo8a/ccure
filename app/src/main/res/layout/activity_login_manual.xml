@@ -204,8 +204,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLoginManual"
+        app:layout_constraintTop_toBottomOf="@+id/btnCerrar"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/im_logo_penia"
         app:layout_constraintHorizontal_bias="0.0" />
+
+    <Button
+        android:id="@+id/btnCerrar"
+        style="@style/botonTeclado"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="Button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginManual"
+        tools:text="@string/ingresar_tarjeta" />
 </android.support.constraint.ConstraintLayout>
