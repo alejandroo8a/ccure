@@ -22,7 +22,7 @@ public class conexion {
 
     public boolean isOnline(final ProgressDialog anillo){
         try{//192.168.200.105
-            Process p = Runtime.getRuntime().exec("ping -c 1 www.google.com");
+            Process p = Runtime.getRuntime().exec("ping -c 1 192.168.200.105");
             int val = p.waitFor();
             boolean online = (val==0);
             if (anillo!= null)

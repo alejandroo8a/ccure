@@ -121,14 +121,14 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:src="@color/divider"
         app:layout_constraintBottom_toTopOf="@+id/imgFondoAcceso"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         tools:layout_editor_absoluteX="8dp"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        android:layout_marginTop="110dp"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <ImageView
         android:id="@+id/imgFondoAcceso"
@@ -227,7 +227,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guideline"
-        app:layout_constraintGuide_begin="233dp"
+        app:layout_constraintGuide_begin="393dp"
         android:orientation="horizontal" />
 
     <ToggleButton
@@ -246,128 +246,143 @@
 
     <Button
         android:id="@+id/btnCero"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
         android:text="0"
         android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnBuscarEmpleado" />
+        app:layout_constraintRight_toLeftOf="@+id/btnBorrar"
+        app:layout_constraintTop_toBottomOf="@+id/btnSiete" />
 
     <Button
         android:id="@+id/btnUno"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="10dp"
         android:text="1"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/btnCero"
-        app:layout_constraintTop_toBottomOf="@+id/btnBuscarEmpleado" />
+        app:layout_constraintRight_toLeftOf="@+id/btnDos"
+        app:layout_constraintTop_toBottomOf="@+id/edtNoEmpleado" />
 
     <Button
         android:id="@+id/btnDos"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="10dp"
         android:text="2"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/btnUno"
-        app:layout_constraintTop_toBottomOf="@+id/btnBuscarEmpleado" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtNoEmpleado" />
 
     <Button
         android:id="@+id/btnTres"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
         android:text="3"
         android:visibility="gone"
         app:layout_constraintLeft_toRightOf="@+id/btnDos"
-        app:layout_constraintTop_toBottomOf="@+id/btnBuscarEmpleado" />
+        app:layout_constraintTop_toBottomOf="@+id/edtNoEmpleado" />
 
     <Button
         android:id="@+id/btnCuatro"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
         android:text="4"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/btnTres"
-        app:layout_constraintTop_toBottomOf="@+id/btnBuscarEmpleado" />
+        app:layout_constraintRight_toLeftOf="@+id/btnCinco"
+        app:layout_constraintTop_toBottomOf="@+id/btnUno" />
 
     <Button
         android:id="@+id/btnCinco"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
         android:text="5"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnDos" />
 
     <Button
         android:id="@+id/btnSeis"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
         android:text="6"
         android:visibility="gone"
         app:layout_constraintLeft_toRightOf="@+id/btnCinco"
-        app:layout_constraintTop_toBottomOf="@+id/btnUno" />
-
-    <Button
-        android:id="@+id/btnSiete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="7"
-        android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/btnSeis"
-        app:layout_constraintTop_toBottomOf="@+id/btnDos" />
-
-    <Button
-        android:id="@+id/btnOcho"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="8"
-        android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/btnSiete"
         app:layout_constraintTop_toBottomOf="@+id/btnTres" />
 
     <Button
-        android:id="@+id/btnNueve"
+        android:id="@+id/btnSiete"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="9"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:text="7"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/btnOcho"
+        app:layout_constraintRight_toLeftOf="@+id/btnOcho"
         app:layout_constraintTop_toBottomOf="@+id/btnCuatro" />
 
     <Button
-        android:id="@+id/btnBorrar"
+        android:id="@+id/btnOcho"
+        style="@style/botonTeclado"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
+        android:text="8"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCinco" />
+
+    <Button
+        android:id="@+id/btnNueve"
+        style="@style/botonTeclado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:text="9"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@+id/btnOcho"
+        app:layout_constraintTop_toBottomOf="@+id/btnSeis" />
+
+    <Button
+        android:id="@+id/btnBorrar"
+        style="@style/botonTeclado"
+        android:layout_width="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
         android:text="Borrar"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/imgFondoGuardia"
-        app:layout_constraintLeft_toRightOf="@+id/btnCuatro"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnBuscarEmpleado" />
+        app:layout_constraintLeft_toLeftOf="@+id/btnOcho"
+        app:layout_constraintRight_toRightOf="@+id/btnNueve"
+        app:layout_constraintTop_toBottomOf="@+id/btnOcho"
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <ImageView
         android:id="@+id/imgPortadaChecadas"
@@ -378,10 +393,13 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:scaleType="centerInside"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtNoTarjeta"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/im_logo_penia" />
 
     <ImageView
