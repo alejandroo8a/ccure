@@ -8,6 +8,7 @@ import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
 import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.Modelos.respuestaChecadas;
+import arenzo.alejandroochoa.ccure.Modelos.respuestaImei;
 import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import retrofit2.Call;
@@ -50,6 +51,9 @@ public interface retrofit{
                                                         @Path("pueClave") String pueClave,
                                                         @Path("fechaHoraEntrada") String fechaHoraEntrada,
                                                         @Path("faseIngreso") String faseIngreso);
+
+    @GET("ValidarEmiJSON/{IMEI}")
+    Call<respuestaImei> getValidarImei(@Path("IMEI") String imei);
 
 /*con parametros
     @FormUrlEncoded
