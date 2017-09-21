@@ -546,6 +546,8 @@ public class RealmController {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                realm.delete(realmAgrupador.class);
+                realm.delete(realmAgrupadorPuerta.class);
                 realm.delete(realmPuerta.class);
                 realm.delete(realmPersonal.class);
                 realm.delete(realmPersonalInfo.class);

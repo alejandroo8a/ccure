@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import arenzo.alejandroochoa.ccure.Activities.configuracionUnica;
 import arenzo.alejandroochoa.ccure.Activities.main;
@@ -35,6 +36,7 @@ import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmESPersonal;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,8 +58,12 @@ public class helperRetrofit {
     }
 
     private void configurarAdapterRetrofit(String url){
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(300, TimeUnit.SECONDS).build();
         Retrofit adapterRetrofit = new Retrofit.Builder()
                 .baseUrl(url)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         helper = adapterRetrofit.create(retrofit.class);
@@ -207,7 +213,7 @@ public class helperRetrofit {
         });
     }
 
-    private void obtenerUsuarios(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
+    private void   obtenerUsuarios(final Context context, final ProgressDialog anillo, final boolean mostrarPrimerPantalla){
         Call<List<usuario>> usuariosCall = helper.getUsuario("G");
         usuariosCall.enqueue(new Callback<List<usuario>>() {
             @Override

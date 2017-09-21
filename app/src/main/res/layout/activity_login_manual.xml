@@ -219,9 +219,8 @@
         android:layout_marginTop="8dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:text="Button"
+        android:text="@string/ingresar_tarjeta"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLoginManual"
-        tools:text="@string/ingresar_tarjeta" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginManual" />
 </android.support.constraint.ConstraintLayout>

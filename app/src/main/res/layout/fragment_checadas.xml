@@ -210,24 +210,21 @@
         android:id="@+id/btnBuscarEmpleado"
         android:layout_width="130dp"
         android:layout_height="60dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="33dp"
         android:background="@color/primary"
         android:text="Buscar"
         android:textColor="@color/icons2"
         android:textSize="23sp"
         android:visibility="gone"
-        app:layout_constraintHorizontal_bias="0.37"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/edtNoTarjeta"
         app:layout_constraintTop_toBottomOf="@+id/sbTipoChecada" />
 
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guideline"
-        app:layout_constraintGuide_begin="393dp"
+        app:layout_constraintGuide_begin="443dp"
         android:orientation="horizontal" />
 
     <ToggleButton
@@ -235,7 +232,7 @@
         android:layout_width="130dp"
         android:layout_height="60dp"
         android:layout_marginRight="40dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="33dp"
         android:background="@color/accent"
         android:checked="false"
         android:textColor="@color/ksw_md_solid_disable"
@@ -393,7 +390,6 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:scaleType="centerInside"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"

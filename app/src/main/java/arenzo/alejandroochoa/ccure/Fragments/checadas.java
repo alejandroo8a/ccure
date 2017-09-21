@@ -344,6 +344,8 @@ public class checadas extends Fragment {
             txtNoEmpleado.setText("No. Empleado");
             mostrarBotonesNumeracion();
             edtNoEmpleado.requestFocus();
+            noEmpleado = "";
+            edtNoEmpleado.getText().clear();
         }else{
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
             edtNoTarjeta.requestFocus();
@@ -573,15 +575,15 @@ public class checadas extends Fragment {
     private void guardarResultadoChecadaDenegadoNoInternetManual(String noEmpleado, realmPersonalInfo detallesPersonal){
         ocultarCargandoAnillo();
         if(detallesPersonal!=null) {
-            realmController.insertarPersonalNuevo(noEmpleado, "empty", puertaClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada, detallesPersonal.getFoto(), detallesPersonal.getNombre(), detallesPersonal.getPuesto());
+            //realmController.insertarPersonalNuevo(noEmpleado, "empty", puertaClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada, detallesPersonal.getFoto(), detallesPersonal.getNombre(), detallesPersonal.getPuesto());
             mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, detallesPersonal.getNombre(), detallesPersonal.getPuesto(), detallesPersonal.getFoto());
         }else {
             realmPersonalInfo personalInfo = realmController.obtenerPersonalInfoManual(noEmpleado);
             if(personalInfo != null) {
-                realmController.insertarPersonalNuevo(noEmpleado, "empty", puertaClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada, "empty", personalInfo.getPuesto(), personalInfo.getFoto());
+                //realmController.insertarPersonalNuevo(noEmpleado, "empty", puertaClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada, "empty", personalInfo.getPuesto(), personalInfo.getFoto());
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalInfo.getNombre(), personalInfo.getPuesto(), personalInfo.getFoto());
             }else {
-                realmController.insertarPersonalNuevo(noEmpleado, "empty", puertaClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
+                //realmController.insertarPersonalNuevo(noEmpleado, "empty", puertaClave, "D", "N", "",PREF_CHECADAS.getString("NUMERO_EMPLEADO","0"), tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
             }
         }
@@ -593,10 +595,10 @@ public class checadas extends Fragment {
         realmController = new RealmController();
         realmPersonalInfo personalInfo = realmController.obtenerPersonalInfoManual(noEmpleado);
         if(personalInfo != null) {
-            realmController.insertarPersonalNuevo(noEmpleado, "empty", PUEClave, "D", "N", "",numeroEmpleado, tipoChecada, "empty", personalInfo.getNombre(), personalInfo.getPuesto());
+            //realmController.insertarPersonalNuevo(noEmpleado, "empty", PUEClave, "D", "N", "",numeroEmpleado, tipoChecada, "empty", personalInfo.getNombre(), personalInfo.getPuesto());
             mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalInfo.getNombre(), personalInfo.getPuesto(), personalInfo.getFoto());
         }else {
-            realmController.insertarPersonalNuevo(noEmpleado, "empty", PUEClave, "D", "N", "",numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
+            //realmController.insertarPersonalNuevo(noEmpleado, "empty", PUEClave, "D", "N", "",numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
             mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
         }
         limpiarEditTextNoEmpleado(view);
@@ -609,7 +611,7 @@ public class checadas extends Fragment {
         if(personal != null && !personal.getNoEmpleado().equals("0")) {
             realmPersonalInfo personalInfo = realmController.obtenerPersonalInfoRfid(personal.getNoEmpleado());
             if (personalInfo != null) {
-                realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), personal.getNoTarjeta(), puertaClave, "D", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto());
+                realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), personal.getNoTarjeta(), puertaClave, "P", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto());
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalInfo.getNombre(), personalInfo.getPuesto(), personalInfo.getFoto());
             } else {
                 realmController.insertarPersonalNuevo("empty", personal.getNoTarjeta(), puertaClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
