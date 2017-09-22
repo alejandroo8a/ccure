@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
+import arenzo.alejandroochoa.ccure.Helpers.imei;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
@@ -261,10 +262,11 @@ public class configuracionUnica extends AppCompatActivity {
         this.anillo.dismiss();
     }
 
-    private void obtenerAgrupadores(AlertDialog alert){
+    private void obtenerValidacionImei(AlertDialog alert){
         mostrarCargandoAnillo("Obteniendo puertas...");
         helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        helperRetrofit.actualizarAgrupadores(this, anillo, spPuertasUnico, alert, PREF_CONFIGURACION_UNICA);
+        imei.setImei(getApplicationContext());
+        helperRetrofit.validarImei(this, null, anillo, spPuertasUnico, alert, PREF_CONFIGURACION_UNICA, imei.imei, "configuracionUnica");
     }
 
     private void mostrarDialogUrl(){
@@ -297,14 +299,13 @@ public class configuracionUnica extends AppCompatActivity {
                 URL = PREF_CONFIGURACION_UNICA.getString("URL","");
                 edtWebServiceUnico.setText(edtUrlDialog.getText().toString());
                 conexion conexion = new conexion();
-                mostrarCargandoAnillo("Comprobando conexión a internet");
                 if (conexion.isAvaliable(getApplicationContext())) {
                     if (conexion.isOnline(anillo)) {
-                        obtenerAgrupadores(alert);
+                        obtenerValidacionImei(alert);
                     } else
                         Toast.makeText(configuracionUnica.this, "No cuenta con conexión con el servidor", Toast.LENGTH_SHORT).show();
                 } else
-                    Toast.makeText(configuracionUnica.this, "Activa el WI-FI o los datos móviles para comenzar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(configuracionUnica.this, "Conectate a una red para comenzar", Toast.LENGTH_SHORT).show();
             }
         });
         alert.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {

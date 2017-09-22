@@ -23,12 +23,14 @@ import arenzo.alejandroochoa.ccure.Activities.main;
 import arenzo.alejandroochoa.ccure.Fragments.checadas;
 import arenzo.alejandroochoa.ccure.Fragments.configuracion;
 import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
+import arenzo.alejandroochoa.ccure.Helpers.imei;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
 import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.Modelos.respuestaChecadas;
+import arenzo.alejandroochoa.ccure.Modelos.respuestaImei;
 import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
@@ -59,7 +61,7 @@ public class helperRetrofit {
 
     private void configurarAdapterRetrofit(String url){
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(100, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(300, TimeUnit.SECONDS).build();
         Retrofit adapterRetrofit = new Retrofit.Builder()
                 .baseUrl(url)
@@ -243,6 +245,43 @@ public class helperRetrofit {
         });
     }
 
+    public void validarImei(final configuracionUnica configuracionUnica, final sincronizacion sincronizacion, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA, final String IMEI, final String tipoAccion){
+        Call<respuestaImei> imeiCall = helper.getValidarImei(IMEI);
+        imeiCall.enqueue(new Callback<respuestaImei>() {
+            @Override
+            public void onResponse(Call<respuestaImei> call, Response<respuestaImei> response) {
+                if (!response.isSuccessful())
+                    return;
+                respuestaImei resultadoImei = response.body();
+                switch (tipoAccion){
+                    case "configuracionUnica":
+                        if(resultadoImei.getType().equals("V")) {
+                            imei.guardarRespuestaImeiLocalmente(resultadoImei.getType(), PREF_CONFIGURACION_UNICA.edit());
+                            actualizarAgrupadores(configuracionUnica, anillo, spPuertasUnico, alerta, PREF_CONFIGURACION_UNICA);
+                        }else
+                            imei.resultadoDialogNoPermitidoImei(configuracionUnica);
+                        break;
+                    case "sincronizacion":
+                        if(resultadoImei.getType().equals("V"))
+                            sincronizacion.sincronizarRed();
+                        else
+                            imei.resultadoDialogNoPermitidoImei(sincronizacion.getActivity());
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<respuestaImei> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA validarImei FALLO: "+t.getMessage());
+                anillo.dismiss();
+                if(configuracionUnica == null)
+                    Toast.makeText(sincronizacion.getActivity(), "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet", Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(configuracionUnica, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     public void actualizarAgrupadores(final configuracionUnica activity, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA){
         Call<List<agrupador>> puertasCall = helper.getAgrupadores();
         puertasCall.enqueue(new Callback<List<agrupador>>() {
@@ -392,7 +431,7 @@ public class helperRetrofit {
         spPuertasUnico.setAdapter(adapter);
     }
 
-    private void actualizarAgrupadoresSincronizacion(final Context context, final ProgressDialog anillo){
+    public void actualizarAgrupadoresSincronizacion(final Context context, final ProgressDialog anillo){
         Call<List<agrupador>> puertasCall = helper.getAgrupadores();
         puertasCall.enqueue(new Callback<List<agrupador>>() {
             @Override

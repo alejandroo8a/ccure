@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
+import arenzo.alejandroochoa.ccure.Helpers.imei;
 import arenzo.alejandroochoa.ccure.Helpers.vista;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
@@ -63,6 +64,7 @@ public class main extends AppCompatActivity implements vista {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PREF_MAIN = getSharedPreferences("CCURE", MODE_PRIVATE);
+        comprobarEstadoImei();
         comprobarConfiguracion();
         cargarElementos();
         centrarTituloActionBar();
@@ -70,6 +72,13 @@ public class main extends AppCompatActivity implements vista {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         edtTarjeta.requestFocus();
         cargarImagenDeMemoria();
+    }
+
+    private void comprobarEstadoImei(){
+        String estadoImei = imei.obtenerEstadoImei(PREF_MAIN);
+        imei.setImei(getApplicationContext());
+        if(estadoImei.equals("I"))
+            imei.resultadoDialogNoPermitidoImei(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

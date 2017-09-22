@@ -6,15 +6,15 @@ package arenzo.alejandroochoa.ccure.Modelos;
 
 public class respuestaImei {
 
-    private String Mensaje;
+    private String Message;
     private String Type;
 
-    public String getMensaje() {
-        return Mensaje;
+    public String getMessage() {
+        return Message;
     }
 
-    public void setMensaje(String mensaje) {
-        Mensaje = mensaje;
+    public void setMessage(String Message) {
+        Message = Message;
     }
 
     public String getType() {

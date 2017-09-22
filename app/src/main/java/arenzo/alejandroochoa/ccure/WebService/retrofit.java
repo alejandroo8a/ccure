@@ -52,7 +52,7 @@ public interface retrofit{
                                                         @Path("fechaHoraEntrada") String fechaHoraEntrada,
                                                         @Path("faseIngreso") String faseIngreso);
 
-    @GET("ValidarEmiJSON/{IMEI}")
+    @GET("ValidarIMEIJSON/{IMEI}")
     Call<respuestaImei> getValidarImei(@Path("IMEI") String imei);
 
 /*con parametros

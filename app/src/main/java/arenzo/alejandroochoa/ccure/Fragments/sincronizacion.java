@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
+import arenzo.alejandroochoa.ccure.Helpers.imei;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
@@ -117,7 +118,7 @@ public class sincronizacion extends Fragment {
                     if (conexion.isOnline(anillo)) {
                         //Red
                         mostrarCargandoAnillo();
-                        sincronizarRed();
+                        verificarImei();
                     } else
                         avisoNoConexion();
                 } else
@@ -144,7 +145,12 @@ public class sincronizacion extends Fragment {
         return 0;
     }
 
-    private void sincronizarRed(){
+    private void verificarImei(){
+        final helperRetrofit helperRetrofit = new helperRetrofit(URL);
+        helperRetrofit.validarImei(null, this, anillo, null, null, PREF_SINCRONIZACION, imei.imei, "sincronizacion");
+    }
+
+    public void sincronizarRed(){
         final helperRetrofit helperRetrofit = new helperRetrofit(URL);
         RealmResults<realmESPersonal> resultado = realmPrincipal.obtenerRegistros();
         if (resultado.size() > 0) {
@@ -153,10 +159,17 @@ public class sincronizacion extends Fragment {
                 helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), persona.getFechaHoraEntrada(), resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso(), realmPrincipal);
             }
         }else {
-            resultadoDialog("ATENCIÓN", "Actualmente todo está sincronizado.", getContext());
+            resultadoDialogNoHayDatos("ATENCIÓN", "Actualmente no hay datos para enviar. ¿Desea hacer una sincronización con nuevos datos?", getContext());
             anillo.dismiss();
         }
 
+    }
+
+    private void sincronizarRedDirecto(){
+        realmPrincipal.borrarTablasSincronizacionRed();
+        mostrarCargandoAnillo();
+        final helperRetrofit helperRetrofit = new helperRetrofit(URL);
+        helperRetrofit.actualizarAgrupadoresSincronizacion(getContext(), anillo);
     }
 
     private void avisoNoRed(){
@@ -201,6 +214,20 @@ public class sincronizacion extends Fragment {
         dialog.setTitle(titulo)
                 .setMessage(mensaje)
                 .setPositiveButton("Aceptar", null)
+                .show();
+    }
+
+    public void resultadoDialogNoHayDatos(String titulo, String mensaje, Context context){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle(titulo)
+                .setMessage(mensaje)
+                .setPositiveButton("Sincronizar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        sincronizarRedDirecto();
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
                 .show();
     }
 
