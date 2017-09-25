@@ -428,6 +428,10 @@ public class RealmController {
         return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }
 
+    public RealmResults<realmESPersonal> obtenerTodosRegistros(){
+        return realm.where(realmESPersonal.class).findAll();
+    }
+
     public RealmResults<realmESPersonal> obtenerRegistrosArchivo(Realm realm){
         return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
     }

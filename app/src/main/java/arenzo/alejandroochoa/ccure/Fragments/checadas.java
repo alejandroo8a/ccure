@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
+import arenzo.alejandroochoa.ccure.Helpers.archivo;
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
@@ -864,12 +865,10 @@ public class checadas extends Fragment {
                     realmESPersonal persona = resultado.get(i);
                     helper.actualizarChecadasReposo(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), persona.getFechaHoraEntrada(), getContext(), persona.getFaseIngreso(), realmController);
                 }
+                RealmResults<realmESPersonal> resultados = realmController.obtenerTodosRegistros();
+                archivo.crearBackUp(getContext(), resultados);
             }
         }
-    }
-
-    public void eliminarChecadaPersonal(String fecha, final RealmController realmController){
-        realmController.eliminarRegistroPersonal(fecha);
     }
 
     private void mostrarBotonesNumeracion(){

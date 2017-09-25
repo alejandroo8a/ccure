@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import arenzo.alejandroochoa.ccure.Helpers.archivo;
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
 import arenzo.alejandroochoa.ccure.Helpers.imei;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
@@ -158,6 +159,8 @@ public class sincronizacion extends Fragment {
                 realmESPersonal persona = resultado.get(i);
                 helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), persona.getFechaHoraEntrada(), resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso(), realmPrincipal);
             }
+            RealmResults<realmESPersonal> resultadoBackUp = realmPrincipal.obtenerTodosRegistros();
+            archivo.crearBackUp(getContext(), resultadoBackUp);
         }else {
             resultadoDialogNoHayDatos("ATENCIÓN", "Actualmente no hay datos para enviar. ¿Desea hacer una sincronización con nuevos datos?", getContext());
             anillo.dismiss();
@@ -463,6 +466,8 @@ public class sincronizacion extends Fragment {
                         //Verifico que todos los datos se hayan actualizado a enviado
                         RealmResults<realmESPersonal> results = obtenerRegistros();
                         if (results.size() == 0) {
+                            RealmResults<realmESPersonal> resultadoBackUp = obtenerTodosRegistros();
+                            archivo.crearBackUp(getContext(), resultadoBackUp);
                             if (borrarTablasSincronizacion()) {
                                 return "true";
                             }else
@@ -508,6 +513,10 @@ public class sincronizacion extends Fragment {
 
         private RealmResults<realmESPersonal> obtenerRegistros(){
             return realm.where(realmESPersonal.class).equalTo("Fase","N").findAll();
+        }
+
+        private RealmResults<realmESPersonal> obtenerTodosRegistros(){
+            return realm.where(realmESPersonal.class).findAll();
         }
 
         private boolean borrarTablasSincronizacion(){

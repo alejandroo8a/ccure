@@ -409,8 +409,9 @@ public class helperRetrofit {
                 }
                 List<respuestaChecadas> resultadoChecada = response.body();
                 if(resultadoChecada.size() > 0) {
-                    if (!resultadoChecada.get(0).getType().equals("F"))
-                        new checadas().eliminarChecadaPersonal(fecha, realmController);
+                    if (!resultadoChecada.get(0).getType().equals("F")) {
+                        realmController.actualizarChecadaEnviada(fecha);
+                    }
                 }
             }
 
