@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -47,7 +48,6 @@ import io.realm.RealmResults;
 public class main extends AppCompatActivity implements vista {
 
 
-    final static int CODIGO_ESCRITURA = 100;
     private final static String TAG = "main";
     private SharedPreferences PREF_MAIN;
     private Boolean hacerBusqueda = true;
@@ -64,7 +64,6 @@ public class main extends AppCompatActivity implements vista {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PREF_MAIN = getSharedPreferences("CCURE", MODE_PRIVATE);
-        comprobarEstadoImei();
         comprobarConfiguracion();
         cargarElementos();
         centrarTituloActionBar();
@@ -72,20 +71,17 @@ public class main extends AppCompatActivity implements vista {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         edtTarjeta.requestFocus();
         cargarImagenDeMemoria();
+        comprobarEstadoImei();
     }
 
     private void comprobarEstadoImei(){
-        String estadoImei = imei.obtenerEstadoImei(PREF_MAIN);
-        imei.setImei(getApplicationContext());
-        if(estadoImei.equals("I"))
-            imei.resultadoDialogNoPermitidoImei(this);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        comprobarPermisos();
+        final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+        if(estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED) {
+            String estadoImei = imei.obtenerEstadoImei(PREF_MAIN);
+            imei.setImei(getApplicationContext());
+            if (estadoImei.equals("I"))
+                imei.resultadoDialogNoPermitidoImei(this);
+        }
     }
 
     private void cargarElementos(){
@@ -136,71 +132,6 @@ public class main extends AppCompatActivity implements vista {
                 appCompatTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void comprobarPermisos(){
-        if (!checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            if(!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                //No se le ha preguntado aun
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, CODIGO_ESCRITURA);
-            }else{
-                //Ha denegado
-                alertaPermisos();
-            }
-            //Se comprueba que fue aceptado
-            //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        }/*else{
-            if(!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                //No se le ha preguntado aun
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, CODIGO_ESCRITURA);
-            }else{
-                //Ha denegado
-                alertaPermisos();
-            }
-        }*/
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == CODIGO_ESCRITURA){
-            String permission = permissions[0];
-            int result = grantResults[0];
-            if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                if (result != PackageManager.PERMISSION_GRANTED)
-                    alertaPermisos();
-                    /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        // Se comprueba que fue aceptado
-                    }
-                }else
-                    alertaPermisos();*/
-            }
-        }else
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void alertaPermisos(){
-        AlertDialog.Builder alerta = new AlertDialog.Builder(this)
-                .setTitle("Permiso denegado")
-                .setCancelable(false)
-                .setMessage("Debe de aceptar los permisos para usar la aplicación")
-                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        activarPermiso();
-                    }
-                });
-        alerta.show();
-    }
-
-    private void activarPermiso(){
-        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        startActivity(intent);
     }
 
     @Override
@@ -311,12 +242,6 @@ public class main extends AppCompatActivity implements vista {
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
-    }
-
-    //Comprueba si el permiso esta en el manifest
-    private boolean checkPermission(String permission){
-        int result = this.checkCallingOrSelfPermission(permission);
-        return result == PackageManager.PERMISSION_GRANTED;
     }
 
     private void comprobarConfiguracion(){
