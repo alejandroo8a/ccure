@@ -596,11 +596,10 @@ public class configuracionUnica extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostResume() {
+        super.onPostResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            verificarPrimeraVes();
-    }
+            verificarPrimeraVes();    }
 
     private void verificarPrimeraVes(){
         final int estadoPermisoEscritura = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);

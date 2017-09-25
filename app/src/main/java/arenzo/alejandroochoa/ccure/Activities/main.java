@@ -75,12 +75,14 @@ public class main extends AppCompatActivity implements vista {
     }
 
     private void comprobarEstadoImei(){
-        final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-        if(estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED) {
-            String estadoImei = imei.obtenerEstadoImei(PREF_MAIN);
-            imei.setImei(getApplicationContext());
-            if (estadoImei.equals("I"))
-                imei.resultadoDialogNoPermitidoImei(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+            if (estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED) {
+                String estadoImei = imei.obtenerEstadoImei(PREF_MAIN);
+                imei.setImei(getApplicationContext());
+                if (estadoImei.equals("I"))
+                    imei.resultadoDialogNoPermitidoImei(this);
+            }
         }
     }
 
