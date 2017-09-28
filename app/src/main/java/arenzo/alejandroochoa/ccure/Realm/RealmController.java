@@ -86,9 +86,9 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEClave, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada, final String foto, final String nombre, final String puesto){
+    public boolean insertarPersonalNuevo(final String NoEmpleado, final String NoTarjeta, final String PUEClave, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada, final String foto, final String nombre, final String puesto, final String clavePuertaEntrada, final String clavePuertaSalida){
         saberEstadoConsulta = false;
-        insertarPersonalValidado(NoEmpleado, NoTarjeta, PUEClave, Fase, Fase, Observaciones, MUsuarioId, TipoEntrada, foto, nombre, puesto);
+        insertarPersonalValidado(NoEmpleado, NoTarjeta, Fase, Fase, Observaciones, MUsuarioId, TipoEntrada, foto, nombre, puesto, clavePuertaEntrada, clavePuertaSalida);
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -109,26 +109,40 @@ public class RealmController {
         return saberEstadoConsulta;
     }
 
-    private void insertarPersonalValidado(final String NoEmpleado, final String NoTarjeta, final String PUEClave, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada, final String foto, final String nombre, final String puesto){
+    private void insertarPersonalValidado(final String NoEmpleado, final String NoTarjeta, final String FaseIngreso, final String Fase, final String Observaciones, final String MUsuarioId, final String TipoEntrada, final String foto, final String nombre, final String puesto, final String clavePuertaEntrada, final String clavePuertaSalida){
         eliminarPersonalValidadoNoEmpleado(NoEmpleado);
         eliminarPersonalValidadoNoTarjeta(NoTarjeta);
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realmValidaciones personal = realm.createObject(realmValidaciones.class);
-                personal.setNoEmpleado(NoEmpleado);
-                personal.setNoTarjeta(NoTarjeta);
-                personal.setPUEClave(PUEClave);
-                personal.setFoto(foto);
-                personal.setNombre(nombre);
-                personal.setPuesto(puesto);
-                personal.setFechaHoraEntrada(obtenerFecha());
-                personal.setFaseIngreso(FaseIngreso);
-                personal.setFase(Fase);
-                personal.setObservaciones(Observaciones);
-                personal.setMFechaHora(obtenerFecha());
-                personal.setMUsuarioId(MUsuarioId);
-                personal.setTipoEntrada(TipoEntrada);
+                realmValidaciones personalEntrada = realm.createObject(realmValidaciones.class);
+                personalEntrada.setNoEmpleado(NoEmpleado);
+                personalEntrada.setNoTarjeta(NoTarjeta);
+                personalEntrada.setPUEClave(clavePuertaEntrada);
+                personalEntrada.setFoto(foto);
+                personalEntrada.setNombre(nombre);
+                personalEntrada.setPuesto(puesto);
+                personalEntrada.setFechaHoraEntrada(obtenerFecha());
+                personalEntrada.setFaseIngreso(FaseIngreso);
+                personalEntrada.setFase(Fase);
+                personalEntrada.setObservaciones(Observaciones);
+                personalEntrada.setMFechaHora(obtenerFecha());
+                personalEntrada.setMUsuarioId(MUsuarioId);
+                personalEntrada.setTipoEntrada(TipoEntrada);
+                realmValidaciones personalSalida = realm.createObject(realmValidaciones.class);
+                personalSalida.setNoEmpleado(NoEmpleado);
+                personalSalida.setNoTarjeta(NoTarjeta);
+                personalSalida.setPUEClave(clavePuertaSalida);
+                personalSalida.setFoto(foto);
+                personalSalida.setNombre(nombre);
+                personalSalida.setPuesto(puesto);
+                personalSalida.setFechaHoraEntrada(obtenerFecha());
+                personalSalida.setFaseIngreso(FaseIngreso);
+                personalSalida.setFase(Fase);
+                personalSalida.setObservaciones(Observaciones);
+                personalSalida.setMFechaHora(obtenerFecha());
+                personalSalida.setMUsuarioId(MUsuarioId);
+                personalSalida.setTipoEntrada(TipoEntrada);
             }
         });
     }

@@ -75,7 +75,7 @@ public class helperRetrofit {
         realmController = new RealmController();
     }
 
-    public void ValidarEmpleadoManual(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final View view, final checadas checadas) {
+    public void ValidarEmpleadoManual(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final View view, final checadas checadas, final String clavePuertaEntrada, final String clavePuertaSalida) {
         Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, puertaClave);
         validarCall.enqueue(new Callback<validarEmpleado>() {
             @Override
@@ -86,7 +86,7 @@ public class helperRetrofit {
                 validarEmpleado personal = response.body();
                 anillo.dismiss();
                 if (personal.getRespuesta().equals("PERMITIDO")) {
-                    checadas.mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
+                    checadas.mostrarAlertaEmpleadoValidadoManual(context, txtResultadoChecada, imgFondoAcceso, personal, puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, view, clavePuertaEntrada, clavePuertaSalida);
                 } else {
                     imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
                     txtResultadoChecada.setText("Acceso denegado");
@@ -95,7 +95,7 @@ public class helperRetrofit {
                     if(personal.getEmpleado() == null|| personal.getEmpleado().getNombre().equals(""))
                         checadas.buscarEnValidacionesYaValidadoManual(NoEmpleado, puertaClave, numeroEmpleado, tipoChecada, view);
                     else
-                        checadas.guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, view);
+                        checadas.guardarResultadoChecadaValidadaManual(personal, "D", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, view, clavePuertaEntrada, clavePuertaSalida);
 
                 }
             }
@@ -109,7 +109,7 @@ public class helperRetrofit {
 
     }
 
-    public void ValidarEmpleadoRfid(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final checadas checadas) {
+    public void ValidarEmpleadoRfid(final String NoEmpleado, final String NoTarjeta, final String puertaClave, final Context context, final ProgressDialog anillo, final ImageView imgFondoAcceso, final TextView txtResultadoChecada, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final checadas checadas, final String clavePuertaEntrada, final String clavePuertaSalida) {
         Call<validarEmpleado> validarCall = helper.getValidarEmpleado(NoEmpleado, NoTarjeta, puertaClave);
         validarCall.enqueue(new Callback<validarEmpleado>() {
             @Override
@@ -121,21 +121,21 @@ public class helperRetrofit {
                 Log.d(TAG, "onResponse: " + resultado);
                 anillo.dismiss();
                 if (resultado.getRespuesta().equals("PERMITIDO")) {
-                    checadas.guardarResultadoChecadaValidadaRfid(resultado, "P", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
+                    checadas.guardarResultadoChecadaValidadaRfid(resultado, "P", puertaClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta, clavePuertaEntrada, clavePuertaSalida);
                 } else if (resultado.getEmpleado() == null || resultado.getEmpleado().getNombre().equals(""))
-                    checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta, puertaClave, numeroEmpleado, tipoChecada);
+                    checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta, puertaClave, numeroEmpleado, tipoChecada, clavePuertaEntrada, clavePuertaSalida);
                 else {
                     imgFondoAcceso.setColorFilter(Color.parseColor("#ffcc0000"));
                     txtResultadoChecada.setText("Acceso denegado");
                     checadas.vibrarCelular(context);
-                    checadas.guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta);
+                    checadas.guardarResultadoChecadaValidadaRfid(resultado, "D", puertaClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, NoTarjeta, clavePuertaEntrada, clavePuertaSalida);
                 }
             }
 
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoRfid. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
+                checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada, clavePuertaEntrada, clavePuertaSalida);
                 anillo.dismiss();
             }
         });

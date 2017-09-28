@@ -71,7 +71,9 @@ public class checadas extends Fragment {
     private String tipoChecada;
     private String nombreCaseta;
     private int PUEId;
-    private String puertaClave;
+    private String puertaClaveActual;
+    private String puertaClaveEntrada;
+    private String puertaClaveSalida;
     private SharedPreferences PREF_CHECADAS;
     private String URL;
     private String numeroEmpleado;
@@ -143,6 +145,7 @@ public class checadas extends Fragment {
         obtenerGRUIDs();
         bloquearTeclado();
         cargarImagenDeMemoria();
+        configurarPuertas();
         conexion = new conexion();
         realmController = new RealmController(getActivity().getApplication());
         btnBuscarEmpleado.setOnClickListener(new View.OnClickListener() {
@@ -161,14 +164,14 @@ public class checadas extends Fragment {
                     tipoChecada = "1";
                     nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
                     PUEId = PREF_CHECADAS.getInt("IDPUERTAENTRADA", 0);
-                    puertaClave = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
+                    puertaClaveActual = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
                 }
                 else {
                     sbTipoChecada.setBackColorRes(R.color.primary);
                     tipoChecada = "2";
                     nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTASALIDA","");
                     PUEId = PREF_CHECADAS.getInt("IDPUERTASALIDA", 0);
-                    puertaClave = PREF_CHECADAS.getString("CLAVEPUERTASALIDA","");
+                    puertaClaveActual = PREF_CHECADAS.getString("CLAVEPUERTASALIDA","");
                 }
                 txtCaseta.setText(nombreCaseta);
             }
@@ -361,6 +364,11 @@ public class checadas extends Fragment {
         }
     }
 
+    private void configurarPuertas(){
+        puertaClaveEntrada = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
+        puertaClaveSalida = PREF_CHECADAS.getString("CLAVEPUERTASALIDA","");
+    }
+
     private void buscarPersonalManual(){
         imgPortadaChecadas.setVisibility(View.GONE);
         if (!edtNoEmpleado.getText().toString().equals("0") && edtNoEmpleado.getText().length() > 0) {
@@ -370,7 +378,7 @@ public class checadas extends Fragment {
             realmPersonalInfo detallesPersonal = buscarDetallePersonaLocal(edtNoEmpleado.getText().toString());
             if (personal != null) {
                 ocultarCargandoAnillo();
-                mostrarAlertaEmpleadoManual(getContext(), txtResultadoChecada, imgFondoAcceso, detallesPersonal, personal, puertaClave, null);
+                mostrarAlertaEmpleadoManual(getContext(), txtResultadoChecada, imgFondoAcceso, detallesPersonal, personal, puertaClaveActual, null, puertaClaveEntrada, puertaClaveSalida);
             } else {
                 if (conexion.isAvaliable(getContext())) {
                     validarEmpleadoManual();
@@ -385,9 +393,9 @@ public class checadas extends Fragment {
     }
 
     public void buscarEnValidacionesManual(realmPersonalInfo detallesPersonal ){
-        realmValidaciones personalValidado = realmController.obtenerPersonalManualValidado(edtNoEmpleado.getText().toString(), puertaClave);
+        realmValidaciones personalValidado = realmController.obtenerPersonalManualValidado(edtNoEmpleado.getText().toString(), puertaClaveActual);
         if(personalValidado != null && !personalValidado.getNombre().equals("PERSONAL/CONTRATISTA")){
-            mostrarAlertaEmpleadoManual(getContext(), txtResultadoChecada, imgFondoAcceso, detallesPersonal, null, puertaClave, personalValidado);
+            mostrarAlertaEmpleadoManual(getContext(), txtResultadoChecada, imgFondoAcceso, detallesPersonal, null, puertaClaveActual, personalValidado, puertaClaveEntrada, puertaClaveSalida);
         }else{
             mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
             vibrarCelular(getContext());
@@ -399,7 +407,7 @@ public class checadas extends Fragment {
     public void buscarEnValidacionesYaValidadoManual(String noEmpleado,  String PUEClave, String numeroEmpleado, String tipoChecada, View view){
         realmValidaciones personalValidado = realmController.obtenerPersonalManualValidado(noEmpleado, PUEClave);
         if(personalValidado != null && !personalValidado.getNombre().equals("PERSONAL/CONTRATISTA")){
-            mostrarAlertaEmpleadoManual(getContext(), txtResultadoChecada, imgFondoAcceso, null, null, puertaClave, personalValidado);
+            mostrarAlertaEmpleadoManual(getContext(), txtResultadoChecada, imgFondoAcceso, null, null, puertaClaveActual, personalValidado, puertaClaveEntrada, puertaClaveSalida);
         }else{
             mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
             vibrarCelular(getContext());
@@ -419,7 +427,7 @@ public class checadas extends Fragment {
             ocultarCargandoAnillo();
             edtNoTarjeta.setText("");
             mostrarPermitido(txtResultadoChecada, imgFondoAcceso);
-            guardarResultadoChecadaCorrectaRfid(detallesPersonal, puertaClave, null);
+            guardarResultadoChecadaCorrectaRfid(detallesPersonal, puertaClaveActual, null, puertaClaveEntrada, puertaClaveSalida);
         } else {
             if (conexion.isAvaliable(getContext())) {
                 validarEmpleadoRfid(noTarjeta);
@@ -431,9 +439,9 @@ public class checadas extends Fragment {
     }
 
     public void buscarEnValidacionesRfid(String noTarjeta ){
-        realmValidaciones personalValidado = realmController.obtenerPersonalRfidValidado(noTarjeta, puertaClave);
+        realmValidaciones personalValidado = realmController.obtenerPersonalRfidValidado(noTarjeta, puertaClaveActual);
         if(personalValidado != null){
-            guardarResultadoChecadaCorrectaRfid(null, puertaClave, personalValidado);
+            guardarResultadoChecadaCorrectaRfid(null, puertaClaveActual, personalValidado, puertaClaveEntrada, puertaClaveSalida);
         }else{
             mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
             vibrarCelular(getContext());
@@ -443,14 +451,14 @@ public class checadas extends Fragment {
         ocultarCargandoAnillo();
     }
 
-    public void buscarEnValidacionesYaValidadoRfid(String noTarjeta,  String PUEClave, String numeroEmpleado, String tipoChecada){
+    public void buscarEnValidacionesYaValidadoRfid(String noTarjeta,  String PUEClave, String numeroEmpleado, String tipoChecada, final String clavePuertaEntrada, final String clavePuertaSalida){
         realmValidaciones personalValidado = realmController.obtenerPersonalRfidValidado(noTarjeta, PUEClave);
         if(personalValidado != null && !personalValidado.getNombre().equals("PERSONAL/CONTRATISTA")){
-            guardarResultadoChecadaCorrectaRfid(null, PUEClave, personalValidado);
+            guardarResultadoChecadaCorrectaRfid(null, PUEClave, personalValidado, clavePuertaEntrada, clavePuertaSalida);
         }else{
             mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
             vibrarCelular(getContext());
-            guardarResultadoChecadaNoEncontradoRfid(noTarjeta, PUEClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil);
+            guardarResultadoChecadaNoEncontradoRfid(noTarjeta, PUEClave, numeroEmpleado, tipoChecada,txtNombre, txtPuestoEmpresa, imgFotoPerfil, clavePuertaEntrada, clavePuertaSalida);
         }
         ocultarCargandoAnillo();
     }
@@ -474,7 +482,7 @@ public class checadas extends Fragment {
         }
     }
 
-    public void mostrarAlertaEmpleadoManual(final Context context, final TextView txtResultadoChecada, final ImageView imgFondoAcceso, final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal, final String PUEClave, final realmValidaciones personalValidado){
+    public void mostrarAlertaEmpleadoManual(final Context context, final TextView txtResultadoChecada, final ImageView imgFondoAcceso, final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal, final String PUEClave, final realmValidaciones personalValidado, final String clavePuertaEntrada, final String clavePuertaSalida){
         View view = LayoutInflater.from(context).inflate(R.layout.item_checada, null);
         final AlertDialog builder = new AlertDialog.Builder(context).create();
         builder.setView(view);
@@ -490,9 +498,9 @@ public class checadas extends Fragment {
             @Override
             public void onClick(View view) {
                 if(personalValidado == null)
-                    guardarResultadoChecadaCorrectaManual(detallesPersonal, personal, PUEClave, null);
+                    guardarResultadoChecadaCorrectaManual(detallesPersonal, personal, PUEClave, null, clavePuertaEntrada, clavePuertaSalida);
                 else
-                    guardarResultadoChecadaCorrectaManual(detallesPersonal, null, PUEClave, personalValidado);
+                    guardarResultadoChecadaCorrectaManual(detallesPersonal, null, PUEClave, personalValidado, clavePuertaEntrada, clavePuertaSalida);
                 builder.dismiss();
                 mostrarPermitido(txtResultadoChecada, imgFondoAcceso);
             }
@@ -502,9 +510,9 @@ public class checadas extends Fragment {
             public void onClick(View view) {
                 builder.dismiss();
                 if(personalValidado == null)
-                    guardarResultadoChecadaDenegadoManual(detallesPersonal, personal, PUEClave, null);
+                    guardarResultadoChecadaDenegadoManual(detallesPersonal, personal, PUEClave, null, clavePuertaEntrada, clavePuertaSalida);
                 else
-                    guardarResultadoChecadaDenegadoManual(detallesPersonal, personal, PUEClave, personalValidado);
+                    guardarResultadoChecadaDenegadoManual(detallesPersonal, personal, PUEClave, personalValidado, clavePuertaEntrada, clavePuertaSalida);
                 mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
                 vibrarCelular(context);
             }
@@ -512,7 +520,7 @@ public class checadas extends Fragment {
         builder.show();
     }
 
-    public void mostrarAlertaEmpleadoValidadoManual(final Context context, final TextView txtResultadoChecada, final ImageView imgFondoAcceso, final validarEmpleado empleado, final String PUEClave, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final View viewPrincipal){
+    public void mostrarAlertaEmpleadoValidadoManual(final Context context, final TextView txtResultadoChecada, final ImageView imgFondoAcceso, final validarEmpleado empleado, final String PUEClave, final String numeroEmpleado, final String tipoChecada, final TextView txtNombre, final TextView txtPuestoEmpresa, final ImageView imgFotoPerfil, final View viewPrincipal, final String clavePuertaEntrada, final String clavePuertaSalida){
         View view = LayoutInflater.from(context).inflate(R.layout.item_checada, null);
         final AlertDialog builder = new AlertDialog.Builder(context).create();
         builder.setView(view);
@@ -524,7 +532,7 @@ public class checadas extends Fragment {
         btnAceptarAlerta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                guardarResultadoChecadaValidadaManual(empleado, "P", PUEClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, viewPrincipal);
+                guardarResultadoChecadaValidadaManual(empleado, "P", PUEClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, viewPrincipal, clavePuertaEntrada, clavePuertaSalida);
                 builder.dismiss();
                 checadas.noEmpleado = "";
                 mostrarPermitido(txtResultadoChecada, imgFondoAcceso);
@@ -534,7 +542,7 @@ public class checadas extends Fragment {
             @Override
             public void onClick(View view) {
                 builder.dismiss();
-                guardarResultadoChecadaValidadaManual(empleado, "D", PUEClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, viewPrincipal);
+                guardarResultadoChecadaValidadaManual(empleado, "D", PUEClave, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, viewPrincipal, clavePuertaEntrada, clavePuertaSalida);
                 mostrarDenegado(txtResultadoChecada, imgFondoAcceso);
                 vibrarCelular(context);
             }
@@ -542,33 +550,33 @@ public class checadas extends Fragment {
         builder.show();
     }
 
-    private void guardarResultadoChecadaCorrectaManual(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal, final String PUEClave, final realmValidaciones personalValidado){
+    private void guardarResultadoChecadaCorrectaManual(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal, final String PUEClave, final realmValidaciones personalValidado,  final String clavePuertaEntrada, final String clavePuertaSalida){
          if(detallesPersonal != null && personal != null) {
              mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, detallesPersonal.getNombre(), detallesPersonal.getPuesto(), detallesPersonal.getFoto());
-             realmController.insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(), PUEClave, "P", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada,detallesPersonal.getFoto(), detallesPersonal.getNombre(), detallesPersonal.getPuesto());
+             realmController.insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(), PUEClave, "P", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada,detallesPersonal.getFoto(), detallesPersonal.getNombre(), detallesPersonal.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
         }else{
              mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalValidado.getNombre(), personalValidado.getPuesto(), personalValidado.getFoto());
-             realmController.insertarPersonalNuevo(personalValidado.getNoEmpleado(), personalValidado.getNoTarjeta(), PUEClave, "P", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personalValidado.getFoto(), personalValidado.getNombre(), personalValidado.getPuesto());
+             realmController.insertarPersonalNuevo(personalValidado.getNoEmpleado(), personalValidado.getNoTarjeta(), PUEClave, "P", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personalValidado.getFoto(), personalValidado.getNombre(), personalValidado.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
         }
         limpiarEditTextNoEmpleado();
         sonidoPermitido.start();
     }
 
-    private void guardarResultadoChecadaDenegadoManual(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal, final String PUEClave, final realmValidaciones personalValidado){
+    private void guardarResultadoChecadaDenegadoManual(final realmPersonalInfo detallesPersonal, final realmPersonalPuerta personal, final String PUEClave, final realmValidaciones personalValidado, final String clavePuertaEntrada, final String clavePuertaSalida){
         if(detallesPersonal != null && personal != null) {
             mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, detallesPersonal.getNombre(), detallesPersonal.getPuesto(), detallesPersonal.getFoto());
-            realmController.insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(), PUEClave, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, detallesPersonal.getFoto(), detallesPersonal.getNombre(), detallesPersonal.getPuesto());
+            realmController.insertarPersonalNuevo(detallesPersonal.getNoEmpleado(), personal.getNoTarjeta(), PUEClave, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, detallesPersonal.getFoto(), detallesPersonal.getNombre(), detallesPersonal.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
         }else{
             mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalValidado.getNombre(), personalValidado.getPuesto(), personalValidado.getFoto());
-            realmController.insertarPersonalNuevo(personalValidado.getNoEmpleado(), personalValidado.getNoTarjeta(), PUEClave, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personalValidado.getFoto(), personalValidado.getNombre(), personalValidado.getPuesto());
+            realmController.insertarPersonalNuevo(personalValidado.getNoEmpleado(), personalValidado.getNoTarjeta(), PUEClave, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personalValidado.getFoto(), personalValidado.getNombre(), personalValidado.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
         }
         sonidoDenegado.start();
     }
 
-    public void guardarResultadoChecadaValidadaManual(final validarEmpleado empleado, final String faseIngreso, final String PUEClave, final String numeroEmpleado, final String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil, View view){
+    public void guardarResultadoChecadaValidadaManual(final validarEmpleado empleado, final String faseIngreso, final String PUEClave, final String numeroEmpleado, final String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil, View view, final String clavePuertaEntrada, final String clavePuertaSalida){
         realmController = new RealmController();
         mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto(), empleado.getEmpleado().getFoto());
-        realmController.insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), " ",PUEClave, faseIngreso, "N", "",numeroEmpleado, tipoChecada, empleado.getEmpleado().getFoto(), empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto());
+        realmController.insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), " ",PUEClave, faseIngreso, "N", "",numeroEmpleado, tipoChecada, empleado.getEmpleado().getFoto(), empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto(), clavePuertaEntrada, clavePuertaSalida);
         if (faseIngreso.equals("P")){
             sonidoPermitido.start();
             limpiarEditTextNoEmpleado(view);
@@ -611,32 +619,32 @@ public class checadas extends Fragment {
 
     //*****RFID LECTURAS******
 
-    public void guardarResultadoChecadaCorrectaRfid(final realmPersonal personal,  final String PUEClave, final realmValidaciones personalValidado){
+    public void guardarResultadoChecadaCorrectaRfid(final realmPersonal personal,  final String PUEClave, final realmValidaciones personalValidado, final String clavePuertaEntrada, final String clavePuertaSalida){
         if(personal != null && !personal.getNoEmpleado().equals("0")) {
             realmPersonalInfo personalInfo = realmController.obtenerPersonalInfoRfid(personal.getNoEmpleado());
             if (personalInfo != null) {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalInfo.getNombre(), personalInfo.getPuesto(), personalInfo.getFoto());
-                realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), personal.getNoTarjeta(), puertaClave, "P", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto());
+                realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), personal.getNoTarjeta(), puertaClaveActual, "P", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", personal.getNoTarjeta(), puertaClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
+                realmController.insertarPersonalNuevo("empty", personal.getNoTarjeta(), puertaClaveActual, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
             }
         }else {
             if (personal != null) {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personal.getNombre(), personal.getEmpresa(), personal.getFoto());
-                realmController.insertarPersonalNuevo(personal.getNoEmpleado(), personal.getNoTarjeta(), PUEClave, "P", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personal.getFoto(), personal.getNombre(), personal.getEmpresa());
+                realmController.insertarPersonalNuevo(personal.getNoEmpleado(), personal.getNoTarjeta(), PUEClave, "P", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personal.getFoto(), personal.getNombre(), personal.getEmpresa(), clavePuertaEntrada, clavePuertaSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalValidado.getNombre(), personalValidado.getPuesto(), personalValidado.getFoto());
-                realmController.insertarPersonalNuevo(personalValidado.getNoEmpleado(), personalValidado.getNoTarjeta(), PUEClave, "P", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personalValidado.getFoto(), personalValidado.getNombre(), personalValidado.getPuesto());
+                realmController.insertarPersonalNuevo(personalValidado.getNoEmpleado(), personalValidado.getNoTarjeta(), PUEClave, "P", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personalValidado.getFoto(), personalValidado.getNombre(), personalValidado.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
             }
         }
         sonidoPermitido.start();
     }
 
-    public void guardarResultadoChecadaValidadaRfid(final validarEmpleado empleado, final String faseIngreso, final String PUEClave, final String numeroEmpleado, final String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil, String noTarjeta){
+    public void guardarResultadoChecadaValidadaRfid(final validarEmpleado empleado, final String faseIngreso, final String PUEClave, final String numeroEmpleado, final String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil, String noTarjeta, final String clavePuertaEntrada, final String clavePuertaSalida){
         realmController = new RealmController();
         mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto(), empleado.getEmpleado().getFoto());
-        realmController.insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), noTarjeta, PUEClave, faseIngreso, "N", "",numeroEmpleado, tipoChecada, empleado.getEmpleado().getFoto(), empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto());
+        realmController.insertarPersonalNuevo(empleado.getEmpleado().getNoEmpleado(), noTarjeta, PUEClave, faseIngreso, "N", "",numeroEmpleado, tipoChecada, empleado.getEmpleado().getFoto(), empleado.getEmpleado().getNombre(), empleado.getEmpleado().getPuesto(), clavePuertaEntrada, clavePuertaSalida);
         if(faseIngreso.equals("P"))
             sonidoPermitido.start();
         else
@@ -650,42 +658,42 @@ public class checadas extends Fragment {
             realmPersonalInfo personalInfo = realmController.obtenerPersonalInfoRfid(personal.getNoEmpleado());
             if (personalInfo != null) {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalInfo.getNombre(), personalInfo.getPuesto(), personalInfo.getFoto());
-                realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), noTarjeta, puertaClave, "D", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto());
+                realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), noTarjeta, puertaClaveActual, "D", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto(), puertaClaveEntrada, puertaClaveSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", noTarjeta, puertaClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
+                realmController.insertarPersonalNuevo("empty", noTarjeta, puertaClaveActual, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", puertaClaveEntrada, puertaClaveSalida);
             }
         }else {
             if (personal != null) {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personal.getNombre(), personal.getEmpresa(), personal.getFoto());
-                realmController.insertarPersonalNuevo(personal.getNoEmpleado(), personal.getNoTarjeta(), puertaClave, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personal.getFoto(), personal.getNombre(), personal.getEmpresa());
+                realmController.insertarPersonalNuevo(personal.getNoEmpleado(), personal.getNoTarjeta(), puertaClaveActual, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personal.getFoto(), personal.getNombre(), personal.getEmpresa(), puertaClaveEntrada, puertaClaveSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", noTarjeta, puertaClave, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
+                realmController.insertarPersonalNuevo("empty", noTarjeta, puertaClaveActual, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", puertaClaveEntrada, puertaClaveSalida);
             }
         }
         sonidoDenegado.start();
     }
 
-    public void guardarResultadoChecadaNoEncontradoRfid(String NoTarjeta,  String PUEClave, String numeroEmpleado, String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil){
+    public void guardarResultadoChecadaNoEncontradoRfid(String NoTarjeta,  String PUEClave, String numeroEmpleado, String tipoChecada, TextView txtNombre, TextView txtPuestoEmpresa, ImageView imgFotoPerfil, final String clavePuertaEntrada, final String clavePuertaSalida){
         realmController = new RealmController();
         realmPersonal personal = realmController.obtenerPersonalRfid(NoTarjeta);
         if(personal != null && !personal.getNoEmpleado().equals("0")){
             realmPersonalInfo personalInfo = realmController.obtenerPersonalInfoRfid(personal.getNoEmpleado());
             if (personalInfo != null) {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personalInfo.getNombre(), personalInfo.getPuesto(), personalInfo.getFoto());
-                realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto());
+                realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
+                realmController.insertarPersonalNuevo("empty", NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
             }
         }else {
             if (personal != null) {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, personal.getNombre(), personal.getEmpresa(), personal.getFoto());
-                realmController.insertarPersonalNuevo(personal.getNoEmpleado(), NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, personal.getFoto(), personal.getNombre(), personal.getEmpresa());
+                realmController.insertarPersonalNuevo(personal.getNoEmpleado(), NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, personal.getFoto(), personal.getNombre(), personal.getEmpresa(), clavePuertaEntrada, clavePuertaSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO");
+                realmController.insertarPersonalNuevo("empty", NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
             }
         }
         sonidoDenegado.start();
@@ -712,7 +720,7 @@ public class checadas extends Fragment {
         tipoChecada = "1";
         nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
         PUEId = PREF_CHECADAS.getInt("IDPUERTAENTRADA", 0);
-        puertaClave = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
+        puertaClaveActual = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         edtNoTarjeta.requestFocus();
     }
@@ -757,12 +765,12 @@ public class checadas extends Fragment {
 
     private void validarEmpleadoManual(){
         helperRetrofit helper = new helperRetrofit(URL);
-        helper.ValidarEmpleadoManual(edtNoEmpleado.getText().toString(),"empty",puertaClave, getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada,  numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, getView(), this);
+        helper.ValidarEmpleadoManual(edtNoEmpleado.getText().toString(),"empty",puertaClaveActual, getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada,  numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, getView(), this, puertaClaveEntrada, puertaClaveSalida);
     }
 
     private void validarEmpleadoRfid(String noTarjeta){
         helperRetrofit helper = new helperRetrofit(URL);
-        helper.ValidarEmpleadoRfid("empty", noTarjeta,puertaClave, getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, this);
+        helper.ValidarEmpleadoRfid("empty", noTarjeta,puertaClaveActual, getContext(), this.anillo, imgFondoAcceso,txtResultadoChecada, numeroEmpleado, tipoChecada, txtNombre, txtPuestoEmpresa, imgFotoPerfil, this, puertaClaveEntrada, puertaClaveSalida);
         edtNoTarjeta.setText("");
     }
 
