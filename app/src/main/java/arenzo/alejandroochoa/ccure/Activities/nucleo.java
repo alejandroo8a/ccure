@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -60,10 +61,10 @@ public class nucleo extends AppCompatActivity implements NavigationView.OnNaviga
         Toolbar toolbar = añadirToolbar();
         añadirGestoNavigationDrawer(toolbar);
         View headerLayout = crearVista();
-        txtNombreNavigation = headerLayout.findViewById(R.id.txtNombreNavigation);
-        txtNumeroEmpleadoNavigation = headerLayout.findViewById(R.id.txtNumeroEmpleadoNavigation);
-        txtPuertaNavigation = headerLayout.findViewById(R.id.txtPuertaNavigation);
-        imgEmpleado =  headerLayout.findViewById(R.id.perfil);
+        txtNombreNavigation = (TextView) headerLayout.findViewById(R.id.txtNombreNavigation);
+        txtNumeroEmpleadoNavigation = (TextView) headerLayout.findViewById(R.id.txtNumeroEmpleadoNavigation);
+        txtPuertaNavigation = (TextView) headerLayout.findViewById(R.id.txtPuertaNavigation);
+        imgEmpleado = (CircularImageView) headerLayout.findViewById(R.id.perfil);
         nav_view = (NavigationView)findViewById(R.id.nav_view);
     }
 

@@ -5,29 +5,39 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 
-public final class imei {
+public final class mac {
 
-    private static String IMEI = "IMEI";
-    public static String imei;
+    private static String MAC = "MAC";
+    private static String TAG = "mac";
+    public static String mac;
 
-    public static void setImei(Context context){
-        TelephonyManager systemService = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        imei = systemService.getDeviceId();
+    public static void setMac(Context context){
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        String MAC = info.getMacAddress();
+        String[] aMac = MAC.split(":");
+        mac = "";
+        for (int i = 0 ; i < aMac.length ; i++){
+            mac += aMac[i];
+        }
     }
 
-    public static void guardarRespuestaImeiLocalmente(String resultado, SharedPreferences.Editor editor){
-        editor.putString(IMEI, resultado);
+    public static void guardarRespuestaMacLocalmente(String resultado, SharedPreferences.Editor editor){
+        editor.putString(MAC, resultado);
         editor.apply();
     }
 
-    public static String obtenerEstadoImei(SharedPreferences preferences){
-        return preferences.getString(IMEI, "I");
+    public static String obtenerEstadoMac(SharedPreferences preferences){
+        return preferences.getString(MAC, "D");
     }
 
-    public static void resultadoDialogNoPermitidoImei(final Activity activity){
+    public static void resultadoDialogNoPermitidoMac(final Activity activity){
         android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(activity);
         dialog.setTitle("ATENCIÓN")
                 .setCancelable(false)

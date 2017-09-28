@@ -23,14 +23,14 @@ import arenzo.alejandroochoa.ccure.Activities.main;
 import arenzo.alejandroochoa.ccure.Fragments.checadas;
 import arenzo.alejandroochoa.ccure.Fragments.configuracion;
 import arenzo.alejandroochoa.ccure.Fragments.sincronizacion;
-import arenzo.alejandroochoa.ccure.Helpers.imei;
+import arenzo.alejandroochoa.ccure.Helpers.mac;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
 import arenzo.alejandroochoa.ccure.Modelos.personalPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.puertas;
 import arenzo.alejandroochoa.ccure.Modelos.respuestaChecadas;
-import arenzo.alejandroochoa.ccure.Modelos.respuestaImei;
+import arenzo.alejandroochoa.ccure.Modelos.respuestaMac;
 import arenzo.alejandroochoa.ccure.Modelos.usuario;
 import arenzo.alejandroochoa.ccure.Modelos.validarEmpleado;
 import arenzo.alejandroochoa.ccure.R;
@@ -103,7 +103,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
                 checadas.buscarEnValidacionesYaValidadoManual(NoEmpleado, puertaClave, numeroEmpleado, tipoChecada, view);
-                Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoManual", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoManual. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -134,7 +134,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<validarEmpleado> call, Throwable t) {
-                Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoRfid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: ValidarEmpleadoRfid. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 checadas.buscarEnValidacionesYaValidadoRfid(NoTarjeta,puertaClave, numeroEmpleado, tipoChecada);
                 anillo.dismiss();
             }
@@ -160,7 +160,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ObtenerTarjetasPersonal FALLO: "+t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: ObtenerTarjetasPersonal", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: ObtenerTarjetasPersonal. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 ObtenerTarjetasPersonal(context, anillo, mostrarPrimerPantalla);
             }
         });
@@ -185,7 +185,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalPuerta FALLO: "+t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalPuerta", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalPuerta. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 obtenerPersonalPuerta(context, anillo, mostrarPrimerPantalla);
             }
         });
@@ -209,7 +209,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalInfo>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalInfo FALLO: "+t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalInfo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalInfo. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 obtenerPersonalInfo(context,anillo, mostrarPrimerPantalla);
             }
         });
@@ -239,45 +239,45 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerUsuarios FALLO: "+t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerUsuarios", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerUsuarios. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 obtenerUsuarios(context, anillo, mostrarPrimerPantalla);
             }
         });
     }
 
-    public void validarImei(final configuracionUnica configuracionUnica, final sincronizacion sincronizacion, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA, final String IMEI, final String tipoAccion){
-        Call<respuestaImei> imeiCall = helper.getValidarImei(IMEI);
-        imeiCall.enqueue(new Callback<respuestaImei>() {
+    public void validarMac(final configuracionUnica configuracionUnica, final sincronizacion sincronizacion, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA, final String MAC, final String tipoAccion){
+        Call<respuestaMac> imeiCall = helper.getValidarImei(MAC);
+        imeiCall.enqueue(new Callback<respuestaMac>() {
             @Override
-            public void onResponse(Call<respuestaImei> call, Response<respuestaImei> response) {
+            public void onResponse(Call<respuestaMac> call, Response<respuestaMac> response) {
                 if (!response.isSuccessful())
                     return;
-                respuestaImei resultadoImei = response.body();
+                respuestaMac resultadoImei = response.body();
                 switch (tipoAccion){
                     case "configuracionUnica":
                         if(resultadoImei.getType().equals("V")) {
-                            imei.guardarRespuestaImeiLocalmente(resultadoImei.getType(), PREF_CONFIGURACION_UNICA.edit());
+                            mac.guardarRespuestaMacLocalmente(resultadoImei.getType(), PREF_CONFIGURACION_UNICA.edit());
                             actualizarAgrupadores(configuracionUnica, anillo, spPuertasUnico, alerta, PREF_CONFIGURACION_UNICA);
                         }else
-                            imei.resultadoDialogNoPermitidoImei(configuracionUnica);
+                            mac.resultadoDialogNoPermitidoMac(configuracionUnica);
                         break;
                     case "sincronizacion":
                         if(resultadoImei.getType().equals("V"))
                             sincronizacion.sincronizarRed();
                         else
-                            imei.resultadoDialogNoPermitidoImei(sincronizacion.getActivity());
+                            mac.resultadoDialogNoPermitidoMac(sincronizacion.getActivity());
                         break;
                 }
             }
 
             @Override
-            public void onFailure(Call<respuestaImei> call, Throwable t) {
-                Log.e(TAG, "LA CONSULTA validarImei FALLO: "+t.getMessage());
+            public void onFailure(Call<respuestaMac> call, Throwable t) {
+                Log.e(TAG, "LA CONSULTA validarMac FALLO: "+t.getMessage());
                 anillo.dismiss();
                 if(configuracionUnica == null)
-                    Toast.makeText(sincronizacion.getActivity(), "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet", Toast.LENGTH_LONG).show();
+                    Toast.makeText(sincronizacion.getActivity(), "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 else
-                    Toast.makeText(configuracionUnica, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet", Toast.LENGTH_LONG).show();
+                    Toast.makeText(configuracionUnica, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -302,7 +302,7 @@ public class helperRetrofit {
             public void onFailure(Call<List<agrupador>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadores FALLO: "+t.getMessage());
                 anillo.dismiss();
-                Toast.makeText(activity, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet.  Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -329,7 +329,7 @@ public class helperRetrofit {
             public void onFailure(Call<List<puertas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarPuertas FALLO: "+t.getMessage());
                 anillo.dismiss();
-                Toast.makeText(activity, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -355,7 +355,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaInicio FALLO: "+t.getMessage());
-                Toast.makeText(activity.getApplicationContext(),"No se pudo conectar con el servidor: actualizarAgrupadorPuertaInicio", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.getApplicationContext(),"No se pudo conectar con el servidor: actualizarAgrupadorPuertaInicio. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores, PREF_CONFIGURACION_UNICA);
             }
         });
@@ -389,7 +389,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<respuestaChecadas>> call, Throwable t) {
-                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarChecadas", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarChecadas. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 if (totalPeticiones == numeroPeticion){
                     anillo.dismiss();
                 }
@@ -404,7 +404,7 @@ public class helperRetrofit {
             @Override
             public void onResponse(Call<List<respuestaChecadas>> call, Response<List<respuestaChecadas>> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(context, "El servidor no tiene los parametros necesarios para sincronizar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "El servidor no tiene los parametros necesarios para sincronizar", Toast.LENGTH_LONG).show();
                     return;
                 }
                 List<respuestaChecadas> resultadoChecada = response.body();
@@ -418,7 +418,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<respuestaChecadas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarChecadas FALLO: " + t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarChecadasReposo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarChecadasReposo. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -451,7 +451,7 @@ public class helperRetrofit {
             public void onFailure(Call<List<agrupador>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadores FALLO: "+t.getMessage());
                 anillo.dismiss();
-                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarAgrupadoresSincronizacion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarAgrupadoresSincronizacion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 actualizarPuertasSincronizacion(context, anillo);
             }
         });
@@ -475,7 +475,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaSincronizacion FALLO: "+t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarAgrupadorPuertaSincronizacion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarAgrupadorPuertaSincronizacion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 actualizarAgrupadorPuertaSincronizacion(context, anillo);
             }
         });
@@ -499,7 +499,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<puertas>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarPuertasSincronizacion FALLO: "+t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarPuertasSincronizacion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: actualizarPuertasSincronizacion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 actualizarPuertasSincronizacion(context, anillo);
             }
         });
@@ -523,7 +523,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalPuertaSincronizacion FALLO: "+t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalPuertaSincronizacion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalPuertaSincronizacion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 obtenerPersonalPuertaSincronizacion(context, anillo);
             }
         });
@@ -547,7 +547,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<usuario>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA ObtenerTarjetasPersonalSincronizacion FALLO: "+t.getMessage());
-                Toast.makeText(context,"No se pudo conectar con el servidor: ObtenerTarjetasPersonalSincronizacion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: ObtenerTarjetasPersonalSincronizacion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 ObtenerTarjetasPersonalSincronizacion(context, anillo);
             }
         });
@@ -573,7 +573,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<personalInfo>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA obtenerPersonalInfoSincronizacion FALLO: "+t.getCause().toString());
-                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalInfoSincronizacion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"No se pudo conectar con el servidor: obtenerPersonalInfoSincronizacion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 obtenerPersonalInfoSincronizacion(context, anillo);
             }
         });
@@ -595,7 +595,7 @@ public class helperRetrofit {
 
             @Override
             public void onFailure(Call<List<puertas>> call, Throwable t) {
-                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarPuertasConfiguracion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarPuertasConfiguracion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 anillo.dismiss();
             }
         });
@@ -619,7 +619,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupador>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadores FALLO: "+t.getMessage());
-                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarAgrupadoresConfiguracion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarAgrupadoresConfiguracion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 anillo.dismiss();
             }
         });
@@ -645,7 +645,7 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<List<agrupadorPuerta>> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA actualizarAgrupadorPuertaSincronizacion FALLO: "+t.getMessage());
-                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarAgrupadorPuertaConfiguracion", Toast.LENGTH_SHORT).show();
+                Toast.makeText(configuracion.getContext(),"No se pudo conectar con el servidor, verifique su conexión a internet. Error: actualizarAgrupadorPuertaConfiguracion. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 anillo.dismiss();
             }
         });

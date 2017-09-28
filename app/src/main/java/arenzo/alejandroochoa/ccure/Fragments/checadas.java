@@ -97,32 +97,32 @@ public class checadas extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_checadas, container, false);
-        edtNoEmpleado = view.findViewById(R.id.edtNoEmpleado);
-        edtNoTarjeta = view.findViewById(R.id.edtNoTarjeta);
-        txtCaseta = view.findViewById(R.id.txtCaseta);
-        txtResultadoChecada = view.findViewById(R.id.txtResultadoChecada);
-        txtNombre = view.findViewById(R.id.txtNombre);
-        txtNoEmpleado = view.findViewById(R.id.txtNoEmpleado);
-        txtPuestoEmpresa = view.findViewById(R.id.txtPuestoEmpresa);
-        sbTipoChecada =  view.findViewById(R.id.sbTipoChecada);
-        imgFotoPerfil = view.findViewById(R.id.imgFotoPerfil);
-        imgFondoAcceso = view.findViewById(R.id.imgFondoAcceso);
-        imgFondoGuardia = view.findViewById(R.id.imgFondoGuardia);
-        imgConexion = view.findViewById(R.id.imgConexion);
-        imgPortadaChecadas = view.findViewById(R.id.imgPortadaChecadas);
-        btnBuscarEmpleado = view.findViewById(R.id.btnBuscarEmpleado);
-        btnCero = view.findViewById(R.id.btnCero);
-        btnUno = view.findViewById(R.id.btnUno);
-        btnDos = view.findViewById(R.id.btnDos);
-        btnTres = view.findViewById(R.id.btnTres);
-        btnCuatro = view.findViewById(R.id.btnCuatro);
-        btnCinco = view.findViewById(R.id.btnCinco);
-        btnSeis = view.findViewById(R.id.btnSeis);
-        btnSiete = view.findViewById(R.id.btnSiete);
-        btnOcho = view.findViewById(R.id.btnOcho);
-        btnNueve = view.findViewById(R.id.btnNueve);
-        btnBorrar = view.findViewById(R.id.btnBorrar);
-        tbnTipoLectura = view.findViewById(R.id.tbnTipoLectura);
+        edtNoEmpleado = (EditText) view.findViewById(R.id.edtNoEmpleado);
+        edtNoTarjeta = (EditText) view.findViewById(R.id.edtNoTarjeta);
+        txtCaseta = (TextView) view.findViewById(R.id.txtCaseta);
+        txtResultadoChecada = (TextView) view.findViewById(R.id.txtResultadoChecada);
+        txtNombre = (TextView) view.findViewById(R.id.txtNombre);
+        txtNoEmpleado = (TextView) view.findViewById(R.id.txtNoEmpleado);
+        txtPuestoEmpresa = (TextView) view.findViewById(R.id.txtPuestoEmpresa);
+        sbTipoChecada = (SwitchButton) view.findViewById(R.id.sbTipoChecada);
+        imgFotoPerfil = (ImageView) view.findViewById(R.id.imgFotoPerfil);
+        imgFondoAcceso = (ImageView) view.findViewById(R.id.imgFondoAcceso);
+        imgFondoGuardia = (ImageView) view.findViewById(R.id.imgFondoGuardia);
+        imgConexion = (ImageView) view.findViewById(R.id.imgConexion);
+        imgPortadaChecadas = (ImageView) view.findViewById(R.id.imgPortadaChecadas);
+        btnBuscarEmpleado = (Button) view.findViewById(R.id.btnBuscarEmpleado);
+        btnCero = (Button) view.findViewById(R.id.btnCero);
+        btnUno = (Button) view.findViewById(R.id.btnUno);
+        btnDos = (Button) view.findViewById(R.id.btnDos);
+        btnTres = (Button) view.findViewById(R.id.btnTres);
+        btnCuatro = (Button) view.findViewById(R.id.btnCuatro);
+        btnCinco = (Button) view.findViewById(R.id.btnCinco);
+        btnSeis = (Button) view.findViewById(R.id.btnSeis);
+        btnSiete = (Button) view.findViewById(R.id.btnSiete);
+        btnOcho = (Button) view.findViewById(R.id.btnOcho);
+        btnNueve = (Button) view.findViewById(R.id.btnNueve);
+        btnBorrar = (Button) view.findViewById(R.id.btnBorrar);
+        tbnTipoLectura = (ToggleButton) view.findViewById(R.id.tbnTipoLectura);
         sonidoPermitido = MediaPlayer.create(getContext(), R.raw.permitido);
         sonidoDenegado = MediaPlayer.create(getContext(), R.raw.denegado);
         return view;
@@ -478,10 +478,10 @@ public class checadas extends Fragment {
         View view = LayoutInflater.from(context).inflate(R.layout.item_checada, null);
         final AlertDialog builder = new AlertDialog.Builder(context).create();
         builder.setView(view);
-        btnAceptarAlerta = view.findViewById(R.id.btnAceptarAlerta);
-        btnCancelarAlerta = view.findViewById(R.id.btnCancelarAlerta);
-        txtNombreAlerta = view.findViewById(R.id.txtNombreAlerta);
-        imgPerfilAlerta = view.findViewById(R.id.imgPerfilAlerta);
+        btnAceptarAlerta = (Button) view.findViewById(R.id.btnAceptarAlerta);
+        btnCancelarAlerta = (Button) view.findViewById(R.id.btnCancelarAlerta);
+        txtNombreAlerta = (TextView) view.findViewById(R.id.txtNombreAlerta);
+        imgPerfilAlerta = (ImageView) view.findViewById(R.id.imgPerfilAlerta);
         if(personalValidado== null)
             configurarAlerta(txtNombreAlerta, imgPerfilAlerta, detallesPersonal);
         else
@@ -516,10 +516,10 @@ public class checadas extends Fragment {
         View view = LayoutInflater.from(context).inflate(R.layout.item_checada, null);
         final AlertDialog builder = new AlertDialog.Builder(context).create();
         builder.setView(view);
-        btnAceptarAlerta = view.findViewById(R.id.btnAceptarAlerta);
-        btnCancelarAlerta = view.findViewById(R.id.btnCancelarAlerta);
-        txtNombreAlerta = view.findViewById(R.id.txtNombreAlerta);
-        imgPerfilAlerta = view.findViewById(R.id.imgPerfilAlerta);
+        btnAceptarAlerta = (Button) view.findViewById(R.id.btnAceptarAlerta);
+        btnCancelarAlerta = (Button) view.findViewById(R.id.btnCancelarAlerta);
+        txtNombreAlerta = (TextView) view.findViewById(R.id.txtNombreAlerta);
+        imgPerfilAlerta = (ImageView) view.findViewById(R.id.imgPerfilAlerta);
         configurarAlertaValidada(txtNombreAlerta, imgPerfilAlerta, empleado);
         btnAceptarAlerta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -915,30 +915,30 @@ public class checadas extends Fragment {
     }
 
     private void ponerReferenciasObjetos(View view){
-        edtNoEmpleado = view.findViewById(R.id.edtNoEmpleado);
-        edtNoTarjeta = view.findViewById(R.id.edtNoTarjeta);
-        txtCaseta = view.findViewById(R.id.txtCaseta);
-        txtResultadoChecada = view.findViewById(R.id.txtResultadoChecada);
-        txtNombre = view.findViewById(R.id.txtNombre);
-        txtNoEmpleado = view.findViewById(R.id.txtNoEmpleado);
-        txtPuestoEmpresa = view.findViewById(R.id.txtPuestoEmpresa);
-        sbTipoChecada =  view.findViewById(R.id.sbTipoChecada);
-        imgFotoPerfil = view.findViewById(R.id.imgFotoPerfil);
-        imgFondoAcceso = view.findViewById(R.id.imgFondoAcceso);
-        imgFondoGuardia = view.findViewById(R.id.imgFondoGuardia);
-        btnBuscarEmpleado = view.findViewById(R.id.btnBuscarEmpleado);
-        btnCero = view.findViewById(R.id.btnCero);
-        btnUno = view.findViewById(R.id.btnUno);
-        btnDos = view.findViewById(R.id.btnDos);
-        btnTres = view.findViewById(R.id.btnTres);
-        btnCuatro = view.findViewById(R.id.btnCuatro);
-        btnCinco = view.findViewById(R.id.btnCinco);
-        btnSeis = view.findViewById(R.id.btnSeis);
-        btnSiete = view.findViewById(R.id.btnSiete);
-        btnOcho = view.findViewById(R.id.btnOcho);
-        btnNueve = view.findViewById(R.id.btnNueve);
-        btnBorrar = view.findViewById(R.id.btnBorrar);
-        tbnTipoLectura = view.findViewById(R.id.tbnTipoLectura);
+        edtNoEmpleado = (EditText) view.findViewById(R.id.edtNoEmpleado);
+        edtNoTarjeta = (EditText) view.findViewById(R.id.edtNoTarjeta);
+        txtCaseta = (TextView) view.findViewById(R.id.txtCaseta);
+        txtResultadoChecada = (TextView) view.findViewById(R.id.txtResultadoChecada);
+        txtNombre = (TextView) view.findViewById(R.id.txtNombre);
+        txtNoEmpleado = (TextView) view.findViewById(R.id.txtNoEmpleado);
+        txtPuestoEmpresa = (TextView) view.findViewById(R.id.txtPuestoEmpresa);
+        sbTipoChecada = (SwitchButton) view.findViewById(R.id.sbTipoChecada);
+        imgFotoPerfil = (ImageView) view.findViewById(R.id.imgFotoPerfil);
+        imgFondoAcceso = (ImageView) view.findViewById(R.id.imgFondoAcceso);
+        imgFondoGuardia = (ImageView) view.findViewById(R.id.imgFondoGuardia);
+        btnBuscarEmpleado = (Button) view.findViewById(R.id.btnBuscarEmpleado);
+        btnCero = (Button) view.findViewById(R.id.btnCero);
+        btnUno = (Button) view.findViewById(R.id.btnUno);
+        btnDos = (Button) view.findViewById(R.id.btnDos);
+        btnTres = (Button) view.findViewById(R.id.btnTres);
+        btnCuatro = (Button) view.findViewById(R.id.btnCuatro);
+        btnCinco = (Button) view.findViewById(R.id.btnCinco);
+        btnSeis = (Button) view.findViewById(R.id.btnSeis);
+        btnSiete = (Button) view.findViewById(R.id.btnSiete);
+        btnOcho = (Button) view.findViewById(R.id.btnOcho);
+        btnNueve = (Button) view.findViewById(R.id.btnNueve);
+        btnBorrar = (Button) view.findViewById(R.id.btnBorrar);
+        tbnTipoLectura = (ToggleButton) view.findViewById(R.id.tbnTipoLectura);
     }
 
     private void cargarImagenDeMemoria(){

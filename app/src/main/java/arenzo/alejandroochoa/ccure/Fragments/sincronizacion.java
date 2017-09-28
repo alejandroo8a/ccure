@@ -31,7 +31,7 @@ import java.util.List;
 
 import arenzo.alejandroochoa.ccure.Helpers.archivo;
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
-import arenzo.alejandroochoa.ccure.Helpers.imei;
+import arenzo.alejandroochoa.ccure.Helpers.mac;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
@@ -80,10 +80,10 @@ public class sincronizacion extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sincronizacion, container, false);
-        rdRed = view.findViewById(R.id.rdRed);
-        rdArchivo = view.findViewById(R.id.rdArchivo);
-        rdLeerArchivo = view.findViewById(R.id.rdLeerArchivo);
-        btnSincronizar = view.findViewById(R.id.btnSincronizar);
+        rdRed = (RadioButton) view.findViewById(R.id.rdRed);
+        rdArchivo = (RadioButton) view.findViewById(R.id.rdArchivo);
+        rdLeerArchivo = (RadioButton) view.findViewById(R.id.rdLeerArchivo);
+        btnSincronizar = (Button) view.findViewById(R.id.btnSincronizar);
         PREF_SINCRONIZACION = getContext().getSharedPreferences("CCURE", Context.MODE_PRIVATE);
         URL = PREF_SINCRONIZACION.getString("URL", "");
         return view;
@@ -119,7 +119,7 @@ public class sincronizacion extends Fragment {
                     if (conexion.isOnline(anillo)) {
                         //Red
                         mostrarCargandoAnillo();
-                        verificarImei();
+                        verificarMac();
                     } else
                         avisoNoConexion();
                 } else
@@ -146,9 +146,9 @@ public class sincronizacion extends Fragment {
         return 0;
     }
 
-    private void verificarImei(){
+    private void verificarMac(){
         final helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        helperRetrofit.validarImei(null, this, anillo, null, null, PREF_SINCRONIZACION, imei.imei, "sincronizacion");
+        helperRetrofit.validarMac(null, this, anillo, null, null, PREF_SINCRONIZACION, mac.mac, "sincronizacion");
     }
 
     public void sincronizarRed(){

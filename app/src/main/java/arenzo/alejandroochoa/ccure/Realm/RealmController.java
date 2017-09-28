@@ -607,11 +607,9 @@ public class RealmController {
         });
     }
 
-
     private String obtenerFecha(){
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd,HH-mm-ss");
         return dateFormat.format(date);
     }
-
 }

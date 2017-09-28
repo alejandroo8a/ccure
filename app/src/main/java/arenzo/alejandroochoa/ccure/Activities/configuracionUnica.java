@@ -15,11 +15,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import arenzo.alejandroochoa.ccure.Helpers.conexion;
-import arenzo.alejandroochoa.ccure.Helpers.imei;
+import arenzo.alejandroochoa.ccure.Helpers.mac;
 import arenzo.alejandroochoa.ccure.Modelos.agrupador;
 import arenzo.alejandroochoa.ccure.Modelos.agrupadorPuerta;
 import arenzo.alejandroochoa.ccure.Modelos.personalInfo;
@@ -91,6 +91,23 @@ public class configuracionUnica extends AppCompatActivity {
         mostrarDialogUrl();
     }
 
+    private void comprobarEstadoImei(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+            if (estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED) {
+                String estadoImei = mac.obtenerEstadoMac(PREF_CONFIGURACION_UNICA);
+                mac.setMac(getApplicationContext());
+                if (estadoImei.equals("I"))
+                    mac.resultadoDialogNoPermitidoMac(this);
+            } else
+                mac.resultadoDialogNoPermitidoMac(this);
+        }else{
+            String estadoImei = mac.obtenerEstadoMac(PREF_CONFIGURACION_UNICA);
+            mac.setMac(getApplicationContext());
+            if (estadoImei.equals("I"))
+                mac.resultadoDialogNoPermitidoMac(this);
+        }
+    }
 
     private void eventosVista(){
         btnGuardarConfiguracionUnico.setOnClickListener(new View.OnClickListener() {
@@ -275,15 +292,15 @@ public class configuracionUnica extends AppCompatActivity {
     private void obtenerValidacionImei(AlertDialog alert){
         mostrarCargandoAnillo("Obteniendo puertas...");
         helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        imei.setImei(getApplicationContext());
-        helperRetrofit.validarImei(this, null, anillo, spPuertasUnico, alert, PREF_CONFIGURACION_UNICA, imei.imei, "configuracionUnica");
+        mac.setMac(getApplicationContext());
+        helperRetrofit.validarMac(this, null, anillo, spPuertasUnico, alert, PREF_CONFIGURACION_UNICA, mac.mac, "configuracionUnica");
     }
 
     private void mostrarDialogUrl(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_url, null);
-        final EditText edtUrlDialog = view.findViewById(R.id.edtUrlDialog);
+        final EditText edtUrlDialog = (EditText) view.findViewById(R.id.edtUrlDialog);
         String nombreBotonPositivo = configurarYaSincronizado(edtUrlDialog);
         builder.setTitle("Agregar URL")
                 .setView(view)
@@ -309,6 +326,7 @@ public class configuracionUnica extends AppCompatActivity {
                 URL = PREF_CONFIGURACION_UNICA.getString("URL","");
                 edtWebServiceUnico.setText(edtUrlDialog.getText().toString());
                 conexion conexion = new conexion();
+                comprobarEstadoImei();
                 if (conexion.isAvaliable(getApplicationContext())) {
                     if (conexion.isOnline(anillo)) {
                         obtenerValidacionImei(alert);
@@ -541,8 +559,6 @@ public class configuracionUnica extends AppCompatActivity {
             }
             return false;
         }
-
-
     }
 
     private void dialogErrorGuardadoDatosArchivo(){
@@ -603,9 +619,9 @@ public class configuracionUnica extends AppCompatActivity {
 
     private void verificarPrimeraVes(){
         final int estadoPermisoEscritura = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+        final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_WIFI_STATE);
         if( estadoPermisoEscritura != PackageManager.PERMISSION_GRANTED || estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, CODIGO_PERMISOS );
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_WIFI_STATE}, CODIGO_PERMISOS );
     }
 
     @Override
@@ -634,7 +650,7 @@ public class configuracionUnica extends AppCompatActivity {
                 if (estadoPermisoEscritura != PackageManager.PERMISSION_GRANTED)
                     verificarPermisoEscritura();
                 else
-                    verificarPermisoImei();
+                    verificarPermisoMac();
             }
         });
         alerta.setCancelable(false);
@@ -649,10 +665,10 @@ public class configuracionUnica extends AppCompatActivity {
             mostrarConfiguracion();
     }
 
-    private void verificarPermisoImei(){
-        final boolean estadoPermisoImei = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE);
+    private void verificarPermisoMac(){
+        final boolean estadoPermisoImei = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_WIFI_STATE);
         if(estadoPermisoImei)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, CODIGO_PERMISOS );
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_WIFI_STATE}, CODIGO_PERMISOS );
         else
             mostrarConfiguracion();
     }

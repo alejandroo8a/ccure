@@ -7,12 +7,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -37,7 +35,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
-import arenzo.alejandroochoa.ccure.Helpers.imei;
+import arenzo.alejandroochoa.ccure.Helpers.mac;
 import arenzo.alejandroochoa.ccure.Helpers.vista;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
@@ -71,19 +69,7 @@ public class main extends AppCompatActivity implements vista {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         edtTarjeta.requestFocus();
         cargarImagenDeMemoria();
-        comprobarEstadoImei();
-    }
-
-    private void comprobarEstadoImei(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-            if (estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED) {
-                String estadoImei = imei.obtenerEstadoImei(PREF_MAIN);
-                imei.setImei(getApplicationContext());
-                if (estadoImei.equals("I"))
-                    imei.resultadoDialogNoPermitidoImei(this);
-            }
-        }
+        comprobarEstadoMac();
     }
 
     private void cargarElementos(){
@@ -100,6 +86,24 @@ public class main extends AppCompatActivity implements vista {
             txtVersion.setText(pInfo.versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void comprobarEstadoMac(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+            if (estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED) {
+                String estadoImei = mac.obtenerEstadoMac(PREF_MAIN);
+                mac.setMac(getApplicationContext());
+                if (estadoImei.equals("I"))
+                    mac.resultadoDialogNoPermitidoMac(this);
+            } else
+                mac.resultadoDialogNoPermitidoMac(this);
+        }else{
+            String estadoImei = mac.obtenerEstadoMac(PREF_MAIN);
+            mac.setMac(getApplicationContext());
+            if (estadoImei.equals("I"))
+                mac.resultadoDialogNoPermitidoMac(this);
         }
     }
 
