@@ -276,13 +276,20 @@ public class configuracionUnica extends AppCompatActivity {
     }
 
     private void obtenerTodosDatos(){
-        mostrarCargandoAnillo("Obteniendo todos los datos...");
+        mostrarCargandoAnillo("Obteniendo informacion del personal...");
         helperRetrofit helper = new helperRetrofit(PREF_CONFIGURACION_UNICA.getString("URL",""));
+        anillo.incrementProgressBy(5);
         helper.obtenerPersonalInfo(getApplicationContext(), this.anillo, true);
     }
 
     private void mostrarCargandoAnillo(String mensaje){
-        this.anillo = ProgressDialog.show(this, "Sincronizando", mensaje, true, false);
+        this.anillo = new ProgressDialog(this);
+        this.anillo.setMax(100);
+        this.anillo.setTitle("Sincronizando");
+        this.anillo.setMessage(mensaje);
+        this.anillo.setCancelable(false);
+        this.anillo.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        this.anillo.show();
     }
 
     private void ocultarCargandoAnillo(){
@@ -290,7 +297,7 @@ public class configuracionUnica extends AppCompatActivity {
     }
 
     private void obtenerValidacionImei(AlertDialog alert){
-        mostrarCargandoAnillo("Obteniendo puertas...");
+        mostrarCargandoAnillo("Verificando MAC...");
         helperRetrofit helperRetrofit = new helperRetrofit(URL);
         mac.setMac(getApplicationContext());
         helperRetrofit.validarMac(this, null, anillo, spPuertasUnico, alert, PREF_CONFIGURACION_UNICA, mac.mac, "configuracionUnica");

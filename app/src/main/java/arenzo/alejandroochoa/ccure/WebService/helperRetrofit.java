@@ -150,9 +150,11 @@ public class helperRetrofit {
                 if (!response.isSuccessful()){
                     return;
                 }
+                anillo.incrementProgressBy(25);
                 List<usuario> aTarjetasPersonal = response.body();
                 Log.d(TAG, "OBTUVE TARJETAS PERSONAL "+aTarjetasPersonal.size());
                 if (realmController.insertarTarjetasPersonal(aTarjetasPersonal)){
+                    anillo.setMessage("Obteniendo las puertas del personal...");
                     obtenerPersonalPuerta(context, anillo, mostrarPrimerPantalla);
                 }
             }
@@ -175,9 +177,11 @@ public class helperRetrofit {
                 if (!response.isSuccessful()){
                     return;
                 }
+                anillo.incrementProgressBy(25);
                 List<personalPuerta> aPersonalPuerta = response.body();
                 Log.d(TAG, "OBTUVE PERSONAL PUERTA "+ aPersonalPuerta.size());
                 if (realmController.insertarPersonalPuerta(aPersonalPuerta)){
+                    anillo.setMessage("Obteniendo los usuarios...");
                     obtenerUsuarios(context, anillo, mostrarPrimerPantalla);
                 }
             }
@@ -199,9 +203,11 @@ public class helperRetrofit {
                 if (!response.isSuccessful()){
                     return;
                 }
+                anillo.incrementProgressBy(20);
                 List<personalInfo> aPersonalInfo = response.body();
                 Log.d(TAG, "OBTUVE EL PERSONAL INFO "+aPersonalInfo.size());
                 if (realmController.insertarInfoPersonal(aPersonalInfo)){
+                    anillo.setMessage("Obteniendo las tarjetas del personal...");
                     ObtenerTarjetasPersonal(context, anillo, mostrarPrimerPantalla);
                 }
             }
@@ -223,6 +229,7 @@ public class helperRetrofit {
                 if (!response.isSuccessful()){
                     return;
                 }
+                anillo.incrementProgressBy(25);
                 List<usuario> aUsuarios = response.body();
                 Log.d(TAG, "OBTUVE USUARIOS " + aUsuarios.size());
                 Realm.getDefaultInstance();
@@ -256,15 +263,18 @@ public class helperRetrofit {
                 switch (tipoAccion){
                     case "configuracionUnica":
                         if(resultadoImei.getType().equals("V")) {
+                            anillo.incrementProgressBy(30);
                             mac.guardarRespuestaMacLocalmente(resultadoImei.getType(), PREF_CONFIGURACION_UNICA.edit());
+                            anillo.setMessage("Obteniendo agrupadores...");
                             actualizarAgrupadores(configuracionUnica, anillo, spPuertasUnico, alerta, PREF_CONFIGURACION_UNICA);
                         }else
                             mac.resultadoDialogNoPermitidoMac(configuracionUnica);
                         break;
                     case "sincronizacion":
-                        if(resultadoImei.getType().equals("V"))
+                        if(resultadoImei.getType().equals("V")) {
+                            anillo.incrementProgressBy(20);
                             sincronizacion.sincronizarRed();
-                        else
+                        }else
                             mac.resultadoDialogNoPermitidoMac(sincronizacion.getActivity());
                         break;
                 }
@@ -292,8 +302,10 @@ public class helperRetrofit {
                 }
                 List<agrupador> aAgrupadores = response.body();
                 Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADORES "+aAgrupadores.size());
+                anillo.incrementProgressBy(30);
                 Realm.getDefaultInstance();
                 if (realmController.insertarAgrupador(aAgrupadores)){
+                    anillo.setMessage("Obteniendo puertas...");
                     actualizarPuertas(activity, anillo, spPuertasUnico, aAgrupadores, alerta, PREF_CONFIGURACION_UNICA);
                 }
             }
@@ -319,6 +331,7 @@ public class helperRetrofit {
                 List<puertas> aPersonalPuerta = response.body();
                 Log.d(TAG, "OBTUVE ACTUALIZAR PUERTAS "+aPersonalPuerta.size());
                 Realm.getDefaultInstance();
+                anillo.incrementProgressBy(30);
                 if (realmController.insertarPuertas(aPersonalPuerta)){
                     alerta.dismiss();
                     actualizarAgrupadorPuertaInicio(activity, anillo, spPuertasUnico, aAgrupadores, PREF_CONFIGURACION_UNICA);
@@ -342,6 +355,7 @@ public class helperRetrofit {
                 if (!response.isSuccessful()){
                     return;
                 }
+                anillo.incrementProgressBy(10);
                 List<agrupadorPuerta> aAgrupadorPuerta = response.body();
                 Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADOR PUERTA INICIO "+aAgrupadorPuerta.size());
                 if (realmController.insertarAgrupadorPuerta(aAgrupadorPuerta)){
@@ -382,6 +396,8 @@ public class helperRetrofit {
                         new sincronizacion().resultadoDialog("ERROR","No se sincronizaron todos los datos, inténtelo de nuevo y verifique que los parámetros en el servidor estén correctamente configurados.", context);
                     }else {
                         realmController.borrarTablasSincronizacionRed();
+                        anillo.incrementProgressBy(20);
+                        anillo.setMessage("Actualizando agrupadores...");
                         actualizarAgrupadoresSincronizacion(context, anillo);
                     }
                 }
@@ -442,7 +458,9 @@ public class helperRetrofit {
                 }
                 List<agrupador> aAgrupadores = response.body();
                 Realm.getDefaultInstance();
+                anillo.incrementProgressBy(10);
                 if (realmController.insertarAgrupador(aAgrupadores)){
+                    anillo.setMessage("Actualizando agrupadores puerta...");
                     actualizarAgrupadorPuertaSincronizacion(context, anillo);
                 }
             }
@@ -466,8 +484,10 @@ public class helperRetrofit {
                     return;
                 }
                 List<agrupadorPuerta> aAgrupadorPuerta = response.body();
+                anillo.incrementProgressBy(10);
                 Log.d(TAG, "OBTUVE ACTUALIZAR AGRUPADOR PUERTA INICIO "+aAgrupadorPuerta.size());
                 if (realmController.insertarAgrupadorPuerta(aAgrupadorPuerta)){
+                    anillo.setMessage("Actualizando puertas...");
                     actualizarPuertasSincronizacion(context, anillo);
                 }
             }
@@ -490,8 +510,10 @@ public class helperRetrofit {
                     return;
                 }
                 List<puertas> aPuertas = response.body();
+                anillo.incrementProgressBy(10);
                 Log.d(TAG, "OBTUVE PUERTAS "+ aPuertas.size());
                 if (realmController.insertarPuertas(aPuertas)){
+                    anillo.setMessage("Actualizando personal puerta...");
                     obtenerPersonalPuertaSincronizacion(context, anillo);
                 }
             }
@@ -514,8 +536,10 @@ public class helperRetrofit {
                     return;
                 }
                 List<personalPuerta> aPersonalPuerta = response.body();
+                anillo.incrementProgressBy(20);
                 Log.d(TAG, "OBTUVE PERSONAL PUUERTA "+ aPersonalPuerta.size());
                 if (realmController.insertarPersonalPuerta(aPersonalPuerta)){
+                    anillo.setMessage("Actualizando las tarjetas del personal...");
                     ObtenerTarjetasPersonalSincronizacion(context, anillo);
                 }
             }
@@ -537,9 +561,12 @@ public class helperRetrofit {
                 if (!response.isSuccessful()){
                     return;
                 }
+                anillo.incrementProgressBy(10);
                 List<usuario> aTarjetasPersonal = response.body();
                 Log.d(TAG, "OBTUVE OBTENER TARJETAS PERSONAL "+aTarjetasPersonal.size());
                 if (realmController.insertarTarjetasPersonal(aTarjetasPersonal)){
+
+                    anillo.setMessage("Actualizando información del personal...");
                     obtenerPersonalInfoSincronizacion(context, anillo);
                 }
             }
@@ -562,6 +589,7 @@ public class helperRetrofit {
                 if (!response.isSuccessful()){
                     return;
                 }
+                anillo.incrementProgressBy(10);
                 List<personalInfo> aPersonalInfo = response.body();
                 Log.d(TAG, "OBTUVE EL PERSONAL INFO "+aPersonalInfo.size());
                 if (realmController.insertarInfoPersonal(aPersonalInfo)){

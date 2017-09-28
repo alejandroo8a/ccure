@@ -108,7 +108,7 @@ public class sincronizacion extends Fragment {
     private void sincronizar(){
         int tipo = tipoSincronizacion();
         if (tipo != 0) {
-            mostrarCargandoAnillo();
+            mostrarCargandoAnillo("Sincronizando...");
             if (tipo == 1) {
                 //Archivo
                 segundoPlanoArchivo sincronizar = new segundoPlanoArchivo();
@@ -118,7 +118,7 @@ public class sincronizacion extends Fragment {
                 if (conexion.isAvaliable(getContext())) {
                     if (conexion.isOnline(anillo)) {
                         //Red
-                        mostrarCargandoAnillo();
+                        mostrarCargandoAnillo("Verificando MAC...");
                         verificarMac();
                     } else
                         avisoNoConexion();
@@ -155,6 +155,7 @@ public class sincronizacion extends Fragment {
         final helperRetrofit helperRetrofit = new helperRetrofit(URL);
         RealmResults<realmESPersonal> resultado = realmPrincipal.obtenerRegistros();
         if (resultado.size() > 0) {
+            anillo.setMessage("Enviando checadas...");
             for (int i = 0; i < resultado.size(); i++) {
                 realmESPersonal persona = resultado.get(i);
                 helperRetrofit.actualizarChecadas(persona.getNoEmpleado(), persona.getNoTarjeta(), persona.getPUEClave(), persona.getFechaHoraEntrada(), resultado.size() - 1, i, getContext(), anillo, persona.getFaseIngreso(), realmPrincipal);
@@ -162,6 +163,7 @@ public class sincronizacion extends Fragment {
             RealmResults<realmESPersonal> resultadoBackUp = realmPrincipal.obtenerTodosRegistros();
             archivo.crearBackUp(getContext(), resultadoBackUp);
         }else {
+            anillo.incrementProgressBy(70);
             resultadoDialogNoHayDatos("ATENCIÓN", "Actualmente no hay datos para enviar. ¿Desea hacer una sincronización con nuevos datos?", getContext());
             anillo.dismiss();
         }
@@ -170,7 +172,8 @@ public class sincronizacion extends Fragment {
 
     private void sincronizarRedDirecto(){
         realmPrincipal.borrarTablasSincronizacionRed();
-        mostrarCargandoAnillo();
+        mostrarCargandoAnillo("Actualizando agrupadores...");
+        anillo.incrementProgressBy(30);
         final helperRetrofit helperRetrofit = new helperRetrofit(URL);
         helperRetrofit.actualizarAgrupadoresSincronizacion(getContext(), anillo);
     }
@@ -204,8 +207,14 @@ public class sincronizacion extends Fragment {
                 .show();
     }
 
-    private void mostrarCargandoAnillo(){
-        this.anillo = ProgressDialog.show(getActivity(), "Sincronizando datos", "Cargando...", true, false);
+    private void mostrarCargandoAnillo(String mensaje){
+        this.anillo = new ProgressDialog(getContext());
+        this.anillo.setMax(100);
+        this.anillo.setTitle("Sincronizando");
+        this.anillo.setMessage(mensaje);
+        this.anillo.setCancelable(false);
+        this.anillo.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        this.anillo.show();
     }
 
     private void ocultarCargandoAnillo(){
