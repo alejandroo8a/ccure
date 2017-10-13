@@ -13,8 +13,8 @@ import java.util.Calendar;
 public class reloj extends android.support.v7.widget.AppCompatTextView {
 
     Calendar mCalendar;
-    private final static String m12 = "dd-MM-yyyy h:mm:ss aa";
-    private final static String m24 = "dd-MM-yyyy k:mm:ss";
+    private final static String m12 = "dd-MM-yyyy \n   h:mm:ss aa";
+    private final static String m24 = "dd-MM-yyyy \n   k:mm:ss";
 
     private Runnable mTicker;
     private Handler mHandler;

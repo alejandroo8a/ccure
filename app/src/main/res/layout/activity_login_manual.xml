@@ -6,41 +6,81 @@
     android:layout_height="match_parent"
     tools:context="arenzo.alejandroochoa.ccure.Activities.loginManual">
 
+    <ImageView
+        android:id="@+id/imgFondoHora"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/fondoLoginTarjeta" />
+
     <arenzo.alejandroochoa.ccure.Helpers.reloj
         android:id="@+id/txtFechaLoginManual"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="DigitalClock"
-        android:textSize="22sp"
+        android:textColor="@color/fechaHora"
+        android:textSize="27sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/imgFondoHora"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <ImageView
+        android:id="@+id/imgFondoInstruccion"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgFondoHora"
+        app:srcCompat="@color/fondoLoginTarjeta2" />
 
     <Button
         android:id="@+id/btnLoginManual"
-        android:layout_width="180dp"
+        android:layout_width="270dp"
         android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="70dp"
-        android:background="@color/primary_light"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/boton_circular_rojo"
         android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/entrar"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnBorrar" />
+        app:layout_constraintTop_toBottomOf="@+id/btnCero" />
+
+    <ImageView
+        android:id="@+id/imgFondo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgFondoInstruccion"
+        app:srcCompat="@drawable/fondo_trabajadores" />
 
     <EditText
         android:id="@+id/edtNumeroEmpleado"
-        android:layout_width="218dp"
-        android:layout_height="45dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="37dp"
         android:ems="10"
         android:inputType="none"
@@ -56,22 +96,24 @@
         style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
         android:text="0"
-        app:layout_constraintRight_toLeftOf="@+id/btnBorrar"
-        app:layout_constraintTop_toBottomOf="@+id/btnSiete" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSiete"
+        android:layout_marginTop="0dp"
+        app:layout_constraintRight_toLeftOf="@+id/btnNueve"
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/btnOcho" />
 
     <Button
         android:id="@+id/btnUno"
         style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="24dp"
         android:text="1"
         app:layout_constraintRight_toLeftOf="@+id/btnDos"
-        app:layout_constraintTop_toBottomOf="@+id/edtNumeroEmpleado" />
+        app:layout_constraintTop_toBottomOf="@+id/edtNumeroEmpleado"
+        android:layout_marginRight="0dp" />
 
     <Button
         android:id="@+id/btnDos"
@@ -80,30 +122,30 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="24dp"
         android:text="2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtNumeroEmpleado" />
+        app:layout_constraintTop_toBottomOf="@+id/edtNumeroEmpleado"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/btnTres"
         style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="24dp"
         android:text="3"
         app:layout_constraintLeft_toRightOf="@+id/btnDos"
-        app:layout_constraintTop_toBottomOf="@+id/edtNumeroEmpleado" />
+        app:layout_constraintTop_toBottomOf="@+id/edtNumeroEmpleado"
+        android:layout_marginLeft="0dp" />
 
     <Button
         android:id="@+id/btnCuatro"
         style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
         android:text="4"
         app:layout_constraintRight_toLeftOf="@+id/btnCinco"
         app:layout_constraintTop_toBottomOf="@+id/btnUno" />
@@ -115,19 +157,18 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
         android:text="5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDos" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDos"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/btnSeis"
         style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
         android:text="6"
         app:layout_constraintLeft_toRightOf="@+id/btnCinco"
         app:layout_constraintTop_toBottomOf="@+id/btnTres" />
@@ -137,8 +178,6 @@
         style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
         android:text="7"
         app:layout_constraintRight_toLeftOf="@+id/btnOcho"
         app:layout_constraintTop_toBottomOf="@+id/btnCuatro" />
@@ -150,77 +189,94 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
         android:text="8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCinco" />
+        app:layout_constraintTop_toBottomOf="@+id/btnCinco"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/btnNueve"
         style="@style/botonTeclado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
         android:text="9"
         app:layout_constraintLeft_toRightOf="@+id/btnOcho"
         app:layout_constraintTop_toBottomOf="@+id/btnSeis" />
 
     <Button
         android:id="@+id/btnBorrar"
-        style="@style/botonTeclado"
-        android:layout_width="0dp"
-        android:layout_marginLeft="0dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
-        android:text="Borrar"
-        app:layout_constraintLeft_toLeftOf="@+id/btnOcho"
-        app:layout_constraintRight_toRightOf="@+id/btnNueve"
-        app:layout_constraintTop_toBottomOf="@+id/btnOcho"
-        app:layout_constraintHorizontal_bias="0.0" />
+        android:background="@drawable/ic_backspace"
+        app:layout_constraintBottom_toBottomOf="@+id/edtNumeroEmpleado"
+        app:layout_constraintRight_toRightOf="@+id/edtNumeroEmpleado"
+        app:layout_constraintTop_toTopOf="@+id/edtNumeroEmpleado" />
 
     <TextView
         android:id="@+id/txtNumeroEmpleado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/escribe_tu_numero_de_empleado"
-        android:textSize="22dp"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgFondoInstruccion"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtFechaLoginManual" />
+        app:layout_constraintTop_toTopOf="@+id/imgFondoInstruccion" />
 
     <ImageView
         android:id="@+id/imgPortadaManual"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnCerrar"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/im_logo_penia"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.1"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/imgLogoManual"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btnCerrar"
-        style="@style/botonTeclado"
-        android:layout_width="wrap_content"
+        android:layout_width="270dp"
         android:layout_height="70dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/boton_circular_gris"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:text="@string/ingresar_tarjeta"
+        android:textColor="@color/fechaHora"
+        android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLoginManual" />
+
+    <ImageView
+        android:id="@+id/imgLogoManual"
+        android:layout_width="140dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:srcCompat="@drawable/im_logo_transparente" />
 </android.support.constraint.ConstraintLayout>

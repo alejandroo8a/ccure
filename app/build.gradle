@@ -7,17 +7,26 @@ android {
         applicationId "arenzo.alejandroochoa.ccure"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    productFlavors {
+        demo{
+            //Esto copia los atributpos del modo debug
+            initWith debug
+            //Reduce tod o el codigo que se puede
+            minifyEnabled true
+            //reduce recursos
+            shrinkResources true
+            applicationIdSuffix ".demo"
+            jniDebuggable true
+        }
     }
 }
 

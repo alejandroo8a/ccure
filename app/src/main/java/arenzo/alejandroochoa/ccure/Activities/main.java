@@ -66,10 +66,11 @@ public class main extends AppCompatActivity implements vista {
         cargarElementos();
         centrarTituloActionBar();
         eventosVista();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        ocultarTeclado();
         edtTarjeta.requestFocus();
         cargarImagenDeMemoria();
         comprobarEstadoMac();
+        agregarNumeroVersion();
     }
 
     private void cargarElementos(){
@@ -77,7 +78,6 @@ public class main extends AppCompatActivity implements vista {
         edtTarjeta = (EditText) findViewById(R.id.edtTarjeta);
         imgPortadaMain = (ImageView) findViewById(R.id.imgPortadaMain);
         txtVersion = (TextView) findViewById(R.id.txtVersion);
-        agregarNumeroVersion();
     }
 
     private void agregarNumeroVersion(){
@@ -266,6 +266,10 @@ public class main extends AppCompatActivity implements vista {
 
     private void cargarImagenDeMemoria(){
         Picasso.with(getApplicationContext()).load(new File(Environment.getExternalStorageDirectory()+"/CCURE/portada.jpg")).error(R.drawable.im_logo_penia).into(imgPortadaMain);
+    }
+
+    private void ocultarTeclado(){
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
 }

@@ -4,60 +4,104 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MissingPrefix"
-    tools:context="arenzo.alejandroochoa.ccure.Activities.main">
+    tools:context="arenzo.alejandroochoa.ccure.Activities.main"
+    tools:ignore="MissingPrefix">
+
+    <ImageView
+        android:id="@+id/imgFondoHora"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/fondoLoginTarjeta" />
 
     <arenzo.alejandroochoa.ccure.Helpers.reloj
         android:id="@+id/txtFechaLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:text="DigitalClock"
-        android:textSize="22sp"
+        android:textColor="@color/fechaHora"
+        android:textSize="27sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/imgFondoHora" />
+
+    <ImageView
+        android:id="@+id/imgFondoInstruccion"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgFondoHora"
+        app:srcCompat="@color/fondoLoginTarjeta2" />
 
     <TextView
         android:id="@+id/txtMensajeLogin"
         fontPath="fonts/Roboto-Bold.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/favor_de_pasar_la_tarjeta_por_el_lector_para_iniciar_sesi_n"
+        android:textColor="@android:color/white"
         android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgFondoInstruccion"
+        app:layout_constraintHorizontal_bias="0.623"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtFechaLogin" />
+        app:layout_constraintTop_toTopOf="@+id/imgFondoInstruccion" />
+
+    <ImageView
+        android:id="@+id/imgFondo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgFondoInstruccion"
+        app:srcCompat="@drawable/fondo_trabajadores" />
 
     <Button
         android:id="@+id/btnOlvideTarjetaLogin"
-        android:layout_width="180dp"
+        android:layout_width="230dp"
         android:layout_height="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:background="@color/primary_light"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/boton_circular_rojo"
         android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/olvid_mi_tarjeta"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="150dp"
         app:layout_constraintTop_toBottomOf="@+id/edtTarjeta" />
 
     <EditText
         android:id="@+id/edtTarjeta"
         android:layout_width="200dp"
         android:layout_height="45dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="95dp"
         android:background="@drawable/borde"
         android:ems="10"
@@ -72,25 +116,41 @@
         android:id="@+id/imgPortadaMain"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/imgLogo"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnOlvideTarjetaLogin"
-        app:srcCompat="@drawable/im_logo_penia"
-        app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/txtVersion" />
+        app:srcCompat="@drawable/im_logo_penia" />
 
     <TextView
         android:id="@+id/txtVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         android:text="Versión 9.0"
+        android:textColor="@color/fechaHora"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="140dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:srcCompat="@drawable/im_logo_transparente" />
 
 </android.support.constraint.ConstraintLayout>
