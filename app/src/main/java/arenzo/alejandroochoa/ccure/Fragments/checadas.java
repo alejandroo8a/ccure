@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -151,6 +152,7 @@ public class checadas extends Fragment {
                 buscarPersonalManual();
             }
         });
+        sbTipoChecada.setChecked(true);
         sbTipoChecada.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -210,71 +212,91 @@ public class checadas extends Fragment {
         btnCero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "0";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "0";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnUno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "1";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "1";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnDos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "2";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "2";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnTres.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "3";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "3";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnCuatro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "4";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "4";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnCinco.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "5";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "5";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnSeis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "6";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "6";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnSiete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "7";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "7";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnOcho.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "8";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "8";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnNueve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noEmpleado += "9";
-                edtNoEmpleado.setText(noEmpleado);
+                if(noEmpleado.length() <= 4) {
+                    noEmpleado += "9";
+                    edtNoEmpleado.setText(noEmpleado);
+                }
             }
         });
         btnBorrar.setOnClickListener(new View.OnClickListener() {
@@ -339,12 +361,12 @@ public class checadas extends Fragment {
     }
 
     private void configurarModoLectura(){
-        if (txtNoEmpleado.getText().toString().equals("No. Tarjeta")){
+        if (txtNoEmpleado.getText().toString().equals("No. de Tarjeta")){
             edtNoTarjeta.setVisibility(View.GONE);
             edtNoEmpleado.setVisibility(View.VISIBLE);
             btnBuscarEmpleado.setVisibility(View.VISIBLE);
             txtTipoChecada.setText(getString(R.string.ingresar_tarjeta));
-            txtNoEmpleado.setText("No. Empleado");
+            txtNoEmpleado.setText("No. de Empleado");
             mostrarBotonesNumeracion();
             edtNoEmpleado.requestFocus();
             noEmpleado = "";
@@ -356,7 +378,7 @@ public class checadas extends Fragment {
             edtNoEmpleado.setVisibility(View.GONE);
             btnBuscarEmpleado.setVisibility(View.GONE);
             txtTipoChecada.setText(getString(R.string.olvide_mi_tarjeta));
-            txtNoEmpleado.setText("No. Tarjeta");
+            txtNoEmpleado.setText("No. de Tarjeta");
             ocultarBotonesNumeracion();
             edtNoTarjeta.requestFocus();
         }
@@ -720,6 +742,7 @@ public class checadas extends Fragment {
         puertaClaveActual = PREF_CHECADAS.getString("CLAVEPUERTAENTRADA","");
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         edtNoTarjeta.requestFocus();
+        txtTipoChecada.setPaintFlags(txtTipoChecada.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
     }
 
     private realmPersonalPuerta buscarPersonalLocalManual(String numeroEmpleado){
