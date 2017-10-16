@@ -11,8 +11,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="guardar">Guardar</string>
+    <string name="actualizarPuertas">Actualizar puertas</string>
     <string name="puerta">Puerta</string>
     <string name="url_exportaci_n">URL Exportación</string>
     <string name="dispositivo">Dispositivo</string>
