@@ -37,7 +37,6 @@ public class loginManual extends AppCompatActivity implements vista {
 
 
     private EditText edtNumeroEmpleado;
-    private ImageView imgPortadaManual;
     private Button btnLoginManual, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar, btnCerrar;
     private SharedPreferences PREF_LOGIN_MANUAL;
     private String noEmpleado = "";
@@ -50,14 +49,12 @@ public class loginManual extends AppCompatActivity implements vista {
         centrarTituloActionBar();
         cargarElementos();
         eventosVista();
-        cargarImagenDeMemoria();
     }
 
 
     private void cargarElementos(){
         edtNumeroEmpleado = (EditText) findViewById(R.id.edtNumeroEmpleado);
         btnLoginManual = (Button)findViewById(R.id.btnLoginManual);
-        imgPortadaManual = (ImageView) findViewById(R.id.imgPortadaManual);
         btnCero = (Button) findViewById(R.id.btnCero);
         btnUno = (Button) findViewById(R.id.btnUno);
         btnDos = (Button) findViewById(R.id.btnDos);
@@ -259,10 +256,6 @@ public class loginManual extends AppCompatActivity implements vista {
         if (focusedView != null) {
             inputManager.hideSoftInputFromWindow(focusedView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
         }
-    }
-
-    private void cargarImagenDeMemoria(){
-        Picasso.with(getApplicationContext()).load(new File(Environment.getExternalStorageDirectory()+"/CCURE/portada.jpg")).error(R.drawable.im_logo_penia).into(imgPortadaManual);
     }
 
     private void cerrarActivity(){

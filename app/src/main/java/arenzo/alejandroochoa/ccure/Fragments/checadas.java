@@ -60,11 +60,10 @@ public class checadas extends Fragment {
     private final static String TAG = "checadas";
 
     private EditText edtNoEmpleado, edtNoTarjeta;
-    private TextView txtCaseta, txtResultadoChecada, txtNombre, txtPuestoEmpresa, txtNombreAlerta, txtNoEmpleado;
-    private SwitchButton sbTipoChecada;
-    private ImageView imgFotoPerfil, imgFondoAcceso, imgPerfilAlerta, imgFondoGuardia, imgPortadaChecadas, imgConexion;
+    private TextView txtCaseta, txtResultadoChecada, txtNombre, txtPuestoEmpresa, txtNombreAlerta, txtNoEmpleado, txtTipoChecada, txtConexion;
+    private ImageView imgFotoPerfil, imgFondoAcceso, imgPerfilAlerta, imgFondoConexion;
     private Button btnAceptarAlerta, btnCancelarAlerta, btnBuscarEmpleado, btnCero, btnUno, btnDos, btnTres, btnCuatro, btnCinco, btnSeis, btnSiete, btnOcho, btnNueve, btnBorrar;
-    private ToggleButton tbnTipoLectura;
+    private SwitchButton sbTipoChecada;
     ProgressDialog anillo = null;
     conexion conexion = null;
 
@@ -106,12 +105,12 @@ public class checadas extends Fragment {
         txtNombre = (TextView) view.findViewById(R.id.txtNombre);
         txtNoEmpleado = (TextView) view.findViewById(R.id.txtNoEmpleado);
         txtPuestoEmpresa = (TextView) view.findViewById(R.id.txtPuestoEmpresa);
+        txtTipoChecada = (TextView) view.findViewById(R.id.txtTipoChecada);
         sbTipoChecada = (SwitchButton) view.findViewById(R.id.sbTipoChecada);
+        txtConexion = (TextView) view.findViewById(R.id.txtConexion);
         imgFotoPerfil = (ImageView) view.findViewById(R.id.imgFotoPerfil);
+        imgFondoConexion = (ImageView) view.findViewById(R.id.imgFondoConexion);
         imgFondoAcceso = (ImageView) view.findViewById(R.id.imgFondoAcceso);
-        imgFondoGuardia = (ImageView) view.findViewById(R.id.imgFondoGuardia);
-        imgConexion = (ImageView) view.findViewById(R.id.imgConexion);
-        imgPortadaChecadas = (ImageView) view.findViewById(R.id.imgPortadaChecadas);
         btnBuscarEmpleado = (Button) view.findViewById(R.id.btnBuscarEmpleado);
         btnCero = (Button) view.findViewById(R.id.btnCero);
         btnUno = (Button) view.findViewById(R.id.btnUno);
@@ -124,7 +123,6 @@ public class checadas extends Fragment {
         btnOcho = (Button) view.findViewById(R.id.btnOcho);
         btnNueve = (Button) view.findViewById(R.id.btnNueve);
         btnBorrar = (Button) view.findViewById(R.id.btnBorrar);
-        tbnTipoLectura = (ToggleButton) view.findViewById(R.id.tbnTipoLectura);
         sonidoPermitido = MediaPlayer.create(getContext(), R.raw.permitido);
         sonidoDenegado = MediaPlayer.create(getContext(), R.raw.denegado);
         return view;
@@ -133,7 +131,6 @@ public class checadas extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ocultarDatosGuardia();
         PREF_CHECADAS = getContext().getSharedPreferences("CCURE", Context.MODE_PRIVATE);
         URL = PREF_CHECADAS.getString("URL", "");
         totalGRUId = PREF_CHECADAS.getInt("TOTALGRUID", 0);
@@ -203,7 +200,7 @@ public class checadas extends Fragment {
                 im.hideSoftInputFromWindow(edtNoTarjeta.getWindowToken(), 0);
             }
         });
-        tbnTipoLectura.setOnClickListener(new View.OnClickListener() {
+        txtTipoChecada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 configurarModoLectura();
@@ -289,6 +286,7 @@ public class checadas extends Fragment {
                 }
             }
         });
+        setearDatosGuardia();
     }
 
     @Override
@@ -330,9 +328,11 @@ public class checadas extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 conexion conexion = new conexion();
                 if(conexion.isAvaliable(getContext()) && conexion.isOnline(anillo)){
-                    imgConexion.setImageDrawable(getResources().getDrawable(R.drawable.cuadro_verde));
+                    txtConexion.setText("Hay conexión");
+                    imgFondoConexion.setColorFilter(getResources().getColor(R.color.conexion));
                 }else{
-                    imgConexion.setImageDrawable(getResources().getDrawable(R.drawable.cuadro_rojo));
+                    txtConexion.setText("Sin conexión");
+                    imgFondoConexion.setColorFilter(getResources().getColor(R.color.fondoLoginTarjeta));
                 }
             }
         };
@@ -343,8 +343,7 @@ public class checadas extends Fragment {
             edtNoTarjeta.setVisibility(View.GONE);
             edtNoEmpleado.setVisibility(View.VISIBLE);
             btnBuscarEmpleado.setVisibility(View.VISIBLE);
-            tbnTipoLectura.setTextOff("Checar con tarjeta");
-            tbnTipoLectura.setChecked(false);
+            txtTipoChecada.setText(getString(R.string.ingresar_tarjeta));
             txtNoEmpleado.setText("No. Empleado");
             mostrarBotonesNumeracion();
             edtNoEmpleado.requestFocus();
@@ -356,8 +355,7 @@ public class checadas extends Fragment {
             edtNoTarjeta.setVisibility(View.VISIBLE);
             edtNoEmpleado.setVisibility(View.GONE);
             btnBuscarEmpleado.setVisibility(View.GONE);
-            tbnTipoLectura.setTextOn("Olvidó tarjeta");
-            tbnTipoLectura.setChecked(true);
+            txtTipoChecada.setText(getString(R.string.olvide_mi_tarjeta));
             txtNoEmpleado.setText("No. Tarjeta");
             ocultarBotonesNumeracion();
             edtNoTarjeta.requestFocus();
@@ -370,7 +368,7 @@ public class checadas extends Fragment {
     }
 
     private void buscarPersonalManual(){
-        imgPortadaChecadas.setVisibility(View.GONE);
+        //imgPortadaChecadas.setVisibility(View.GONE);
         if (!edtNoEmpleado.getText().toString().equals("0") && edtNoEmpleado.getText().length() > 0) {
             ocultarTeclado();
             mostrarCargandoAnillo();
@@ -417,7 +415,7 @@ public class checadas extends Fragment {
     }
 
     private void buscarPersonalRfid() {
-        imgPortadaChecadas.setVisibility(View.GONE);
+        //imgPortadaChecadas.setVisibility(View.GONE);
         ocultarTeclado();
         mostrarCargandoAnillo();
         final String noTarjeta = edtNoTarjeta.getText().toString().trim();
@@ -715,8 +713,7 @@ public class checadas extends Fragment {
     }
 
     private void activarTipoChecada(){
-        sbTipoChecada.setChecked(true);
-        sbTipoChecada.setBackColorRes(R.color.entrada);
+        txtTipoChecada.setText(getString(R.string.olvide_mi_tarjeta));
         tipoChecada = "1";
         nombreCaseta = PREF_CHECADAS.getString("NOMBREPUERTAENTRADA","");
         PUEId = PREF_CHECADAS.getInt("IDPUERTAENTRADA", 0);
@@ -845,13 +842,16 @@ public class checadas extends Fragment {
         Picasso.with(getContext()).load(R.drawable.ic_card).into(imgPerfilAlerta);
     }
 
-    private void ocultarDatosGuardia(){
-        txtResultadoChecada.setVisibility(View.GONE);
+    private void setearDatosGuardia(){
+        txtPuestoEmpresa.setText("Peña Colorada");
+        txtNombre.setText("CCURE Móvil");
+        imgFotoPerfil.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_card));
+        /*txtResultadoChecada.setVisibility(View.GONE);
         imgFotoPerfil.setVisibility(View.GONE);
         txtPuestoEmpresa.setVisibility(View.GONE);
         txtNombre.setVisibility(View.GONE);
         imgFondoAcceso.setVisibility(View.GONE);
-        imgFondoGuardia.setVisibility(View.GONE);
+        imgFondoGuardia.setVisibility(View.GONE);*/
     }
 
     private void mostrarDatosGuardia(){
@@ -860,7 +860,7 @@ public class checadas extends Fragment {
         txtPuestoEmpresa.setVisibility(View.VISIBLE);
         txtNombre.setVisibility(View.VISIBLE);
         imgFondoAcceso.setVisibility(View.VISIBLE);
-        imgFondoGuardia.setVisibility(View.VISIBLE);
+        //imgFondoGuardia.setVisibility(View.VISIBLE);
     }
 
     private void sincronizarRed(){
@@ -930,10 +930,9 @@ public class checadas extends Fragment {
         txtNombre = (TextView) view.findViewById(R.id.txtNombre);
         txtNoEmpleado = (TextView) view.findViewById(R.id.txtNoEmpleado);
         txtPuestoEmpresa = (TextView) view.findViewById(R.id.txtPuestoEmpresa);
-        sbTipoChecada = (SwitchButton) view.findViewById(R.id.sbTipoChecada);
         imgFotoPerfil = (ImageView) view.findViewById(R.id.imgFotoPerfil);
         imgFondoAcceso = (ImageView) view.findViewById(R.id.imgFondoAcceso);
-        imgFondoGuardia = (ImageView) view.findViewById(R.id.imgFondoGuardia);
+        //imgFondoGuardia = (ImageView) view.findViewById(R.id.imgFondoGuardia);
         btnBuscarEmpleado = (Button) view.findViewById(R.id.btnBuscarEmpleado);
         btnCero = (Button) view.findViewById(R.id.btnCero);
         btnUno = (Button) view.findViewById(R.id.btnUno);
@@ -946,10 +945,9 @@ public class checadas extends Fragment {
         btnOcho = (Button) view.findViewById(R.id.btnOcho);
         btnNueve = (Button) view.findViewById(R.id.btnNueve);
         btnBorrar = (Button) view.findViewById(R.id.btnBorrar);
-        tbnTipoLectura = (ToggleButton) view.findViewById(R.id.tbnTipoLectura);
     }
 
     private void cargarImagenDeMemoria(){
-        Picasso.with(getContext()).load(new File(Environment.getExternalStorageDirectory()+"/CCURE/portada.jpg")).error(R.drawable.im_logo_penia).into(imgPortadaChecadas);
+        //Picasso.with(getContext()).load(new File(Environment.getExternalStorageDirectory()+"/CCURE/portada.jpg")).error(R.drawable.im_logo_penia).into(imgPortadaChecadas);
     }
 }

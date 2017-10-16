@@ -7,32 +7,73 @@
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
+    <ImageView
+        android:id="@+id/imgFondoPuerta"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/fondoLoginTarjeta" />
+
     <TextView
         android:id="@+id/txtCaseta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="CASETA ENTRADA A MINA 1090"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgFondoPuerta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="31dp" />
+        app:layout_constraintTop_toTopOf="@+id/imgFondoPuerta"
+        tools:layout_editor_absoluteX="166dp" />
+
+    <ImageView
+        android:id="@+id/imgFondoConexion"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgFondoPuerta"
+        app:srcCompat="@color/fondoLoginTarjeta2" />
+
+    <TextView
+        android:id="@+id/txtConexion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Hay conexión"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgFondoConexion"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgFondoConexion" />
+
+    <ImageView
+        android:id="@+id/imgFondoChecadas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgFondoConexion"
+        app:srcCompat="@drawable/fondo_camino" />
 
     <com.kyleduo.switchbutton.SwitchButton
         android:id="@+id/sbTipoChecada"
         style="@style/AppTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
         android:textColor="@color/icons2"
         android:textSize="35dp"
         app:kswAnimationDuration="300"
@@ -43,11 +84,14 @@
         app:kswThumbHeight="50dp"
         app:kswThumbMargin="@dimen/ksw_md_thumb_shadow_inset_top"
         app:kswThumbWidth="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/imgFondoConexion"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCaseta" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <TextView
         android:id="@+id/txtNoEmpleado"
@@ -58,9 +102,9 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
-        android:text="No. Tarjeta"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
+        android:text="No. de Tarjeta"
+        android:textColor="@android:color/white"
+        android:textSize="27sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -68,13 +112,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sbTipoChecada" />
 
+
     <EditText
         android:id="@+id/edtNoEmpleado"
-        android:layout_width="200dp"
-        android:layout_height="45dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="-1dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/borde"
         android:ems="10"
         android:gravity="center_horizontal"
@@ -85,7 +127,6 @@
         android:textSize="22sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,11 +134,10 @@
 
     <EditText
         android:id="@+id/edtNoTarjeta"
-        android:layout_width="200dp"
-        android:layout_height="45dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="-1dp"
         android:background="@drawable/borde"
         android:ems="10"
         android:gravity="center_horizontal"
@@ -108,82 +148,107 @@
         android:textColor="@android:color/black"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtNoEmpleado" />
+        app:layout_constraintTop_toBottomOf="@+id/txtNoEmpleado"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
-    <ImageView
-        android:id="@+id/imgFondoGuardia"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <TextView
+        android:id="@+id/txtTipoChecada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/olvide_mi_tarjeta"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtNoTarjeta" />
+
+    <Button
+        android:id="@+id/btnBuscarEmpleado"
+        android:layout_width="170dp"
+        android:layout_height="60dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@color/divider"
-        app:layout_constraintBottom_toTopOf="@+id/imgFondoAcceso"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="8dp"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="40dp"
+        android:background="@drawable/boton_circular_rojo"
+        android:text="Buscar"
+        android:textColor="@color/icons2"
+        android:textSize="23sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
-    <ImageView
-        android:id="@+id/imgFondoAcceso"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:src="@android:color/holo_green_dark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline"
+        app:layout_constraintGuide_begin="557dp"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteY="557dp"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/txtNombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="28dp"
         android:text="Dario Anastacio Verón"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="@+id/imgFondoGuardia"
-        app:layout_constraintEnd_toEndOf="@+id/imgFondoGuardia"
-        app:layout_constraintStart_toStartOf="@+id/imgFondoGuardia"
-        android:layout_marginStart="8dp" />
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toRightOf="@+id/imgFotoPerfil"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/txtPuestoEmpresa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="32dp"
         android:text="Guardia-Peña Colorada"
-        android:textColor="@android:color/black"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toRightOf="@+id/imgFotoPerfil"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtNombre" />
 
     <ImageView
         android:id="@+id/imgFotoPerfil"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="80dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/ic_card"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/imgFondoAcceso"
+        android:layout_marginStart="50dp" />
+
+    <ImageView
+        android:id="@+id/imgFondoAcceso"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="0dp"
+        android:src="@android:color/holo_green_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/imgFondoGuardia"
-        app:layout_constraintRight_toRightOf="@+id/imgFondoGuardia"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPuestoEmpresa" />
+        tools:layout_editor_absoluteX="8dp" />
 
     <TextView
         android:id="@+id/txtResultadoChecada"
@@ -205,42 +270,6 @@
         app:layout_constraintRight_toRightOf="@+id/imgFondoAcceso"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imgFondoAcceso" />
-
-    <Button
-        android:id="@+id/btnBuscarEmpleado"
-        android:layout_width="130dp"
-        android:layout_height="60dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="33dp"
-        android:background="@color/primary"
-        android:text="Buscar"
-        android:textColor="@color/icons2"
-        android:textSize="23sp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sbTipoChecada" />
-
-    <android.support.constraint.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/guideline"
-        app:layout_constraintGuide_begin="443dp"
-        android:orientation="horizontal" />
-
-    <ToggleButton
-        android:id="@+id/tbnTipoLectura"
-        android:layout_width="130dp"
-        android:layout_height="60dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="33dp"
-        android:background="@color/accent"
-        android:checked="false"
-        android:textColor="@color/ksw_md_solid_disable"
-        android:textOff="Olvidó tarjeta"
-        android:textOn="Checar con tarjeta"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sbTipoChecada" />
-
     <Button
         android:id="@+id/btnCero"
         style="@style/botonTeclado"
@@ -380,33 +409,6 @@
         app:layout_constraintRight_toRightOf="@+id/btnNueve"
         app:layout_constraintTop_toBottomOf="@+id/btnOcho"
         app:layout_constraintHorizontal_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/imgPortadaChecadas"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtNoTarjeta"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/im_logo_penia" />
-
-    <ImageView
-        android:id="@+id/imgConexion"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/cuadro_rojo" />
 
 
 </android.support.constraint.ConstraintLayout>

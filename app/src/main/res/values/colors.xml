@@ -15,4 +15,5 @@
     <color name="fechaHora">#6787a0</color>
     <color name="bordeBoton">#63839c</color>
     <color name="botonLoginRegresar">#22323f</color>
+    <color name="conexion">#4489fe</color>
 </resources>

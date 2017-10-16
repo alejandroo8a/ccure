@@ -87,7 +87,7 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/boton_circular_rojo"
         android:foreground="?android:attr/selectableItemBackground"
-        android:text="@string/olvid_mi_tarjeta"
+        android:text="@string/olvide_mi_tarjeta"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
