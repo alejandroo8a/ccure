@@ -244,7 +244,6 @@
         android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
         android:background="@drawable/ic_backspace"
-        android:backgroundTint="@color/icons2"
         app:layout_constraintBottom_toBottomOf="@+id/edtNumeroEmpleado"
         app:layout_constraintRight_toRightOf="@+id/edtNumeroEmpleado"
         app:layout_constraintTop_toTopOf="@+id/edtNumeroEmpleado" />
