@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,8 +18,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.RadioButton;
+import android.widget.ListView;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -58,8 +62,12 @@ public class sincronizacion extends Fragment {
 
     private final static String TAG = "sincronizacion";
 
-    private RadioButton rdRed, rdArchivo, rdLeerArchivo;
+    private ListView lvTipoSincronizacion;
+    private ArrayAdapter<String> adapter;
     private Button btnSincronizar;
+    private boolean haySeleccionado = true;
+    private int tipoSincronizacion = 0;
+    private View ultimaVista;
     ProgressDialog anillo = null;
     RealmController realmPrincipal;
     String URL = "";
@@ -80,9 +88,7 @@ public class sincronizacion extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sincronizacion, container, false);
-        rdRed = (RadioButton) view.findViewById(R.id.rdRed);
-        rdArchivo = (RadioButton) view.findViewById(R.id.rdArchivo);
-        rdLeerArchivo = (RadioButton) view.findViewById(R.id.rdLeerArchivo);
+        lvTipoSincronizacion = (ListView) view.findViewById(R.id.lvTipoSincronizacion);
         btnSincronizar = (Button) view.findViewById(R.id.btnSincronizar);
         PREF_SINCRONIZACION = getContext().getSharedPreferences("CCURE", Context.MODE_PRIVATE);
         URL = PREF_SINCRONIZACION.getString("URL", "");
@@ -92,8 +98,18 @@ public class sincronizacion extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setearListView();
         eventosVista();
         realmPrincipal = new RealmController(getActivity().getApplication());
+    }
+
+    private void setearListView(){
+        adapter = new ArrayAdapter<>(getContext(), R.layout.item_sincronizacion, R.id.txtOpcionSincronizacion, obtenerOpcionesSincronizado());
+        lvTipoSincronizacion.setAdapter(adapter);
+    }
+
+    private String[] obtenerOpcionesSincronizado(){
+        return new String[]{"RED", "ARCHIVO", "LEER ARCHIVO"};
     }
 
     private  void eventosVista(){
@@ -103,17 +119,41 @@ public class sincronizacion extends Fragment {
                 sincronizar();
             }
         });
+        lvTipoSincronizacion.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                cambiarColorListView(position, view);
+            }
+        });
+    }
+
+    private void cambiarColorListView(int posicionActual,  View view){
+        if(ultimaVista != view) {
+            TextView txtOpcionSincronizacion = (TextView) view.findViewById(R.id.txtOpcionSincronizacion);
+            if (haySeleccionado) {
+                txtOpcionSincronizacion.setTextColor(Color.WHITE);
+                txtOpcionSincronizacion.setBackgroundColor(getResources().getColor(R.color.seleccionado));
+                haySeleccionado = false;
+            } else {
+                TextView txtOpcionSincronizacionUltimo = (TextView) ultimaVista.findViewById(R.id.txtOpcionSincronizacion);
+                txtOpcionSincronizacion.setTextColor(Color.WHITE);
+                txtOpcionSincronizacion.setBackgroundColor(getResources().getColor(R.color.seleccionado));
+                txtOpcionSincronizacionUltimo.setTextColor(getResources().getColor(R.color.fechaHora));
+                txtOpcionSincronizacionUltimo.setBackgroundColor(getResources().getColor(R.color.noSeleccionado));
+            }
+            ultimaVista = view;
+            setTipoSincronziacion(posicionActual);
+        }
     }
 
     private void sincronizar(){
-        int tipo = tipoSincronizacion();
-        if (tipo != 0) {
+        if (tipoSincronizacion != 0) {
             mostrarCargandoAnillo("Sincronizando...");
-            if (tipo == 1) {
+            if (tipoSincronizacion == 1) {
                 //Archivo
                 segundoPlanoArchivo sincronizar = new segundoPlanoArchivo();
                 sincronizar.execute();
-            } else if (tipo == 2){
+            } else if (tipoSincronizacion == 2){
                 conexion conexion = new conexion();
                 if (conexion.isAvaliable(getContext())) {
                     if (conexion.isOnline(anillo)) {
@@ -133,17 +173,13 @@ public class sincronizacion extends Fragment {
         }
     }
 
-
-    private int tipoSincronizacion(){
-        if (rdArchivo.isChecked() || rdRed.isChecked() || rdLeerArchivo.isChecked()){
-            if (rdArchivo.isChecked()){
-                return 1;
-            }else if (rdRed.isChecked()){
-                return 2;
-            }else
-                return 3;
-        }
-        return 0;
+    private void setTipoSincronziacion(int posicion){
+        if( posicion == 0)
+            tipoSincronizacion = 2;
+        else if (posicion == 1)
+            tipoSincronizacion = 1;
+        else
+            tipoSincronizacion = 3;
     }
 
     private void verificarMac(){

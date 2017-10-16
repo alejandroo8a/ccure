@@ -18,7 +18,7 @@
     <string name="dispositivo">Dispositivo</string>
     <string name="webservice">WebService</string>
     <string name="sincronizaci_n">Sincronización</string>
-    <string name="selecciona_una_opci_n_para_exportar_la_informaci_n">Selecciona una opción para exportar la información:</string>
+    <string name="selecciona_una_opci_n_para_exportar_la_informaci_n">Selecciona el tipo de exportación</string>
     <string name="red">Red</string>
     <string name="archivo">Archivo</string>
 

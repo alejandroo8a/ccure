@@ -16,4 +16,6 @@
     <color name="bordeBoton">#63839c</color>
     <color name="botonLoginRegresar">#22323f</color>
     <color name="conexion">#4489fe</color>
+    <color name="seleccionado">#5f849f</color>
+    <color name="noSeleccionado">#2e4054</color>
 </resources>

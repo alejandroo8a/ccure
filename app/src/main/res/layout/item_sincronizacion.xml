@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/txtOpcionSincronizacion"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:text="prueba"
+        android:background="@color/noSeleccionado"
+        android:textSize="25sp"
+        android:textColor="@color/fechaHora"
+        android:textStyle="bold"/>
+</LinearLayout>
