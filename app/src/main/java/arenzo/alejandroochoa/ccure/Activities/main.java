@@ -1,6 +1,7 @@
 package arenzo.alejandroochoa.ccure.Activities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,12 +36,14 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
+import arenzo.alejandroochoa.ccure.Helpers.conexion;
 import arenzo.alejandroochoa.ccure.Helpers.mac;
 import arenzo.alejandroochoa.ccure.Helpers.vista;
 import arenzo.alejandroochoa.ccure.R;
 import arenzo.alejandroochoa.ccure.Realm.RealmController;
 import arenzo.alejandroochoa.ccure.Realm.realmPersonalInfo;
 import arenzo.alejandroochoa.ccure.Realm.realmUsuario;
+import arenzo.alejandroochoa.ccure.WebService.helperRetrofit;
 import io.realm.RealmResults;
 
 public class main extends AppCompatActivity implements vista {
@@ -55,6 +58,7 @@ public class main extends AppCompatActivity implements vista {
     private ImageView imgPortadaMain;
     private TextView txtVersion;
 
+    String URL = "";
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -62,6 +66,7 @@ public class main extends AppCompatActivity implements vista {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PREF_MAIN = getSharedPreferences("CCURE", MODE_PRIVATE);
+        URL = PREF_MAIN.getString("URL", "");
         comprobarConfiguracion();
         cargarElementos();
         centrarTituloActionBar();
@@ -90,20 +95,31 @@ public class main extends AppCompatActivity implements vista {
     }
 
     private void comprobarEstadoMac(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-            if (estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED) {
-                String estadoImei = mac.obtenerEstadoMac(PREF_MAIN);
-                mac.setMac(getApplicationContext());
-                if (estadoImei.equals("I"))
-                    mac.resultadoDialogNoPermitidoMac(this);
-            } else
-                mac.resultadoDialogNoPermitidoMac(this);
-        }else{
-            String estadoImei = mac.obtenerEstadoMac(PREF_MAIN);
-            mac.setMac(getApplicationContext());
-            if (estadoImei.equals("I"))
-                mac.resultadoDialogNoPermitidoMac(this);
+        if( !URL.equals("")) {
+            conexion conexion = new conexion();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (conexion.isAvaliable(getApplicationContext()) && conexion.isOnline(null)) {
+                    verificarMac();
+                } else {
+                    final int estadoPermisoLecturaImei = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+                    if (estadoPermisoLecturaImei != PackageManager.PERMISSION_GRANTED) {
+                        String estadoImei = mac.obtenerEstadoMac(PREF_MAIN);
+                        mac.setMac(getApplicationContext());
+                        if (estadoImei.equals("I"))
+                            mac.resultadoDialogNoPermitidoMac(this);
+                    } else
+                        mac.resultadoDialogNoPermitidoMac(this);
+                }
+            } else {
+                if (conexion.isAvaliable(getApplicationContext()) && conexion.isOnline(null)) {
+                    verificarMac();
+                } else {
+                    String estadoImei = mac.obtenerEstadoMac(PREF_MAIN);
+                    mac.setMac(getApplicationContext());
+                    if (estadoImei.equals("I"))
+                        mac.resultadoDialogNoPermitidoMac(this);
+                }
+            }
         }
     }
 
@@ -270,6 +286,12 @@ public class main extends AppCompatActivity implements vista {
 
     private void ocultarTeclado(){
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
+
+    private void verificarMac(){
+        mac.setMac(getApplicationContext());
+        final helperRetrofit helperRetrofit = new helperRetrofit(URL);
+        helperRetrofit.validarMac(null, null, this, null, null, null, PREF_MAIN, mac.mac, "main");
     }
 
 }

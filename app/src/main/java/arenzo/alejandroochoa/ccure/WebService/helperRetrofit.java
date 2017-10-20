@@ -252,7 +252,7 @@ public class helperRetrofit {
         });
     }
 
-    public void validarMac(final configuracionUnica configuracionUnica, final sincronizacion sincronizacion, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA, final String MAC, final String tipoAccion){
+    public void validarMac(final configuracionUnica configuracionUnica, final sincronizacion sincronizacion, final main main, final ProgressDialog anillo, final Spinner spPuertasUnico, final AlertDialog alerta, final SharedPreferences PREF_CONFIGURACION_UNICA, final String MAC, final String tipoAccion){
         Call<respuestaMac> imeiCall = helper.getValidarImei(MAC);
         imeiCall.enqueue(new Callback<respuestaMac>() {
             @Override
@@ -264,11 +264,11 @@ public class helperRetrofit {
                     case "configuracionUnica":
                         if(resultadoImei.getType().equals("V")) {
                             anillo.incrementProgressBy(30);
-                            mac.guardarRespuestaMacLocalmente(resultadoImei.getType(), PREF_CONFIGURACION_UNICA.edit());
                             anillo.setMessage("Obteniendo agrupadores...");
                             actualizarAgrupadores(configuracionUnica, anillo, spPuertasUnico, alerta, PREF_CONFIGURACION_UNICA);
                         }else
                             mac.resultadoDialogNoPermitidoMac(configuracionUnica);
+                        mac.guardarRespuestaMacLocalmente(resultadoImei.getType(), PREF_CONFIGURACION_UNICA.edit());
                         break;
                     case "sincronizacion":
                         if(resultadoImei.getType().equals("V")) {
@@ -276,6 +276,12 @@ public class helperRetrofit {
                             sincronizacion.sincronizarRed();
                         }else
                             mac.resultadoDialogNoPermitidoMac(sincronizacion.getActivity());
+                        mac.guardarRespuestaMacLocalmente(resultadoImei.getType(), PREF_CONFIGURACION_UNICA.edit());
+                        break;
+                    case "main":
+                        if(resultadoImei.getType().equals("I"))
+                            mac.resultadoDialogNoPermitidoMac(main);
+                        mac.guardarRespuestaMacLocalmente(resultadoImei.getType(), PREF_CONFIGURACION_UNICA.edit());
                         break;
                 }
             }
@@ -283,11 +289,17 @@ public class helperRetrofit {
             @Override
             public void onFailure(Call<respuestaMac> call, Throwable t) {
                 Log.e(TAG, "LA CONSULTA validarMac FALLO: "+t.getMessage());
-                anillo.dismiss();
-                if(configuracionUnica == null)
+                try{
+                    anillo.dismiss();
+                }catch(NullPointerException ex){}
+                if(sincronizacion != null)
                     Toast.makeText(sincronizacion.getActivity(), "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                else
+                else if(configuracionUnica != null)
                     Toast.makeText(configuracionUnica, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                else {
+                    mac.resultadoDialogNoPermitidoMac(main);
+                    Toast.makeText(main, "Error en conexión con el servidor. Intentelo de nuevo y asegurese que cuente con conexión a internet. Motivo: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

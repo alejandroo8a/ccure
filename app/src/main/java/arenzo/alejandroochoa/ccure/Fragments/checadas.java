@@ -212,7 +212,7 @@ public class checadas extends Fragment {
         btnCero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "0";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -221,7 +221,7 @@ public class checadas extends Fragment {
         btnUno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "1";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -230,7 +230,7 @@ public class checadas extends Fragment {
         btnDos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "2";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -239,7 +239,7 @@ public class checadas extends Fragment {
         btnTres.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "3";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -248,7 +248,7 @@ public class checadas extends Fragment {
         btnCuatro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "4";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -257,7 +257,7 @@ public class checadas extends Fragment {
         btnCinco.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "5";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -266,7 +266,7 @@ public class checadas extends Fragment {
         btnSeis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "6";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -275,7 +275,7 @@ public class checadas extends Fragment {
         btnSiete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "7";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -284,7 +284,7 @@ public class checadas extends Fragment {
         btnOcho.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "8";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -293,7 +293,7 @@ public class checadas extends Fragment {
         btnNueve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "9";
                     edtNoEmpleado.setText(noEmpleado);
                 }
@@ -647,7 +647,7 @@ public class checadas extends Fragment {
                 realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), personal.getNoTarjeta(), puertaClaveActual, "P", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", personal.getNoTarjeta(), puertaClaveActual, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
+                //realmController.insertarPersonalNuevo("empty", personal.getNoTarjeta(), puertaClaveActual, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
             }
         }else {
             if (personal != null) {
@@ -681,7 +681,7 @@ public class checadas extends Fragment {
                 realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), noTarjeta, puertaClaveActual, "D", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto(), puertaClaveEntrada, puertaClaveSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", noTarjeta, puertaClaveActual, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", puertaClaveEntrada, puertaClaveSalida);
+                //realmController.insertarPersonalNuevo("empty", noTarjeta, puertaClaveActual, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", puertaClaveEntrada, puertaClaveSalida);
             }
         }else {
             if (personal != null) {
@@ -689,7 +689,7 @@ public class checadas extends Fragment {
                 realmController.insertarPersonalNuevo(personal.getNoEmpleado(), personal.getNoTarjeta(), puertaClaveActual, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, personal.getFoto(), personal.getNombre(), personal.getEmpresa(), puertaClaveEntrada, puertaClaveSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", noTarjeta, puertaClaveActual, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", puertaClaveEntrada, puertaClaveSalida);
+                //realmController.insertarPersonalNuevo("empty", noTarjeta, puertaClaveActual, "D", "N", "", PREF_CHECADAS.getString("NUMERO_EMPLEADO", "0"), tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", puertaClaveEntrada, puertaClaveSalida);
             }
         }
         sonidoDenegado.start();
@@ -705,7 +705,7 @@ public class checadas extends Fragment {
                 realmController.insertarPersonalNuevo(personalInfo.getNoEmpleado(), NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, personalInfo.getFoto(), personalInfo.getNombre(), personalInfo.getPuesto(), clavePuertaEntrada, clavePuertaSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
+                //realmController.insertarPersonalNuevo("empty", NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
             }
         }else {
             if (personal != null) {
@@ -713,7 +713,7 @@ public class checadas extends Fragment {
                 realmController.insertarPersonalNuevo(personal.getNoEmpleado(), NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, personal.getFoto(), personal.getNombre(), personal.getEmpresa(), clavePuertaEntrada, clavePuertaSalida);
             } else {
                 mostrarPersonal(txtNombre, txtPuestoEmpresa, imgFotoPerfil, "PERSONAL/CONTRATISTA", "NO ENCONTRADO", "empty");
-                realmController.insertarPersonalNuevo("empty", NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
+                //realmController.insertarPersonalNuevo("empty", NoTarjeta, PUEClave, "D", "N", "", numeroEmpleado, tipoChecada, "empty", "PERSONAL/CONTRATISTA", "NO ENCONTRADO", clavePuertaEntrada, clavePuertaSalida);
             }
         }
         sonidoDenegado.start();

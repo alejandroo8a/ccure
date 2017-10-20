@@ -106,6 +106,7 @@
         android:background="@drawable/borde"
         android:ems="10"
         android:inputType="number"
+        android:maxLength="10"
         android:singleLine="true"
         android:textAlignment="center"
         app:layout_constraintLeft_toLeftOf="parent"

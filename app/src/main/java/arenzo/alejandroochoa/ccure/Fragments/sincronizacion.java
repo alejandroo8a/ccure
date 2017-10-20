@@ -184,9 +184,8 @@ public class sincronizacion extends Fragment {
 
     private void verificarMac(){
         final helperRetrofit helperRetrofit = new helperRetrofit(URL);
-        helperRetrofit.validarMac(null, this, anillo, null, null, PREF_SINCRONIZACION, mac.mac, "sincronizacion");
+        helperRetrofit.validarMac(null, this, null, anillo, null, null, PREF_SINCRONIZACION, mac.mac, "sincronizacion");
     }
-
     public void sincronizarRed(){
         final helperRetrofit helperRetrofit = new helperRetrofit(URL);
         RealmResults<realmESPersonal> resultado = realmPrincipal.obtenerRegistros();

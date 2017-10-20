@@ -87,7 +87,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnCero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "0";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -96,7 +96,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnUno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "1";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -105,7 +105,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnDos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "2";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -114,7 +114,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnTres.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "3";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -123,7 +123,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnCuatro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "4";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -132,7 +132,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnCinco.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "5";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -141,7 +141,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnSeis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "6";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -150,7 +150,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnSiete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "7";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -159,7 +159,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnOcho.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "8";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }
@@ -168,7 +168,7 @@ public class loginManual extends AppCompatActivity implements vista {
         btnNueve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(noEmpleado.length() <= 4) {
+                if(noEmpleado.length() <= 9) {
                     noEmpleado += "9";
                     edtNumeroEmpleado.setText(noEmpleado);
                 }

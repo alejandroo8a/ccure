@@ -238,7 +238,7 @@ public class RealmController {
                     rUsuario.setNoTarjeta(usuario.getNoTarjeta());
                     rUsuario.setNombre(usuario.getNombre());
                     rUsuario.setEmpresa(usuario.getEmpresa());
-                    rUsuario.setTipo(usuario.getTipo());
+                    rUsuario.setTipo(usuario.getTipo().trim());
                     rUsuario.setFase("A");
                     rUsuario.setMFechaHora(obtenerFecha());
                     rUsuario.setMUsuarioId("CONFIGURACION");
@@ -372,7 +372,7 @@ public class RealmController {
                     realmAgrupadorPuerta rAgrupadorPuerta = realm.createObject(realmAgrupadorPuerta.class);
                     rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
                     rAgrupadorPuerta.setPUEId(agrupadorPuerta.getPUEId());
-                    rAgrupadorPuerta.setTipo(agrupadorPuerta.getTipo());
+                    rAgrupadorPuerta.setTipo(agrupadorPuerta.getTipo().trim());
                     rAgrupadorPuerta.setFase(agrupadorPuerta.getFase());
                     rAgrupadorPuerta.setFechaHora(obtenerFecha());
                     rAgrupadorPuerta.setMUsuarioId("CONFIGURACION");
@@ -391,7 +391,7 @@ public class RealmController {
                     realmAgrupadorPuerta rAgrupadorPuerta = realm.createObject(realmAgrupadorPuerta.class);
                     rAgrupadorPuerta.setAGRId(agrupadorPuerta.getAGRId());
                     rAgrupadorPuerta.setPUEId(agrupadorPuerta.getPUEId());
-                    rAgrupadorPuerta.setTipo(agrupadorPuerta.getTipo());
+                    rAgrupadorPuerta.setTipo(agrupadorPuerta.getTipo().trim());
                     rAgrupadorPuerta.setFase(agrupadorPuerta.getFase());
                     rAgrupadorPuerta.setFechaHora(obtenerFecha());
                     rAgrupadorPuerta.setMUsuarioId(idUsuario);

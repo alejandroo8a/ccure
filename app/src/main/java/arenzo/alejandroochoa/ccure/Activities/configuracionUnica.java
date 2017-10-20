@@ -300,7 +300,7 @@ public class configuracionUnica extends AppCompatActivity {
         mostrarCargandoAnillo("Verificando MAC...");
         helperRetrofit helperRetrofit = new helperRetrofit(URL);
         mac.setMac(getApplicationContext());
-        helperRetrofit.validarMac(this, null, anillo, spPuertasUnico, alert, PREF_CONFIGURACION_UNICA, mac.mac, "configuracionUnica");
+        helperRetrofit.validarMac(this, null, null, anillo, spPuertasUnico, alert, PREF_CONFIGURACION_UNICA, mac.mac, "configuracionUnica");
     }
 
     private void mostrarDialogUrl(){
@@ -603,6 +603,9 @@ public class configuracionUnica extends AppCompatActivity {
             finish();
         else{
             Intent intent = new Intent(this, main.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             startActivity(intent);
             finish();
         }
