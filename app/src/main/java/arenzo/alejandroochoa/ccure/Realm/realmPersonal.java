@@ -1,20 +1,14 @@
 package arenzo.alejandroochoa.ccure.Realm;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
 
 public class realmPersonal extends RealmObject {
-
 
     private String NoEmpleado;
     private String NoTarjeta;
     private String Nombre;
     private String Empresa;
-
+    private String Foto;
     private String Fase;
     private String MFechaHora;
     private String MUsuarioId;
@@ -73,5 +67,13 @@ public class realmPersonal extends RealmObject {
 
     public void setEmpresa(String empresa) {
         Empresa = empresa;
+    }
+
+    public String getFoto() {
+        return Foto;
+    }
+
+    public void setFoto(String foto) {
+        Foto = foto;
     }
 }

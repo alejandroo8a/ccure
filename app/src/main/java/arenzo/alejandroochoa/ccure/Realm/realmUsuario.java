@@ -2,10 +2,6 @@ package arenzo.alejandroochoa.ccure.Realm;
 
 import io.realm.RealmObject;
 
-/**
- * Created by AlejandroMissael on 29/06/2017.
- */
-
 public class realmUsuario extends RealmObject {
 
     private String NoEmpleado;

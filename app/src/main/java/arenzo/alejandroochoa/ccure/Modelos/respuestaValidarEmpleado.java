@@ -1,9 +1,5 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
-/**
- * Created by AlejandroMissael on 29/06/2017.
- */
-
 public class respuestaValidarEmpleado {
 
     private String Foto;
@@ -38,17 +34,5 @@ public class respuestaValidarEmpleado {
 
     public String getPuesto() {
         return Puesto;
-    }
-
-    public void setPuesto(String puesto) {
-        Puesto = puesto;
-    }
-
-    public String getPUEClave() {
-        return PUEClave;
-    }
-
-    public void setPUEClave(String PUEClave) {
-        this.PUEClave = PUEClave;
     }
 }

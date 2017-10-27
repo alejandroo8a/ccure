@@ -1,9 +1,5 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
-/**
- * Created by AlejandroMissael on 27/06/2017.
- */
-
 public class agrupador {
 
     private int AGRId;

@@ -1,13 +1,7 @@
 package arenzo.alejandroochoa.ccure.Realm;
 
 import com.google.gson.annotations.SerializedName;
-
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
 
 public class realmPersonalPuerta extends RealmObject {
 
@@ -59,10 +53,6 @@ public class realmPersonalPuerta extends RealmObject {
 
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
-    }
-
-    public String getGRUId() {
-        return GRUId;
     }
 
     public void setGRUId(String GRUId) {

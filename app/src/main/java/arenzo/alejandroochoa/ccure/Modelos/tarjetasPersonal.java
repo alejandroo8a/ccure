@@ -1,9 +1,5 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
-/**
- * Created by AlejandroMissael on 09/05/2017.
- */
-
 public class tarjetasPersonal {
 
     private String NoEmpleado;
@@ -11,6 +7,7 @@ public class tarjetasPersonal {
     private String Nombre;
     private String Empresa;
     private String Tipo;
+    private String Foto;
 
     public String getNoEmpleado() {
         return NoEmpleado;
@@ -36,10 +33,6 @@ public class tarjetasPersonal {
         Nombre = nombre;
     }
 
-    public String getEmpresa() {
-        return Empresa;
-    }
-
     public void setEmpresa(String empresa) {
         Empresa = empresa;
     }
@@ -50,5 +43,13 @@ public class tarjetasPersonal {
 
     public void setTipo(String tipo) {
         Tipo = tipo;
+    }
+
+    public String getFoto() {
+        return Foto;
+    }
+
+    public void setFoto(String foto) {
+        Foto = foto;
     }
 }

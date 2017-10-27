@@ -5,10 +5,6 @@ import android.app.Application;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
-
 public class baseDatos extends Application{
 
     private final static String nombreBD = "ccure.realm";
@@ -23,6 +19,7 @@ public class baseDatos extends Application{
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(configuration);
+        RealmController.with(this);
     }
 }
 

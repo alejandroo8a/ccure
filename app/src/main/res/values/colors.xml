@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#5D7388</color>
-    <color name="primary_dark">#455a64</color>
+    <color name="primary">#ee5351</color>
+    <color name="primary_dark">#d33031</color>
     <color name="primary_light">#929395</color>
     <color name="accent">#C6361B</color>
     <color name="primary_text">#212121</color>
@@ -9,4 +9,13 @@
     <color name="icons">#000000</color>
     <color name="icons2">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+    <color name="entrada">#FEE300</color>
+    <color name="fondoLoginTarjeta">#182430</color>
+    <color name="fondoLoginTarjeta2">#223241</color>
+    <color name="fechaHora">#6787a0</color>
+    <color name="bordeBoton">#63839c</color>
+    <color name="botonLoginRegresar">#22323f</color>
+    <color name="conexion">#4489fe</color>
+    <color name="seleccionado">#5f849f</color>
+    <color name="noSeleccionado">#2e4054</color>
 </resources>

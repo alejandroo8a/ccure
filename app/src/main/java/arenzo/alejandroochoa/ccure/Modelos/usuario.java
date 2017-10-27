@@ -1,15 +1,12 @@
 package arenzo.alejandroochoa.ccure.Modelos;
 
-/**
- * Created by AlejandroMissael on 29/06/2017.
- */
-
 public class usuario {
 
     private String NoEmpleado;
     private String NoTarjeta;
     private String Nombre;
     private String Empresa;
+    private String foto;
     private String Tipo;
     private String Fase;
     private String MFechaHora;
@@ -43,10 +40,6 @@ public class usuario {
         return Empresa;
     }
 
-    public void setEmpresa(String empresa) {
-        Empresa = empresa;
-    }
-
     public String getTipo() {
         return Tipo;
     }
@@ -77,5 +70,13 @@ public class usuario {
 
     public void setMUsuarioId(String MUsuarioId) {
         this.MUsuarioId = MUsuarioId;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 }

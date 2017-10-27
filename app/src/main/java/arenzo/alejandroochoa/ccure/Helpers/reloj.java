@@ -1,6 +1,5 @@
 package arenzo.alejandroochoa.ccure.Helpers;
 
-
 import android.content.Context;
 import android.database.ContentObserver;
 import android.os.Handler;
@@ -11,16 +10,11 @@ import android.util.AttributeSet;
 
 import java.util.Calendar;
 
-/**
- * Created by AlejandroMissael on 21/06/2017.
- */
-
 public class reloj extends android.support.v7.widget.AppCompatTextView {
 
     Calendar mCalendar;
-    private final static String m12 = "dd-MM-yyyy h:mm:ss aa";
-    private final static String m24 = "dd-MM-yyyy k:mm:ss";
-    private FormatChangeObserver mFormatChangeObserver;
+    private final static String m12 = "dd-MM-yyyy \n   h:mm:ss aa";
+    private final static String m24 = "dd-MM-yyyy \n   k:mm:ss";
 
     private Runnable mTicker;
     private Handler mHandler;
@@ -31,23 +25,21 @@ public class reloj extends android.support.v7.widget.AppCompatTextView {
 
     public reloj(Context context) {
         super(context);
-        initClock(context);
+        initClock();
     }
 
     public reloj(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initClock(context);
+        initClock();
     }
 
-    private void initClock(Context context) {
+    private void initClock() {
         if (mCalendar == null) {
             mCalendar = Calendar.getInstance();
         }
-
-        mFormatChangeObserver = new FormatChangeObserver();
+        FormatChangeObserver mFormatChangeObserver = new FormatChangeObserver();
         getContext().getContentResolver().registerContentObserver(
                 Settings.System.CONTENT_URI, true, mFormatChangeObserver);
-
         setFormat();
     }
 
@@ -90,7 +82,7 @@ public class reloj extends android.support.v7.widget.AppCompatTextView {
     }
 
     private class FormatChangeObserver extends ContentObserver {
-        public FormatChangeObserver() {
+        private FormatChangeObserver() {
             super(new Handler());
         }
 

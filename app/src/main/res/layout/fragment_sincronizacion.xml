@@ -3,91 +3,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fondo_sincronizacion"
     tools:context="arenzo.alejandroochoa.ccure.Fragments.sincronizacion">
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/sincronizaci_n"
-        android:textSize="22sp"
+    <ImageView
+        android:id="@+id/imgFondoPuerta"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/fondoLoginTarjeta" />
+
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/selecciona_una_opci_n_para_exportar_la_informaci_n"
-        android:textSize="22sp"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgFondoPuerta"
         app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="@+id/imgFondoPuerta" />
+
+    <ListView
+        android:id="@+id/lvTipoSincronizacion"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="100dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnSincronizar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgFondoPuerta" />
 
     <Button
         android:id="@+id/btnSincronizar"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
+        android:layout_width="400dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/boton_circular_rojo"
         android:foreground="?android:attr/selectableItemBackground"
-        android:background="@color/primary_light"
         android:text="Sincronizar"
         android:textColor="@android:color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/imgLogo"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintRight_toRightOf="parent" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="140dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8"
-        app:layout_constraintHorizontal_bias="0.0">
-
-        <RadioButton
-            android:id="@+id/rdRed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginRight="12dp"
-            android:text="@string/red"
-            android:textSize="18dp" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_weight="1" />
-
-        <RadioButton
-            android:id="@+id/rdArchivo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="@string/archivo"
-            android:textSize="18dp" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_weight="1" />
-
-        <RadioButton
-            android:id="@+id/rdLeerArchivo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="Leer archivo"
-            android:textSize="18dp" />
-    </RadioGroup>
+        app:srcCompat="@drawable/im_logo_transparente"
+        android:layout_marginStart="16dp" />
 
 </android.support.constraint.ConstraintLayout>

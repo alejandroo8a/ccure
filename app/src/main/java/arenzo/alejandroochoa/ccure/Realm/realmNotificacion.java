@@ -3,10 +3,6 @@ package arenzo.alejandroochoa.ccure.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * Created by AlejandroMissael on 22/04/2017.
- */
-
 public class realmNotificacion extends RealmObject {
 
     @PrimaryKey
@@ -16,22 +12,6 @@ public class realmNotificacion extends RealmObject {
     private String Fase;
     private String Tipo;
     private String Valor;
-
-    public int getNOTId() {
-        return NOTId;
-    }
-
-    public void setNOTId(int NOTId) {
-        this.NOTId = NOTId;
-    }
-
-    public String getMensaje() {
-        return Mensaje;
-    }
-
-    public void setMensaje(String mensaje) {
-        Mensaje = mensaje;
-    }
 
     public String getFase() {
         return Fase;
@@ -47,14 +27,6 @@ public class realmNotificacion extends RealmObject {
 
     public void setTipo(String tipo) {
         Tipo = tipo;
-    }
-
-    public String getValor() {
-        return Valor;
-    }
-
-    public void setValor(String valor) {
-        Valor = valor;
     }
 
     public String getMFechaHora() {
